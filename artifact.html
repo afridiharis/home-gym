@@ -1,0 +1,2910 @@
+<title>FORGE — Home Gym</title>
+<style>
+/* ============================================================
+   FORGE — design system
+   Warm charcoal + ember. Mobile-first, thumb-zone nav.
+   Dark is the default; light theme supported via data-theme.
+   ============================================================ */
+
+:root {
+  --bg: #131110;
+  --bg-glow: rgba(255, 106, 43, 0.08);
+  --surface: #1e1a17;
+  --surface-2: #292420;
+  --surface-3: #363029;
+  --line: rgba(245, 239, 230, 0.09);
+  --line-strong: rgba(245, 239, 230, 0.18);
+  --ink: #f5efe6;
+  --ink-2: #b8b0a4;
+  --ink-3: #9a9184;
+  --accent: #ff6a2b;
+  --accent-soft: rgba(255, 106, 43, 0.14);
+  --accent-ink: #21100a;
+  --good: #57d98a;
+  --good-soft: rgba(87, 217, 138, 0.14);
+  --warn: #f5c542;
+  --warn-soft: rgba(245, 197, 66, 0.14);
+  --bad: #f4705d;
+  --bad-soft: rgba(244, 112, 93, 0.16);
+  --chart-1: #ed5f16;
+  --chart-2: #189473;
+  --chart-3: #8b7ce8;
+  --chart-grid: rgba(245, 239, 230, 0.08);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --font-display: "Avenir Next Condensed", "Futura", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Avenir Next", -apple-system, "Helvetica Neue", system-ui, sans-serif;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f6f1ea;
+    --bg-glow: rgba(255, 106, 43, 0.07);
+    --surface: #fffdf9;
+    --surface-2: #f0e9df;
+    --surface-3: #e5dcd0;
+    --line: rgba(41, 32, 26, 0.1);
+    --line-strong: rgba(41, 32, 26, 0.22);
+    --ink: #29201a;
+    --ink-2: #6b6156;
+    --ink-3: #7a7060;
+    --accent: #e5541a;
+    --accent-soft: rgba(229, 84, 26, 0.12);
+    --accent-ink: #fff6ef;
+    --good: #1f9d55;
+    --good-soft: rgba(31, 157, 85, 0.12);
+    --warn: #b07d10;
+    --warn-soft: rgba(176, 125, 16, 0.12);
+    --bad: #cc3d2a;
+    --bad-soft: rgba(204, 61, 42, 0.12);
+    --chart-1: #e5541a;
+    --chart-2: #0d8a72;
+    --chart-3: #3b82f6;
+    --chart-grid: rgba(41, 32, 26, 0.09);
+    --shadow: 0 10px 30px rgba(41, 32, 26, 0.12);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131110; --bg-glow: rgba(255,106,43,.08); --surface: #1e1a17; --surface-2: #292420;
+  --surface-3: #363029; --line: rgba(245,239,230,.09); --line-strong: rgba(245,239,230,.18);
+  --ink: #f5efe6; --ink-2: #b8b0a4; --ink-3: #9a9184; --accent: #ff6a2b;
+  --accent-soft: rgba(255,106,43,.14); --accent-ink: #21100a;
+  --good: #57d98a; --good-soft: rgba(87,217,138,.14); --warn: #f5c542; --warn-soft: rgba(245,197,66,.14);
+  --bad: #f4705d; --bad-soft: rgba(244,112,93,.16);
+  --chart-1: #ed5f16; --chart-2: #189473; --chart-3: #8b7ce8; --chart-grid: rgba(245,239,230,.08);
+  --shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+:root[data-theme="light"] {
+  --bg: #f6f1ea; --bg-glow: rgba(255,106,43,.07); --surface: #fffdf9; --surface-2: #f0e9df;
+  --surface-3: #e5dcd0; --line: rgba(41,32,26,.1); --line-strong: rgba(41,32,26,.22);
+  --ink: #29201a; --ink-2: #6b6156; --ink-3: #7a7060; --accent: #e5541a;
+  --accent-soft: rgba(229,84,26,.12); --accent-ink: #fff6ef;
+  --good: #1f9d55; --good-soft: rgba(31,157,85,.12); --warn: #b07d10; --warn-soft: rgba(176,125,16,.12);
+  --bad: #cc3d2a; --bad-soft: rgba(204,61,42,.12);
+  --chart-1: #e5541a; --chart-2: #0d8a72; --chart-3: #3b82f6; --chart-grid: rgba(41,32,26,.09);
+  --shadow: 0 10px 30px rgba(41,32,26,.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.45;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overscroll-behavior-y: contain;
+}
+
+/* Ambient glow + grain */
+#forge-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 50% -5%, var(--bg-glow), transparent 70%),
+    radial-gradient(45% 30% at 90% 100%, var(--bg-glow), transparent 70%);
+}
+#forge-bg::after {
+  content: ""; position: absolute; inset: 0; opacity: 0.5; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+}
+
+#app { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; padding: calc(14px + var(--safe-t)) 18px calc(96px + var(--safe-b)); }
+
+/* ---------- Typography ---------- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 0.95;
+}
+h1.display { font-size: clamp(34px, 9vw, 44px); }
+h2.display { font-size: clamp(24px, 6.5vw, 30px); }
+.kicker {
+  font-family: var(--font-display); font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.14em; font-size: 12px; color: var(--accent);
+}
+.kicker.muted { color: var(--ink-3); }
+.micro { font-size: 12px; color: var(--ink-3); }
+.sub { font-size: 14px; color: var(--ink-2); }
+.num {
+  font-family: var(--font-display); font-weight: 800; font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Cards & layout ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.card.flush { padding: 0; overflow: hidden; }
+.card.accent { background: linear-gradient(140deg, var(--accent-soft), transparent 60%), var(--surface); border-color: var(--line-strong); }
+.row { display: flex; align-items: center; gap: 12px; }
+.row.between { justify-content: space-between; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.divider { height: 1px; background: var(--line); margin: 14px 0; }
+
+/* ---------- Buttons ---------- */
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; touch-action: manipulation; }
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 16px 20px; border-radius: 999px;
+  font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.06em; font-size: 18px;
+  background: var(--surface-2); color: var(--ink);
+  border: 1px solid var(--line-strong);
+  transition: transform 0.12s ease, filter 0.12s ease;
+  user-select: none; -webkit-user-select: none;
+}
+.btn:active { transform: scale(0.97); filter: brightness(1.1); }
+.btn.primary {
+  background: var(--accent); color: var(--accent-ink); border-color: transparent;
+  box-shadow: 0 6px 24px rgba(255, 106, 43, 0.35);
+}
+.btn.big { padding: 20px; font-size: 22px; }
+.btn.ghost { background: transparent; border-color: var(--line); color: var(--ink-2); font-size: 15px; padding: 12px 16px; }
+.btn.danger { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+.btn.small { width: auto; padding: 9px 16px; font-size: 14px; }
+.btn:disabled { opacity: 0.4; pointer-events: none; }
+
+/* Icon buttons / steppers */
+.stepper { display: flex; align-items: center; justify-content: center; gap: 18px; }
+.stepper button {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--surface-2); border: 1px solid var(--line-strong);
+  font-size: 30px; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.1s ease;
+}
+.stepper button:active { transform: scale(0.92); background: var(--surface-3); }
+.stepper .value { min-width: 110px; text-align: center; font-size: 64px; line-height: 1; }
+
+/* ---------- Chips / pills ---------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+  background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line);
+}
+button.chip { min-height: 44px; padding: 10px 16px; }
+.sheet-x {
+  width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--ink-2); font-size: 17px; font-weight: 700;
+}
+.chip.accent { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.chip.good { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.chip.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+
+/* Pain traffic light selector */
+.pain-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pain-picker button {
+  padding: 14px 8px; border-radius: var(--radius-sm); border: 2px solid var(--line);
+  background: var(--surface-2); text-align: center; color: var(--ink-2);
+  font-weight: 700; font-size: 14px; line-height: 1.3;
+}
+.pain-picker button span { display: block; font-size: 22px; margin-bottom: 4px; }
+.pain-picker button.sel-good { border-color: var(--good); background: var(--good-soft); color: var(--good); }
+.pain-picker button.sel-warn { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); }
+.pain-picker button.sel-bad { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); }
+
+/* ---------- Bottom navigation ---------- */
+#nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+  display: flex; justify-content: center;
+  padding: 8px 14px calc(10px + var(--safe-b));
+  background: linear-gradient(to top, var(--bg) 65%, transparent);
+}
+#nav .inner {
+  display: flex; gap: 4px; width: 100%; max-width: 560px;
+  background: var(--surface); border: 1px solid var(--line-strong);
+  border-radius: 999px; padding: 6px; box-shadow: var(--shadow);
+}
+#nav button {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 8px 4px; border-radius: 999px; color: var(--ink-3);
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+#nav button .ico { font-size: 20px; line-height: 1; }
+#nav button.active { background: var(--accent-soft); color: var(--accent); }
+
+/* ---------- Streak flame / hero ---------- */
+.streak-hero { display: flex; align-items: baseline; gap: 10px; }
+.streak-hero .flame { font-size: 40px; line-height: 1; filter: drop-shadow(0 0 12px rgba(255, 106, 43, 0.5)); }
+.streak-hero .count { font-size: 64px; line-height: 0.9; }
+.streak-hero .label { font-size: 13px; color: var(--ink-2); max-width: 90px; line-height: 1.2; }
+
+/* Week dots */
+.week-dots { display: flex; justify-content: space-between; gap: 6px; }
+.week-dots .day { flex: 1; text-align: center; }
+.week-dots .day .dot {
+  width: 34px; height: 34px; margin: 0 auto 4px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); border: 1px solid var(--line); font-size: 15px;
+}
+.week-dots .day.done .dot { background: var(--accent); border-color: transparent; color: var(--accent-ink); font-weight: 800; }
+.week-dots .day.partial .dot { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 800; }
+.week-dots .day.today .dot { border: 2px solid var(--accent); }
+.week-dots .day .lbl { font-size: 10px; color: var(--ink-3); text-transform: uppercase; font-weight: 700; letter-spacing: 0.06em; }
+
+/* ---------- Workout player ---------- */
+#player { position: fixed; inset: 0; z-index: 50; background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+#player .inner { max-width: 560px; margin: 0 auto; padding: calc(14px + var(--safe-t)) 18px calc(30px + var(--safe-b)); min-height: 100%; display: flex; flex-direction: column; }
+.progress-track { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.progress-track .fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+
+.set-dots { display: flex; gap: 8px; }
+.set-dots .sd {
+  width: 30px; height: 30px; border-radius: 50%; font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-3);
+}
+.set-dots .sd.done { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+.set-dots .sd.now { border: 2px solid var(--accent); color: var(--accent); }
+
+/* Rest timer overlay */
+#rest-overlay {
+  position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+#rest-overlay .t { font-size: 120px; line-height: 1; }
+#rest-overlay .t.ending { color: var(--accent); animation: pulse 1s infinite; }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+/* Timer ring */
+.ring { position: relative; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+.ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.ring .t2 { font-size: 72px; line-height: 1; }
+
+/* ---------- Forms ---------- */
+input[type="text"], input[type="number"], input[type="time"], select, textarea {
+  font: inherit; color: var(--ink); width: 100%;
+  background: var(--surface-2); border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm); padding: 13px 14px; font-size: 16px;
+  -webkit-appearance: none; appearance: none;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.field { display: block; margin-bottom: 12px; }
+.field .lbl { display: block; font-size: 13px; font-weight: 700; color: var(--ink-2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.seg { display: flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 4px; }
+.seg button { flex: 1; padding: 9px 6px; border-radius: 999px; font-size: 13px; font-weight: 700; color: var(--ink-3); }
+.seg button.active { background: var(--accent); color: var(--accent-ink); }
+
+.day-picker { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.day-picker button {
+  padding: 12px 2px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 800;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-3); text-transform: uppercase;
+}
+.day-picker button.on { background: var(--accent); border-color: transparent; color: var(--accent-ink); }
+
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.toggle-row:last-child { border-bottom: none; }
+.switch { position: relative; width: 52px; height: 31px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 100%; height: 100%; position: absolute; z-index: 2; margin: 0; cursor: pointer; }
+.switch .track { position: absolute; inset: 0; border-radius: 999px; background: var(--surface-3); transition: background 0.2s; }
+.switch .thumb { position: absolute; top: 3px; left: 3px; width: 25px; height: 25px; border-radius: 50%; background: var(--ink); transition: transform 0.2s; }
+.switch input:checked + .track { background: var(--accent); }
+.switch input:checked ~ .thumb { transform: translateX(21px); background: #fff; }
+
+/* ---------- Exercise library ---------- */
+.ex-item { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); width: 100%; text-align: left; }
+.ex-item:last-child { border-bottom: none; }
+.ex-item .ico {
+  width: 44px; height: 44px; border-radius: var(--radius-sm); flex-shrink: 0;
+  background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.ex-item .meta { flex: 1; min-width: 0; }
+.ex-item .meta .nm { font-weight: 700; font-size: 15px; }
+.ex-item .meta .lv { font-size: 12px; color: var(--ink-3); }
+
+/* Ladder */
+.ladder { position: relative; padding-left: 26px; }
+.ladder::before { content: ""; position: absolute; left: 9px; top: 10px; bottom: 10px; width: 2px; background: var(--line-strong); }
+.ladder .rung { position: relative; padding: 9px 0; }
+.ladder .rung::before {
+  content: ""; position: absolute; left: -23px; top: 14px; width: 12px; height: 12px;
+  border-radius: 50%; background: var(--surface-3); border: 2px solid var(--line-strong);
+}
+.ladder .rung.done::before { background: var(--good); border-color: var(--good); }
+.ladder .rung.now::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.ladder .rung.now .nm { color: var(--accent); font-weight: 800; }
+.ladder .rung .nm { font-weight: 600; font-size: 15px; }
+.ladder .rung .crit { font-size: 12px; color: var(--ink-3); }
+
+/* ---------- Badges ---------- */
+.badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.badge {
+  text-align: center; padding: 14px 6px; border-radius: var(--radius-sm);
+  background: var(--surface-2); border: 1px solid var(--line);
+}
+.badge .bico { font-size: 30px; display: block; margin-bottom: 6px; }
+.badge .bnm { font-size: 11px; font-weight: 700; color: var(--ink-2); line-height: 1.2; }
+.badge.locked { opacity: 0.35; filter: grayscale(1); }
+.badge.earned { border-color: var(--accent); background: var(--accent-soft); }
+
+/* XP bar */
+.xp-bar { height: 10px; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+.xp-bar .fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--accent), #ffb36b); transition: width 0.6s ease; }
+
+/* ---------- Charts ---------- */
+.chart-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.chart-tip {
+  position: absolute; pointer-events: none; z-index: 5;
+  background: var(--surface-3); border: 1px solid var(--line-strong); border-radius: 8px;
+  padding: 6px 10px; font-size: 12px; white-space: nowrap; box-shadow: var(--shadow);
+  transform: translate(-50%, -110%);
+}
+
+/* Heatmap */
+.heatmap { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 3px; }
+.heatmap .cell { width: 13px; height: 13px; border-radius: 3px; background: var(--surface-2); }
+
+/* ---------- Overlays / modals ---------- */
+.sheet-backdrop { position: fixed; inset: 0; z-index: 70; background: rgba(0, 0, 0, 0.5); display: flex; align-items: flex-end; justify-content: center; }
+.sheet {
+  width: 100%; max-width: 560px; max-height: 86vh; overflow-y: auto;
+  background: var(--surface); border-radius: 22px 22px 0 0;
+  padding: 10px 18px calc(24px + var(--safe-b));
+  animation: sheet-up 0.25s ease;
+}
+@keyframes sheet-up { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet .grab { width: 40px; height: 4px; border-radius: 2px; background: var(--line-strong); margin: 4px auto 14px; }
+
+/* Toast */
+#toast {
+  position: fixed; left: 50%; bottom: calc(104px + var(--safe-b)); transform: translateX(-50%);
+  z-index: 80; background: var(--surface-3); color: var(--ink); border: 1px solid var(--line-strong);
+  padding: 11px 18px; border-radius: 999px; font-size: 14px; font-weight: 600;
+  box-shadow: var(--shadow); white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis;
+  animation: toast-in 0.25s ease;
+}
+@keyframes toast-in { from { transform: translate(-50%, 12px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+/* Confetti */
+.confetti { position: fixed; z-index: 90; top: -12px; pointer-events: none; border-radius: 2px; animation: fall linear forwards; }
+@keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: 0.9; } }
+
+/* Screen transitions */
+.screen { animation: screen-in 0.28s ease; }
+@keyframes screen-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Collapsible cues */
+details.cues { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 10px; }
+details.cues summary { list-style: none; display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--ink-2); cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; }
+details.cues summary::-webkit-details-marker { display: none; }
+details.cues summary::after { content: "+"; font-size: 18px; color: var(--ink-3); }
+details.cues[open] summary::after { content: "–"; }
+details.cues ul { margin: 10px 0 0 18px; font-size: 14px; color: var(--ink-2); display: flex; flex-direction: column; gap: 6px; }
+
+.safety-note {
+  display: flex; gap: 9px; margin-top: 10px; padding: 11px 12px;
+  background: var(--warn-soft); border-radius: var(--radius-sm); font-size: 13px; color: var(--ink-2);
+}
+.safety-note .si { flex-shrink: 0; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+<div id="forge-bg"></div>
+<div id="app"></div>
+<script>
+/* ============================================================
+   FORGE — program data
+   Evidence notes: McGill Big 3 protocol, traffic-light pain rules,
+   ladder progressions for the Sportsroyals power tower.
+   ============================================================ */
+
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+/* ---------- Exercise library ----------
+   kind: 'reps' | 'secs' | 'perside' (reps per side) | 'secside' (secs per side)
+   l5: safety note shown in player & library. phase: minimum phase (1-4).
+*/
+const EX = {
+  /* --- Spine routine (McGill) --- */
+  catcamel:   { name: "Cat–Camel", icon: "🐈", kind: "reps", pattern: "spine", phase: 1,
+    cues: ["On all fours, slowly cycle between gentle arch and gentle round", "Move through comfortable range only — this is motion, not stretching", "Slow: ~3–4 seconds per cycle"],
+    l5: "Never force end-range. This lubricates the spine before everything else." },
+  curlup:     { name: "McGill Curl-Up", icon: "🧱", kind: "reps", pattern: "spine", phase: 1,
+    cues: ["Lie down, one knee bent, hands under your lower-back arch", "Lift head + shoulders a few centimetres — the spine does NOT bend", "Hold 8–10s, breathe, lower slowly"],
+    l5: "Hands under the lumbar arch preserve neutral. No chin-tuck, no sit-up." },
+  sideplank:  { name: "Side Plank", icon: "📐", kind: "secside", pattern: "spine", phase: 1,
+    cues: ["From knees first; from feet when strong", "Straight line ear–shoulder–hip–knee", "Hold 8–10s per rep, breathe"],
+    l5: "Builds the obliques with zero disc bending. Start from knees if it's hard." },
+  birddog:    { name: "Bird Dog", icon: "🐦", kind: "perside", pattern: "spine", phase: 1,
+    cues: ["All fours. Opposite arm + leg out, 'kick the heel straight back'", "Make a fist, brace the belly, hold 8–10s", "Sweep the floor between reps, no back sag"],
+    l5: "Hips stay level. If shaky, do leg-only first." },
+  deadhang:   { name: "Dead Hang", icon: "🦍", kind: "secs", pattern: "vpull", phase: 1,
+    cues: ["Grip the bar, shoulders 'active-ish' — not fully slumped", "Let the spine lengthen, breathe slowly", "Step down slowly — never drop off"],
+    l5: "Gentle traction for the spine. Feet lightly on floor at first is fine. Stop if leg symptoms increase." },
+  hipHingeDrill: { name: "Hip Hinge Drill", icon: "🥢", kind: "reps", pattern: "hinge", phase: 1,
+    cues: ["Broomstick along spine: head, upper back, sacrum all touching", "Push hips BACK, shins vertical, soft knees", "If the stick loses contact, you bent the spine — reset"],
+    l5: "This pattern replaces spine-bending in daily life. Practise until automatic." },
+  walk:       { name: "Brisk Walk", icon: "🚶", kind: "secs", pattern: "spine", phase: 1,
+    cues: ["Brisk pace, relaxed arm swing", "Multiple short bouts are fine (3×10 min)", "Build toward 30 min most days"],
+    l5: "The single best-evidenced daily habit for keeping back pain away (WalkBack RCT, Lancet 2024)." },
+
+  /* --- Vertical pull ladder --- */
+  scapPull:   { name: "Scapular Pulls", icon: "🔻", kind: "reps", pattern: "vpull", phase: 2,
+    cues: ["Hang, then pull shoulder blades down & together — arms stay straight", "2s hold at the top of each rep", "Slow and controlled"],
+    l5: "Keep the trunk quiet — no swinging." },
+  negPullup:  { name: "Negative Pull-Ups", icon: "⬇️", kind: "reps", pattern: "vpull", phase: 2,
+    cues: ["Step up using the tower frame, chin over bar", "Lower yourself in 3–5 seconds", "Step down at the bottom — don't drop"],
+    l5: "Control is everything. Dropping off the bar jars the spine." },
+  asstPullup: { name: "Assisted Pull-Ups", icon: "🪜", kind: "reps", pattern: "vpull", phase: 2,
+    cues: ["A foot on a sturdy chair behind you, or a band over the bar", "Push with the leg only as much as needed", "Chest toward the bar, full lockout at bottom"],
+    l5: "Brace the trunk lightly — don't let the lower back over-arch." },
+  chinup:     { name: "Chin-Ups", icon: "💪", kind: "reps", pattern: "vpull", phase: 2,
+    cues: ["Palms toward you — about 10–15% easier than pull-ups", "Pull chest to bar, elbows to ribs", "3s lower on every rep"],
+    l5: "Strict only. No kipping — it shears the spine and can rock the tower." },
+  pullup:     { name: "Pull-Ups", icon: "🔥", kind: "reps", pattern: "vpull", phase: 2,
+    cues: ["Palms away, hands just outside shoulders", "Lead with the chest, pull the bar to you", "Full hang at the bottom of every rep"],
+    l5: "Mild traction makes these back-friendly — as long as every rep is strict." },
+  ctbPullup:  { name: "Chest-to-Bar Pull-Ups", icon: "⚡", kind: "reps", pattern: "vpull", phase: 3,
+    cues: ["Pull higher — touch the chest to the bar", "Keep the body a rigid line", "Lower yourself slowly (3–5s)"],
+    l5: "Rigid trunk, zero swing." },
+  archPullup: { name: "Archer Pull-Ups", icon: "🏹", kind: "perside", pattern: "vpull", phase: 4,
+    cues: ["Pull toward one hand, other arm goes straight", "Alternate sides", "Build toward one-arm strength"],
+    l5: "Advanced — only when fully symptom-free." },
+  wtdPullup:  { name: "Weighted Pull-Ups", icon: "🎒", kind: "reps", pattern: "vpull", phase: 4,
+    cues: ["Backpack packed tight so the load can't shift", "Start ~5% bodyweight, add 2.5kg when 3×5 is clean", "Strict reps only"],
+    l5: "Load changes everything — keep the trunk braced and reps slow." },
+
+  /* --- Horizontal pull ladder (rows under the dip handles) --- */
+  rowBent:    { name: "Row (bent knees)", icon: "🚣", kind: "reps", pattern: "hpull", phase: 2,
+    cues: ["Lie under the dip handles, one hand on each", "Feet flat, knees bent, body a straight plank", "Pull chest to handles, squeeze shoulder blades 1s"],
+    l5: "A moving plank for the back of the body — keep the hips in line." },
+  rowStraight:{ name: "Row (straight legs)", icon: "🚣", kind: "reps", pattern: "hpull", phase: 2,
+    cues: ["Heels on floor, legs straight, body rigid", "Chest to handle height every rep", "1s squeeze at the top"],
+    l5: "Brace like a plank. If the hips sag, bend the knees again." },
+  rowElev:    { name: "Row (feet elevated)", icon: "🚀", kind: "reps", pattern: "hpull", phase: 3,
+    cues: ["Heels up on a chair or box (~45cm)", "Body stays a rigid line", "Lower yourself slowly"],
+    l5: "Harder brace required — stop the set when the line breaks." },
+  rowArcher:  { name: "Archer Rows", icon: "🏹", kind: "perside", pattern: "hpull", phase: 4,
+    cues: ["One arm does most of the work, other stays straight", "Alternate sides"], l5: "Advanced. Keep hips square." },
+
+  /* --- Dip ladder --- */
+  dipSupport: { name: "Dip Support Hold", icon: "🏛️", kind: "secs", pattern: "dip", phase: 2,
+    cues: ["Arms locked on the dip handles, shoulders pushed down", "Legs quiet, ribs down", "Own 60s total before trying negatives"],
+    l5: "Neutral spine is easy here — just don't swing the legs." },
+  dipNeg:     { name: "Dip Negatives", icon: "⬇️", kind: "reps", pattern: "dip", phase: 2,
+    cues: ["Lower in 3–5s to upper-arms-parallel", "Step back up via the frame", "Elbows track back, slight forward lean"],
+    l5: "Depth cap: upper arms parallel to floor. Shoulder pinch = go shallower." },
+  dipPartial: { name: "Partial Dips", icon: "🌓", kind: "reps", pattern: "dip", phase: 2,
+    cues: ["Half depth, full control", "Add depth week by week"], l5: "Keep the legs still — swinging rocks the tower and the spine." },
+  dip:        { name: "Dips", icon: "💥", kind: "reps", pattern: "dip", phase: 2,
+    cues: ["Upper arms to parallel, slight forward torso lean", "Elbows track backward", "Press to full lockout"],
+    l5: "Lumbar-neutral by nature. Keep legs quiet; no bouncing at the bottom." },
+  dipSlow:    { name: "Slow-Tempo Dips", icon: "🐢", kind: "reps", pattern: "dip", phase: 3,
+    cues: ["3s down, 1s pause, 3s up", "No bounce at the bottom"], l5: "Tempo builds strength without extra load on anything." },
+  wtdDip:     { name: "Weighted Dips", icon: "🎒", kind: "reps", pattern: "dip", phase: 4,
+    cues: ["Backpack worn tight (front-load for a more upright torso)", "Start ~5% bodyweight", "+2.5kg when 3×5 is clean"],
+    l5: "Brace before every set. Strict depth cap stays." },
+
+  /* --- Push-up family --- */
+  pushIncline:{ name: "Incline Push-Ups", icon: "📶", kind: "reps", pattern: "push", phase: 1,
+    cues: ["Hands on the dip handles or a raised surface", "Body one straight line, glutes on", "Chest to hand level"],
+    l5: "A moving plank — the straight line IS the exercise." },
+  pushup:     { name: "Push-Ups (handles)", icon: "🙌", kind: "reps", pattern: "push", phase: 2,
+    cues: ["Use the floor handles: neutral wrists, deeper range", "Squeeze glutes, ribs down, one straight line", "Chest below hand level at the bottom"],
+    l5: "If the hips sag the back arches — stop the set there." },
+  pushDecline:{ name: "Decline Push-Ups", icon: "📉", kind: "reps", pattern: "push", phase: 2,
+    cues: ["Feet up on the tower step or a chair", "Same rigid line, don't let hips drop"], l5: "Harder brace. Quality over reps." },
+  pushDiamond:{ name: "Diamond Push-Ups", icon: "💎", kind: "reps", pattern: "push", phase: 3,
+    cues: ["Hands close, thumbs & index fingers near-touching", "Elbows brush the ribs"], l5: "Same plank rules." },
+  pushArcher: { name: "Archer Push-Ups", icon: "🏹", kind: "perside", pattern: "push", phase: 3,
+    cues: ["Wide hands, lower toward one side, other arm straightens", "Alternate sides"], l5: "Keep hips square to the floor." },
+  pushPseudo: { name: "Pseudo-Planche Push-Ups", icon: "🦅", kind: "reps", pattern: "push", phase: 4,
+    cues: ["Hands by the waist, fingers turned out, lean far forward", "Small range at first"], l5: "Elite-level plank tension required — that's the point." },
+
+  /* --- Vertical push / handstand branch --- */
+  pikePush:   { name: "Pike Push-Ups", icon: "⛰️", kind: "reps", pattern: "vpush", phase: 2,
+    cues: ["Hips high in an A-shape, head slides toward the floor", "Elbows ~45°, press back up along the same line"],
+    l5: "Hinge at the hips to get the A-shape — don't round the lower back." },
+  pikeElev:   { name: "Elevated Pike Push-Ups", icon: "🏔️", kind: "reps", pattern: "vpush", phase: 3,
+    cues: ["Feet on a chair, hips stacked over shoulders", "Head to floor, press"], l5: "Build shoulder strength before wall work." },
+  wallHS:     { name: "Wall Handstand Hold", icon: "🤸", kind: "secs", pattern: "vpush", phase: 3,
+    cues: ["Chest-to-wall, walk feet up", "Ribs down, glutes squeezed, body one line", "Come down the same way you went up"],
+    l5: "Banana-back (over-arched spine) is the risk — tuck the pelvis, ribs down. If you can't hold the line, regress." },
+  hspuNeg:    { name: "HSPU Negatives", icon: "⬇️", kind: "reps", pattern: "vpush", phase: 4,
+    cues: ["Against the wall, lower in 3–5s", "Head touches a cushion, kick down safely"], l5: "Only with a perfect ribs-down, glutes-tight straight line." },
+  hspu:       { name: "Wall Handstand Push-Ups", icon: "🚀", kind: "reps", pattern: "vpush", phase: 4,
+    cues: ["Full range against the wall", "Ribs down throughout"], l5: "Advanced. Line first, reps second." },
+
+  /* --- Core: VKR (knee raise station) --- */
+  vkrBent:    { name: "VKR Knee Raise (to hips)", icon: "🪑", kind: "reps", pattern: "vkr", phase: 2,
+    cues: ["Back flat on the pad, forearms on the armrests", "Curl the pelvis slightly as knees rise — don't just lift the thighs", "2s up, 2s down, zero swing"],
+    l5: "The back pad is your friend — it blocks over-arching. Stop the set the moment reps get swingy." },
+  vkrChest:   { name: "VKR Knee Raise (to chest)", icon: "🪑", kind: "reps", pattern: "vkr", phase: 2,
+    cues: ["Knees all the way to the chest, slow", "Pelvis curls up at the top — small and controlled", "Lower with a 2s count"],
+    l5: "Stop before the lower back peels far off the pad." },
+  vkrStraight:{ name: "VKR Straight-Leg Raise", icon: "📏", kind: "reps", pattern: "vkr", phase: 3,
+    cues: ["Legs straight, raise to parallel", "Slow, no momentum", "Bend knees to come down if needed"],
+    l5: "Long levers pull hard on the spine — earn this with clean knee raises first." },
+  hangKnee:   { name: "Hanging Knee Raises", icon: "🐒", kind: "reps", pattern: "vkr", phase: 3,
+    cues: ["From the pull-up bar: knees to chest, slow", "Stop the range before the pelvis starts to tuck under — pelvis stays neutral", "No swinging between reps — reset each rep"],
+    l5: "Hanging traction actually makes these friendlier than lying leg raises. Strict control or back to the VKR." },
+  hangLeg:    { name: "Hanging Leg Raises", icon: "🦵", kind: "reps", pattern: "vkr", phase: 4,
+    cues: ["Straight legs to parallel and above", "Lower slowly — no dropping the legs", "Zero swing"],
+    l5: "This is now loaded spine-flexion territory. Only when fully symptom-free 4–8+ weeks, low volume, never in the morning, drop instantly if any symptom returns." },
+
+  /* --- Core: iso / floor --- */
+  plank:      { name: "Plank (hard-style)", icon: "🛡️", kind: "secs", pattern: "core", phase: 2,
+    cues: ["Elbows under shoulders, squeeze glutes + fists hard", "Short intense holds beat long saggy ones", "10–20s of maximum tension"],
+    l5: "Anti-extension gold. If the hips sag, the set is over." },
+  deadbug:    { name: "Dead Bug", icon: "🪲", kind: "perside", pattern: "core", phase: 2,
+    cues: ["Lower back gently pressed to floor, ribs down", "Opposite arm + leg lower slowly, exhale", "Heel taps floor lightly, return"],
+    l5: "Teaches the brace without any spine movement." },
+  palloff:    { name: "Anti-Rotation Press", icon: "🧲", kind: "perside", pattern: "core", phase: 2,
+    cues: ["Band around the tower upright at chest height (or isometric one-arm plank if no band)", "Press hands straight out, resist the twist", "3s out, 3s back"],
+    l5: "Anti-rotation = ab training the disc loves." },
+  suitcase:   { name: "Suitcase Carry", icon: "🧳", kind: "secside", pattern: "core", phase: 2,
+    cues: ["Heavy backpack/bag in ONE hand", "Walk tall — don't lean either way", "Swap sides halfway"],
+    l5: "Superb oblique work with zero bending. Loaded posture practice." },
+  hollowBent: { name: "Hollow Hold (bent knees)", icon: "🍌", kind: "secs", pattern: "core", phase: 3,
+    cues: ["Lower back pressed into floor, knees tucked, shoulders lifted", "Breathe shallow, hold the shape"],
+    l5: "Deliberately gated to Phase 3 — it demands the tucked-pelvis shape. Skip if ANY symptoms." },
+  hollow:     { name: "Hollow Hold", icon: "🍌", kind: "secs", pattern: "core", phase: 4,
+    cues: ["Arms overhead, legs long and low", "Lower back never leaves the floor"], l5: "Advanced shape. Symptom-free lifters only." },
+
+  /* --- L-sit branch --- */
+  lsitFoot:   { name: "L-Sit (feet supported)", icon: "🇱", kind: "secs", pattern: "lsit", phase: 2,
+    cues: ["On the push-up handles: heels resting on floor, most weight on hands", "Push the floor away, shoulders down"],
+    l5: "Spine stays tall and neutral — the hands take the load." },
+  lsitTuck:   { name: "Tuck L-Sit", icon: "🇱", kind: "secs", pattern: "lsit", phase: 3,
+    cues: ["Knees to chest, feet off the floor", "Shoulders depressed, elbows locked", "5–15s holds, accumulate 60s"],
+    l5: "Sit TALL — think 'long spine', not 'curl up'." },
+  lsitOne:    { name: "One-Leg L-Sit", icon: "🇱", kind: "secside", pattern: "lsit", phase: 3,
+    cues: ["One leg extends, swap halfway"], l5: "Tall spine, no slumping." },
+  lsitFull:   { name: "L-Sit", icon: "👑", kind: "secs", pattern: "lsit", phase: 4,
+    cues: ["Both legs straight and parallel to floor", "Target: a clean 10–20s"], l5: "The crown jewel of neutral-spine ab strength." },
+
+  /* --- Squat pattern --- */
+  squatAsst:  { name: "Assisted Squats", icon: "🧷", kind: "reps", pattern: "squat", phase: 1,
+    cues: ["Hold the tower upright for balance", "Sit back and down within a comfortable range", "Neutral spine throughout"],
+    l5: "Range only as deep as the back stays neutral." },
+  squat:      { name: "Bodyweight Squats", icon: "🦵", kind: "reps", pattern: "squat", phase: 2,
+    cues: ["Feet shoulder-width, sit back and down", "Stop at the depth where the pelvis starts to tuck ('butt wink')", "Drive up through the whole foot"],
+    l5: "Depth cap: the point just before the pelvis tucks under. That tuck = spine flexion under load." },
+  splitSquat: { name: "Split Squats", icon: "🇾", kind: "perside", pattern: "squat", phase: 2,
+    cues: ["Long stance, torso tall", "Back knee toward the floor", "Front heel stays down"],
+    l5: "Less spine load than regular squats — a great default." },
+  bulgSquat:  { name: "Bulgarian Split Squats", icon: "🏔️", kind: "perside", pattern: "squat", phase: 3,
+    cues: ["Rear foot on the tower step or a chair", "Torso tall, front shin near vertical", "This becomes your main leg builder"],
+    l5: "Vertical torso keeps the spine happy. Add a hugged backpack when 3×12 is easy." },
+  stepup:     { name: "High Step-Ups", icon: "🪜", kind: "perside", pattern: "squat", phase: 3,
+    cues: ["Knee-height step or chair", "Drive through the top heel — no push-off from the floor leg"], l5: "Tall torso." },
+  pistolAsst: { name: "Assisted Pistols", icon: "🔫", kind: "perside", pattern: "squat", phase: 4,
+    cues: ["Hold the tower upright, one leg squats, other reaches forward", "Only as deep as the spine stays neutral"],
+    l5: "The pistol bottom forces spine-flexion. If it provokes ANY symptoms, weighted Bulgarians are a full substitute — permanently." },
+
+  /* --- Hinge / posterior chain --- */
+  gluteBridge:{ name: "Glute Bridge", icon: "🌉", kind: "reps", pattern: "hinge", phase: 1,
+    cues: ["Lie down, feet close to hips", "Squeeze glutes to lift — don't push the belly up", "1s squeeze at the top, no over-arching"],
+    l5: "Glutes, not lower back. Stop the rep where the pelvis is level." },
+  slBridge:   { name: "Single-Leg Glute Bridge", icon: "🌉", kind: "perside", pattern: "hinge", phase: 2,
+    cues: ["One foot down, other leg held up", "Pelvis stays level — that's the exercise"], l5: "Level pelvis = happy back." },
+  hipThrust:  { name: "Hip Thrust (shoulders up)", icon: "🏗️", kind: "reps", pattern: "hinge", phase: 3,
+    cues: ["Upper back on a chair/step", "Chin tucked, ribs down, squeeze to a flat tabletop", "2s pause at the top"],
+    l5: "Stop at flat — don't arch past neutral at the top." },
+  slHipThrust:{ name: "Single-Leg Hip Thrust", icon: "🏗️", kind: "perside", pattern: "hinge", phase: 3,
+    cues: ["One leg, 2–3s pause at the top", "Backpack across the hips for load later"], l5: "Level pelvis, flat top position." },
+  slideCurl:  { name: "Sliding Leg Curls", icon: "🧦", kind: "reps", pattern: "hinge", phase: 3,
+    cues: ["Socks/towel on a hard floor, bridge up", "Slide heels out and pull back in", "Hips stay high throughout"],
+    l5: "Hamstrings without deadlifts. (Never anchor your feet under the tower — tip hazard.)" },
+  slRDL:      { name: "Single-Leg RDL (bodyweight)", icon: "⚖️", kind: "perside", pattern: "hinge", phase: 2,
+    cues: ["Hinge at the hip, back leg reaches behind", "Hands sweep down the standing leg as a depth gauge", "Flat back the entire time"],
+    l5: "This GROOMS the hinge pattern that protects your back for life." },
+  calfRaise:  { name: "Single-Leg Calf Raises", icon: "🦶", kind: "perside", pattern: "hinge", phase: 2,
+    cues: ["Ball of foot on the tower step edge", "Full stretch at the bottom, 2s pause", "Full squeeze at the top"], l5: "Zero spine involvement. Free gains." },
+};
+
+/* ---------- Progression ladders ---------- */
+const LADDERS = {
+  vpull: { name: "Vertical Pull", icon: "🔥", rungs: [
+    { ex: "deadhang",   scheme: { sets: 3, secs: [20, 60] },  crit: "60s in one hang" },
+    { ex: "scapPull",   scheme: { sets: 3, reps: [5, 8] },    crit: "3×8 controlled" },
+    { ex: "negPullup",  scheme: { sets: 3, reps: [3, 5] },    crit: "3×5 with 5s descents" },
+    { ex: "asstPullup", scheme: { sets: 3, reps: [5, 8] },    crit: "3×8 with minimal assist" },
+    { ex: "chinup",     scheme: { sets: 3, reps: [3, 8] },    crit: "3×8 strict" },
+    { ex: "pullup",     scheme: { sets: 3, reps: [5, 8] },    crit: "3×8 strict" },
+    { ex: "ctbPullup",  scheme: { sets: 3, reps: [5, 8] },    crit: "3×8 to the chest" },
+    { ex: "archPullup", scheme: { sets: 3, reps: [3, 5] },    crit: "3×5 per side" },
+    { ex: "wtdPullup",  scheme: { sets: 3, reps: [5, 8] },    crit: "Add 2.5kg at 3×5" },
+  ]},
+  hpull: { name: "Row", icon: "🚣", rungs: [
+    { ex: "rowBent",    scheme: { sets: 3, reps: [8, 12] },   crit: "3×12, chest to handles" },
+    { ex: "rowStraight",scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 rigid line" },
+    { ex: "rowElev",    scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 feet up" },
+    { ex: "rowArcher",  scheme: { sets: 3, reps: [5, 8] },    crit: "3×8 per side" },
+  ]},
+  dip: { name: "Dip", icon: "💥", rungs: [
+    { ex: "dipSupport", scheme: { sets: 3, secs: [10, 20] },  crit: "60s accumulated" },
+    { ex: "dipNeg",     scheme: { sets: 3, reps: [3, 5] },    crit: "3×5 with 5s descents" },
+    { ex: "dipPartial", scheme: { sets: 3, reps: [5, 8] },    crit: "3×8 near-full depth" },
+    { ex: "dip",        scheme: { sets: 3, reps: [5, 8] },    crit: "3×10 strict" },
+    { ex: "dipSlow",    scheme: { sets: 3, reps: [5, 8] },    crit: "3×8 at 3-1-3 tempo" },
+    { ex: "wtdDip",     scheme: { sets: 3, reps: [5, 8] },    crit: "Add 2.5kg at 3×5" },
+  ]},
+  push: { name: "Push-Up", icon: "🙌", rungs: [
+    { ex: "pushIncline",scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 full range" },
+    { ex: "pushup",     scheme: { sets: 3, reps: [8, 12] },   crit: "3×12, chest below handles" },
+    { ex: "pushDecline",scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 rigid" },
+    { ex: "pushDiamond",scheme: { sets: 3, reps: [8, 12] },   crit: "3×12" },
+    { ex: "pushArcher", scheme: { sets: 3, reps: [5, 8] },    crit: "3×8 per side" },
+    { ex: "pushPseudo", scheme: { sets: 3, reps: [5, 8] },    crit: "Keep leaning further" },
+  ]},
+  vpush: { name: "Vertical Push", icon: "⛰️", rungs: [
+    { ex: "pikePush",   scheme: { sets: 3, reps: [5, 8] },    crit: "3×8, head to floor" },
+    { ex: "pikeElev",   scheme: { sets: 3, reps: [5, 8] },    crit: "3×8 feet elevated" },
+    { ex: "wallHS",     scheme: { sets: 3, secs: [15, 30] },  crit: "60s hold, perfect line" },
+    { ex: "hspuNeg",    scheme: { sets: 3, reps: [3, 5] },    crit: "3×5 slow negatives" },
+    { ex: "hspu",       scheme: { sets: 3, reps: [3, 5] },    crit: "The summit — keep adding reps" },
+  ]},
+  vkr: { name: "Knee Raise", icon: "🪑", rungs: [
+    { ex: "vkrBent",    scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 slow, zero swing" },
+    { ex: "vkrChest",   scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 knees to chest" },
+    { ex: "vkrStraight",scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 to parallel" },
+    { ex: "hangKnee",   scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 dead-still between reps" },
+    { ex: "hangLeg",    scheme: { sets: 3, reps: [5, 8] },    crit: "Optional summit — strict only" },
+  ]},
+  lsit: { name: "L-Sit", icon: "👑", rungs: [
+    { ex: "lsitFoot",   scheme: { sets: 3, secs: [10, 20] },  crit: "60s accumulated" },
+    { ex: "lsitTuck",   scheme: { sets: 4, secs: [5, 15] },   crit: "60s accumulated" },
+    { ex: "lsitOne",    scheme: { sets: 3, secs: [8, 15] },   crit: "15s per side" },
+    { ex: "lsitFull",   scheme: { sets: 3, secs: [5, 15] },   crit: "A clean 10–20s" },
+  ]},
+  squat: { name: "Squat", icon: "🦵", rungs: [
+    { ex: "squatAsst",  scheme: { sets: 3, reps: [8, 10] },   crit: "3×10 comfortable" },
+    { ex: "squat",      scheme: { sets: 3, reps: [15, 20] },  crit: "3×20, neutral spine" },
+    { ex: "splitSquat", scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 per side" },
+    { ex: "bulgSquat",  scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 → add backpack" },
+    { ex: "stepup",     scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 knee-height" },
+    { ex: "pistolAsst", scheme: { sets: 3, reps: [3, 5] },    crit: "Optional — only if back stays quiet" },
+  ]},
+  hinge: { name: "Hinge", icon: "🌉", rungs: [
+    { ex: "gluteBridge",scheme: { sets: 3, reps: [12, 15] },  crit: "3×15 with 1s squeeze" },
+    { ex: "slBridge",   scheme: { sets: 3, reps: [10, 15] },  crit: "3×15, level pelvis" },
+    { ex: "hipThrust",  scheme: { sets: 3, reps: [10, 15] },  crit: "3×15 paused" },
+    { ex: "slHipThrust",scheme: { sets: 3, reps: [8, 12] },   crit: "3×12 → add backpack" },
+  ]},
+};
+
+/* ---------- Day templates ----------
+   Slots reference a ladder (resolved at the user's current rung)
+   or a fixed exercise. 'lite' marks slots dropped on yellow days.
+*/
+const DAY_TEMPLATES = {
+  upperA: { name: "Upper A", tag: "Pull-biased strength", icon: "🔥", est: 45, blocks: [
+    { ladder: "vpull", sets: 4, note: "Main lift — leave 2 reps in the tank" },
+    { ladder: "dip",   sets: 3 },
+    { ladder: "hpull", sets: 3 },
+    { ladder: "push",  sets: 2, volume: true, lite: true, note: "Easy accessory sets" },
+    { ladder: "vkr",   sets: 3, lite: true },
+    { ex: "deadhang",  sets: 2, target: 30, lite: true, note: "Decompression finisher" },
+  ]},
+  lowerA: { name: "Lower A", tag: "Legs + trunk", icon: "🦵", est: 35, blocks: [
+    { ladder: "squat", sets: 3 },
+    { ladder: "hinge", sets: 3 },
+    { ex: "slideCurl", sets: 3, target: 8, phaseMin: 3, lite: true },
+    { ex: "calfRaise", sets: 3, target: 15, lite: true },
+    { ex: "plank",     sets: 3, target: 15 },
+    { ex: "sideplank", sets: 2, target: 20, lite: true },
+  ]},
+  upperB: { name: "Upper B", tag: "Push-biased + volume pull", icon: "⛰️", est: 45, blocks: [
+    { ladder: "vpush", sets: 4, note: "Main lift" },
+    { ladder: "push",  sets: 3 },
+    { ladder: "vpull", sets: 3, volume: true, note: "Volume day — deliberately easier than Upper A" },
+    { ladder: "dip",   sets: 2, volume: true, lite: true, note: "Easy second exposure" },
+    { ladder: "hpull", sets: 2, volume: true, lite: true, note: "Easy second exposure" },
+    { ladder: "lsit",  sets: 3, lite: true },
+  ]},
+  lowerB: { name: "Lower B", tag: "Legs + trunk", icon: "🌉", est: 35, blocks: [
+    { ladder: "squat", sets: 3, volume: true, note: "Deliberately lighter than Lower A — stay 3+ reps from failure" },
+    { ladder: "hinge", sets: 3 },
+    { ex: "slRDL",     sets: 3, target: 8 },
+    { ex: "calfRaise", sets: 3, target: 15, lite: true },
+    { ex: "deadbug",   sets: 3, target: 8 },
+    { ex: "suitcase",  sets: 2, target: 30, phaseMin: 2, lite: true },
+  ]},
+};
+const DAY_ORDER = ["upperA", "lowerA", "upperB", "lowerB"];
+
+/* Daily spine routine (the streak anchor — do it even on rest days) */
+const SPINE_ROUTINE = {
+  name: "Spine Reset", icon: "🧘", est: 10, blocks: [
+    { ex: "catcamel", sets: 1, target: 6, note: "Slow — this is oil for the spine" },
+    { ex: "curlup",   sets: 3, target: 0, pyramid: [5, 3, 1], note: "Each rep = an 8–10s hold" },
+    { ex: "sideplank",sets: 3, target: 10, note: "10s holds — do both sides each set" },
+    { ex: "birddog",  sets: 3, target: 0, pyramid: [5, 3, 1], note: "Each rep = an 8–10s hold, both sides" },
+    { ex: "deadhang", sets: 1, target: 25, note: "Optional decompression — skip if legs tingle" },
+  ],
+};
+
+/* 5-minute rescue circuit (streak saver) */
+const RESCUE_ROUTINE = {
+  name: "5-Minute Rescue", icon: "🚑", est: 5, blocks: [
+    { ex: "catcamel",  sets: 1, target: 5 },
+    { ex: "birddog",   sets: 1, target: 4, note: "8s holds" },
+    { ex: "pushIncline", sets: 1, target: 10, note: "Or your current push-up level" },
+    { ex: "squat",     sets: 1, target: 12, note: "Comfortable depth" },
+    { ex: "deadhang",  sets: 1, target: 20 },
+  ],
+};
+
+/* ---------- Phases ---------- */
+const PHASES = [
+  { n: 1, name: "Calm the Fire", weeks: "1–2+", color: "bad",
+    desc: "The back is irritable. Daily Spine Reset + walking + gentle groundwork only. No dips, no pull-up negatives, nothing spicy.",
+    gate: "Move to Phase 2 after 7+ days in a row of GREEN mornings with NO leg symptoms. (Yellow means hold, not advance.)" },
+  { n: 2, name: "Foundation", weeks: "3–6", color: "warn",
+    desc: "Full 4-day split begins at conservative rungs. Back-supported knee raises only, box-depth squats, hinge patterning daily.",
+    gate: "Move to Phase 3 after 3+ weeks of consistent training with green mornings, symptoms gone or shrinking back toward the spine." },
+  { n: 3, name: "Build", weeks: "7–12", color: "accent",
+    desc: "Hanging knee raises, Bulgarians, elevated rows, tuck L-sits, bent-knee hollow holds unlock. Optional: a few easy pull-ups sprinkled through the day, never near failure.",
+    gate: "Move to Phase 4 after 4–8 weeks fully symptom-free including mornings." },
+  { n: 4, name: "Advance", weeks: "13+", color: "good",
+    desc: "Weighted pull-ups & dips, archer work, HSPU negatives, full L-sit. Optional: hanging leg raises — low volume, never in the morning.",
+    gate: "This is the long game now. Any flare-up = drop back a phase without ego." },
+];
+
+/* ---------- Badges (kept lean on purpose) ---------- */
+const BADGES = [
+  { id: "first",    icon: "⚒️", name: "First Strike",   test: (s) => s.log.filter(l => l.type === "strength").length >= 1 },
+  { id: "spine7",   icon: "🧘", name: "Spine Guardian", test: (s) => s.log.filter(l => l.type === "spine").length >= 7 },
+  { id: "streak7",  icon: "🔥", name: "One Week Forged",test: (s) => s.streak.best >= 7 },
+  { id: "streak30", icon: "🌋", name: "30-Day Furnace", test: (s) => s.streak.best >= 30 },
+  { id: "streak100",icon: "💯", name: "The 100 Club",   test: (s) => s.streak.best >= 100 },
+  { id: "w10",      icon: "🛠️", name: "10 Workouts",    test: (s) => s.log.filter(l => l.type === "strength").length >= 10 },
+  { id: "w50",      icon: "🏗️", name: "50 Workouts",    test: (s) => s.log.filter(l => l.type === "strength").length >= 50 },
+  { id: "pullup1",  icon: "💪", name: "First Pull-Up",  test: (s) => s.levels.vpull >= 5 },
+  { id: "dip1",     icon: "💥", name: "First Dip",      test: (s) => s.levels.dip >= 3 },
+  { id: "phase3",   icon: "📈", name: "Phase 3 Rising", test: (s) => s.phase >= 3 },
+  { id: "lsit",     icon: "👑", name: "L-Sit Royalty",  test: (s) => s.levels.lsit >= 3 },
+  { id: "walk20",   icon: "🚶", name: "20 Walks",       test: (s) => s.log.filter(l => l.type === "walk").length >= 20 },
+];
+
+/* XP: informational, never gates content */
+const XP_RULES = { set: 5, strength: 50, spine: 25, rescue: 15, walk: 10, pr: 20 };
+const LEVELS_XP = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200, 4000, 5000, 6200, 7600, 9200, 11000];
+const LEVEL_NAMES = ["Spark", "Kindling", "Ember", "Flicker", "Flame", "Blaze", "Bonfire", "Forge", "Furnace", "Crucible", "Inferno", "Volcano", "Titan", "Colossus", "Juggernaut", "Legend"];
+
+/* Rotating nudges for the Today screen */
+const NUDGES = [
+  "Discs hate the first hour after waking. Train 2–3h after you get up — your back will thank you.",
+  "Strict beats swingy. Every rep you control is money in the bank.",
+  "A 5-minute session still counts. Showing up IS the workout.",
+  "Leg symptoms = stop that exercise. Back-only soreness that fades = usually fine.",
+  "Walking is the most underrated back medicine there is. 30 minutes, most days.",
+  "Abs are made in the kitchen, revealed by the deficit, protected by the brace.",
+  "You don't need motivation, you need the first 60 seconds.",
+  "Step DOWN from the bar. Never drop — the landing is where backs get hurt.",
+  "Break up sitting every 20–30 minutes. Your disc pressure resets when you stand.",
+  "Progress = hitting the top of the rep window, then climbing the ladder. No rush.",
+];
+
+/* Red flags — shown in onboarding and Plan screen */
+const RED_FLAGS = [
+  "Numbness in the groin / saddle area",
+  "New trouble peeing (can't go) or controlling bladder / bowels",
+  "Weakness in BOTH legs, or weakness getting worse",
+  "A foot that drags or slaps when you walk (worsening)",
+  "Fever, unexplained weight loss, or severe night pain",
+];
+/* ============================================================
+   FORGE — animated exercise demos
+   Tiny stick-figure engine: poses are joint coordinates in a
+   120x100 viewBox, tweened with rAF. No video, no network.
+   Pose: {hd,nk,hp,el,ha,kn,an} (+el2,ha2,kn2,an2 for asymmetric
+   moves — omitted sides are auto-offset for depth).
+   ============================================================ */
+
+const DPROP = {
+  floor: '<line x1="6" y1="88" x2="114" y2="88"/>',
+  bar: '<line x1="24" y1="10" x2="96" y2="10"/>',
+  handles: '<line x1="42" y1="46" x2="60" y2="46"/><line x1="64" y1="46" x2="82" y2="46"/>',
+  lowHandles: '<line x1="46" y1="64" x2="58" y2="64"/><line x1="62" y1="64" x2="74" y2="64"/>',
+  wall: '<line x1="72" y1="6" x2="72" y2="88"/>',
+  box: '<rect x="18" y="70" width="20" height="18" rx="2"/>',
+  boxR: '<rect x="62" y="70" width="22" height="18" rx="2"/>',
+  step: '<rect x="36" y="84" width="48" height="4" rx="1"/>',
+  vkr: '<rect x="42" y="22" width="5" height="40" rx="2"/><line x1="44" y1="38" x2="72" y2="38"/>',
+  post: '<line x1="90" y1="16" x2="90" y2="88"/>',
+  weight: '<rect x="70" y="64" width="9" height="11" rx="1"/>',
+};
+
+const DEMOS = {
+  deadhang: { props: [DPROP.bar, DPROP.floor], dur: 1400, poses: [
+    { hd: [60, 30], nk: [60, 40], hp: [60, 62], el: [60, 26], ha: [60, 11], kn: [60, 74], an: [60, 84] },
+    { hd: [60, 32], nk: [60, 42], hp: [60, 65], el: [60, 27], ha: [60, 11], kn: [60, 76], an: [60, 86] },
+  ]},
+  scapPull: { props: [DPROP.bar, DPROP.floor], dur: 1100, poses: [
+    { hd: [60, 33], nk: [60, 43], hp: [60, 65], el: [60, 28], ha: [60, 11], kn: [60, 76], an: [60, 86] },
+    { hd: [60, 28], nk: [60, 38], hp: [60, 60], el: [60, 25], ha: [60, 11], kn: [60, 72], an: [60, 82] },
+  ]},
+  pullup: { props: [DPROP.bar, DPROP.floor], dur: 1300, poses: [
+    { hd: [60, 30], nk: [60, 40], hp: [60, 62], el: [60, 26], ha: [60, 11], kn: [59, 74], an: [60, 84] },
+    { hd: [63, 9], nk: [61, 18], hp: [60, 44], el: [70, 18], ha: [60, 11], kn: [56, 58], an: [58, 72] },
+  ]},
+  hangKnee: { props: [DPROP.bar, DPROP.floor], dur: 1300, poses: [
+    { hd: [60, 30], nk: [60, 40], hp: [60, 62], el: [60, 26], ha: [60, 11], kn: [60, 74], an: [60, 84] },
+    { hd: [60, 30], nk: [60, 40], hp: [59, 62], el: [60, 26], ha: [60, 11], kn: [72, 52], an: [67, 64] },
+  ]},
+  hangLeg: { props: [DPROP.bar, DPROP.floor], dur: 1500, poses: [
+    { hd: [60, 30], nk: [60, 40], hp: [60, 62], el: [60, 26], ha: [60, 11], kn: [60, 74], an: [60, 84] },
+    { hd: [60, 30], nk: [60, 40], hp: [58, 62], el: [60, 26], ha: [60, 11], kn: [73, 62], an: [86, 61] },
+  ]},
+  dipSupport: { props: [DPROP.handles, DPROP.floor], dur: 1500, poses: [
+    { hd: [60, 16], nk: [60, 26], hp: [58, 50], el: [61, 36], ha: [62, 46], kn: [55, 64], an: [57, 78] },
+    { hd: [60, 17], nk: [60, 27], hp: [58, 51], el: [61, 37], ha: [62, 46], kn: [55, 65], an: [57, 79] },
+  ]},
+  dip: { props: [DPROP.handles, DPROP.floor], dur: 1400, poses: [
+    { hd: [60, 16], nk: [60, 26], hp: [58, 50], el: [61, 36], ha: [62, 46], kn: [55, 64], an: [57, 78] },
+    { hd: [63, 26], nk: [61, 35], hp: [56, 58], el: [72, 38], ha: [62, 46], kn: [52, 70], an: [55, 82] },
+  ]},
+  row: { props: [DPROP.handles, DPROP.floor], dur: 1300, poses: [
+    { hd: [70, 62], nk: [62, 66], hp: [44, 78], el: [60, 56], ha: [61, 47], kn: [30, 80], an: [22, 87] },
+    { hd: [69, 50], nk: [61, 54], hp: [43, 72], el: [55, 50], ha: [61, 47], kn: [30, 79], an: [22, 87] },
+  ]},
+  pushup: { props: [DPROP.floor], dur: 1300, poses: [
+    { hd: [76, 52], nk: [68, 58], hp: [46, 68], el: [69, 72], ha: [70, 87], kn: [33, 75], an: [20, 84] },
+    { hd: [75, 66], nk: [67, 70], hp: [44, 77], el: [79, 76], ha: [70, 87], kn: [32, 81], an: [20, 86] },
+  ]},
+  pike: { props: [DPROP.floor], dur: 1400, poses: [
+    { hd: [75, 66], nk: [70, 60], hp: [48, 40], el: [73, 74], ha: [76, 87], kn: [37, 60], an: [27, 84] },
+    { hd: [77, 78], nk: [72, 70], hp: [50, 46], el: [81, 79], ha: [76, 87], kn: [39, 64], an: [27, 84] },
+  ]},
+  wallHS: { props: [DPROP.wall, DPROP.floor], dur: 1600, poses: [
+    { hd: [60, 70], nk: [60, 60], hp: [61, 36], el: [60, 74], ha: [60, 87], kn: [63, 22], an: [65, 10] },
+    { hd: [60, 71], nk: [60, 61], hp: [62, 37], el: [60, 75], ha: [60, 87], kn: [64, 23], an: [66, 11] },
+  ]},
+  hspu: { props: [DPROP.wall, DPROP.floor], dur: 1500, poses: [
+    { hd: [60, 70], nk: [60, 60], hp: [61, 36], el: [60, 74], ha: [60, 87], kn: [63, 22], an: [65, 10] },
+    { hd: [60, 79], nk: [60, 70], hp: [61, 46], el: [70, 78], ha: [60, 87], kn: [63, 30], an: [66, 16] },
+  ]},
+  vkr: { props: [DPROP.vkr, DPROP.floor], dur: 1300, poses: [
+    { hd: [50, 16], nk: [50, 26], hp: [50, 52], el: [58, 38], ha: [68, 38], kn: [52, 68], an: [52, 84] },
+    { hd: [50, 16], nk: [50, 26], hp: [50, 52], el: [58, 38], ha: [68, 38], kn: [68, 50], an: [63, 64] },
+  ]},
+  catcamel: { props: [DPROP.floor], dur: 1500, poses: [
+    { hd: [76, 58], nk: [68, 54], hp: [40, 56], el: [72, 70], ha: [74, 87], kn: [34, 87], an: [18, 87] },
+    { hd: [80, 52], nk: [68, 62], hp: [40, 64], el: [72, 72], ha: [74, 87], kn: [34, 87], an: [18, 87] },
+  ]},
+  curlup: { props: [DPROP.floor], dur: 1600, poses: [
+    { hd: [17, 78], nk: [27, 80], hp: [52, 82], el: [40, 84], ha: [48, 84], kn: [66, 68], an: [72, 86], kn2: [30, 84], an2: [14, 86] },
+    { hd: [19, 71], nk: [29, 76], hp: [52, 82], el: [40, 84], ha: [48, 84], kn: [66, 68], an: [72, 86], kn2: [30, 84], an2: [14, 86] },
+  ]},
+  sideplank: { props: [DPROP.floor], dur: 1500, poses: [
+    { hd: [36, 62], nk: [38, 70], hp: [58, 78], el: [34, 87], ha: [44, 87], kn: [68, 82], an: [80, 87] },
+    { hd: [36, 58], nk: [38, 66], hp: [58, 70], el: [34, 87], ha: [44, 87], kn: [68, 78], an: [80, 87] },
+  ]},
+  birddog: { props: [DPROP.floor], dur: 1600, poses: [
+    { hd: [76, 54], nk: [68, 56], hp: [40, 58], el: [70, 71], ha: [72, 87], el2: [66, 71], ha2: [64, 87], kn: [36, 87], an: [22, 87], kn2: [42, 87], an2: [30, 87] },
+    { hd: [78, 50], nk: [68, 54], hp: [40, 56], el: [82, 52], ha: [94, 50], el2: [66, 70], ha2: [64, 87], kn: [22, 58], an: [8, 56], kn2: [42, 87], an2: [30, 87] },
+  ]},
+  plank: { props: [DPROP.floor], dur: 1600, poses: [
+    { hd: [74, 56], nk: [66, 61], hp: [44, 69], el: [72, 87], ha: [82, 87], kn: [32, 77], an: [20, 85] },
+    { hd: [74, 57], nk: [66, 62], hp: [44, 70], el: [72, 87], ha: [82, 87], kn: [32, 78], an: [20, 86] },
+  ]},
+  deadbug: { props: [DPROP.floor], dur: 1600, poses: [
+    { hd: [17, 78], nk: [27, 80], hp: [52, 82], el: [31, 68], ha: [33, 56], el2: [36, 82], ha2: [44, 84], kn: [62, 66], an: [56, 54], kn2: [66, 70], an2: [72, 86] },
+    { hd: [17, 78], nk: [27, 80], hp: [52, 82], el: [20, 70], ha: [10, 64], el2: [36, 82], ha2: [44, 84], kn: [72, 72], an: [86, 76], kn2: [66, 70], an2: [72, 86] },
+  ]},
+  hollow: { props: [DPROP.floor], dur: 1500, poses: [
+    { hd: [19, 66], nk: [29, 71], hp: [54, 78], el: [18, 62], ha: [8, 56], kn: [72, 70], an: [86, 62] },
+    { hd: [21, 68], nk: [31, 73], hp: [54, 78], el: [20, 64], ha: [10, 58], kn: [74, 72], an: [88, 64] },
+  ]},
+  gluteBridge: { props: [DPROP.floor], dur: 1400, poses: [
+    { hd: [16, 82], nk: [26, 82], hp: [50, 82], el: [36, 85], ha: [44, 85], kn: [64, 66], an: [68, 85] },
+    { hd: [16, 82], nk: [26, 81], hp: [50, 66], el: [36, 85], ha: [44, 85], kn: [64, 62], an: [68, 85] },
+  ]},
+  hipThrust: { props: [DPROP.box, DPROP.floor], dur: 1400, poses: [
+    { hd: [14, 64], nk: [24, 69], hp: [46, 80], el: [32, 78], ha: [40, 82], kn: [62, 66], an: [66, 85] },
+    { hd: [12, 60], nk: [23, 64], hp: [47, 66], el: [32, 72], ha: [40, 74], kn: [63, 62], an: [66, 85] },
+  ]},
+  slideCurl: { props: [DPROP.floor], dur: 1500, poses: [
+    { hd: [16, 82], nk: [26, 81], hp: [50, 68], el: [36, 85], ha: [44, 85], kn: [64, 62], an: [68, 85] },
+    { hd: [16, 82], nk: [26, 82], hp: [50, 74], el: [36, 85], ha: [44, 85], kn: [80, 74], an: [92, 82] },
+  ]},
+  squat: { props: [DPROP.floor], dur: 1400, poses: [
+    { hd: [60, 20], nk: [60, 29], hp: [60, 54], el: [62, 42], ha: [63, 52], kn: [60, 71], an: [60, 86] },
+    { hd: [58, 38], nk: [56, 46], hp: [51, 66], el: [68, 50], ha: [78, 52], kn: [66, 72], an: [60, 86] },
+  ]},
+  splitSquat: { props: [DPROP.floor], dur: 1400, poses: [
+    { hd: [60, 22], nk: [60, 31], hp: [59, 56], el: [61, 44], ha: [62, 54], kn: [70, 70], an: [75, 86], kn2: [48, 72], an2: [43, 86] },
+    { hd: [60, 32], nk: [60, 41], hp: [58, 64], el: [61, 52], ha: [62, 62], kn: [72, 74], an: [75, 86], kn2: [47, 80], an2: [42, 87] },
+  ]},
+  bulgSquat: { props: [DPROP.box, DPROP.floor], dur: 1400, poses: [
+    { hd: [64, 24], nk: [64, 33], hp: [62, 57], el: [66, 46], ha: [67, 56], kn: [72, 71], an: [76, 86], kn2: [46, 74], an2: [28, 69] },
+    { hd: [63, 34], nk: [62, 43], hp: [60, 66], el: [65, 54], ha: [66, 64], kn: [74, 75], an: [76, 86], kn2: [45, 82], an2: [28, 69] },
+  ]},
+  pistolAsst: { props: [DPROP.post, DPROP.floor], dur: 1600, poses: [
+    { hd: [60, 22], nk: [60, 31], hp: [59, 56], el: [74, 38], ha: [88, 40], kn: [60, 71], an: [60, 86], kn2: [70, 62], an2: [80, 64] },
+    { hd: [58, 42], nk: [57, 50], hp: [54, 70], el: [74, 46], ha: [88, 48], kn: [64, 78], an: [60, 86], kn2: [74, 68], an2: [88, 66] },
+  ]},
+  calfRaise: { props: [DPROP.step, DPROP.floor], dur: 1200, poses: [
+    { hd: [60, 24], nk: [60, 33], hp: [60, 58], el: [62, 46], ha: [63, 56], kn: [60, 72], an: [60, 84] },
+    { hd: [60, 19], nk: [60, 28], hp: [60, 53], el: [62, 41], ha: [63, 51], kn: [60, 68], an: [60, 80] },
+  ]},
+  slRDL: { props: [DPROP.floor], dur: 1600, poses: [
+    { hd: [60, 22], nk: [60, 31], hp: [59, 56], el: [62, 44], ha: [63, 54], kn: [60, 71], an: [60, 86], kn2: [56, 72], an2: [52, 86] },
+    { hd: [84, 46], nk: [76, 50], hp: [57, 56], el: [74, 60], ha: [72, 68], kn: [60, 71], an: [60, 86], kn2: [40, 62], an2: [26, 68] },
+  ]},
+  suitcase: { props: [DPROP.floor], dur: 1300, poses: [
+    { hd: [60, 20], nk: [60, 29], hp: [60, 54], el: [72, 44], ha: [74, 58], el2: [50, 44], ha2: [48, 54], kn: [66, 70], an: [70, 86], kn2: [54, 71], an2: [50, 86] },
+    { hd: [60, 20], nk: [60, 29], hp: [60, 54], el: [72, 44], ha: [74, 58], el2: [50, 44], ha2: [48, 54], kn: [54, 70], an: [48, 86], kn2: [66, 71], an2: [72, 86] },
+  ]},
+  palloff: { props: [DPROP.post, DPROP.floor], dur: 1400, poses: [
+    { hd: [56, 20], nk: [56, 29], hp: [56, 54], el: [64, 40], ha: [68, 44], kn: [58, 71], an: [56, 86], kn2: [50, 71], an2: [48, 86] },
+    { hd: [56, 20], nk: [56, 29], hp: [56, 54], el: [70, 42], ha: [82, 44], kn: [58, 71], an: [56, 86], kn2: [50, 71], an2: [48, 86] },
+  ]},
+  walkDemo: { props: [DPROP.floor], dur: 900, poses: [
+    { hd: [60, 20], nk: [60, 29], hp: [60, 54], el: [68, 42], ha: [72, 50], el2: [52, 42], ha2: [48, 50], kn: [68, 69], an: [74, 86], kn2: [53, 71], an2: [46, 86] },
+    { hd: [60, 20], nk: [60, 29], hp: [60, 54], el: [52, 42], ha: [48, 50], el2: [68, 42], ha2: [72, 50], kn: [53, 71], an: [46, 86], kn2: [68, 69], an2: [74, 86] },
+  ]},
+  lsit: { props: [DPROP.lowHandles, DPROP.floor], dur: 1600, poses: [
+    { hd: [56, 30], nk: [57, 39], hp: [57, 62], el: [59, 52], ha: [60, 64], kn: [73, 60], an: [87, 58] },
+    { hd: [56, 31], nk: [57, 40], hp: [57, 63], el: [59, 53], ha: [60, 64], kn: [73, 61], an: [87, 59] },
+  ]},
+  lsitTuck: { props: [DPROP.lowHandles, DPROP.floor], dur: 1500, poses: [
+    { hd: [56, 30], nk: [57, 39], hp: [57, 62], el: [59, 52], ha: [60, 64], kn: [70, 52], an: [72, 64] },
+    { hd: [56, 31], nk: [57, 40], hp: [57, 63], el: [59, 53], ha: [60, 64], kn: [70, 53], an: [72, 65] },
+  ]},
+  lsitFoot: { props: [DPROP.lowHandles, DPROP.floor], dur: 1600, poses: [
+    { hd: [56, 30], nk: [57, 39], hp: [57, 62], el: [59, 52], ha: [60, 64], kn: [74, 68], an: [86, 84] },
+    { hd: [56, 29], nk: [57, 38], hp: [57, 61], el: [59, 51], ha: [60, 64], kn: [74, 67], an: [86, 84] },
+  ]},
+  hinge: { props: [DPROP.floor], dur: 1600, poses: [
+    { hd: [60, 22], nk: [60, 31], hp: [59, 56], el: [60, 44], ha: [60, 54], kn: [60, 71], an: [60, 86] },
+    { hd: [80, 42], nk: [73, 47], hp: [54, 58], el: [72, 58], ha: [70, 66], kn: [58, 72], an: [60, 86] },
+  ]},
+};
+
+/* exercise id → demo id */
+const DEMO_MAP = {
+  deadhang: "deadhang", scapPull: "scapPull",
+  negPullup: "pullup", asstPullup: "pullup", chinup: "pullup", pullup: "pullup",
+  ctbPullup: "pullup", archPullup: "pullup", wtdPullup: "pullup",
+  hangKnee: "hangKnee", hangLeg: "hangLeg",
+  dipSupport: "dipSupport", dipNeg: "dip", dipPartial: "dip", dip: "dip", dipSlow: "dip", wtdDip: "dip",
+  rowBent: "row", rowStraight: "row", rowElev: "row", rowArcher: "row",
+  pushIncline: "pushup", pushup: "pushup", pushDecline: "pushup", pushDiamond: "pushup",
+  pushArcher: "pushup", pushPseudo: "pushup",
+  pikePush: "pike", pikeElev: "pike", wallHS: "wallHS", hspuNeg: "hspu", hspu: "hspu",
+  vkrBent: "vkr", vkrChest: "vkr", vkrStraight: "vkr",
+  catcamel: "catcamel", curlup: "curlup", sideplank: "sideplank", birddog: "birddog",
+  plank: "plank", deadbug: "deadbug", hollowBent: "hollow", hollow: "hollow",
+  palloff: "palloff", suitcase: "suitcase",
+  lsitFoot: "lsitFoot", lsitTuck: "lsitTuck", lsitOne: "lsit", lsitFull: "lsit",
+  squatAsst: "squat", squat: "squat", splitSquat: "splitSquat", bulgSquat: "bulgSquat",
+  stepup: "bulgSquat", pistolAsst: "pistolAsst",
+  gluteBridge: "gluteBridge", slBridge: "gluteBridge", hipThrust: "hipThrust", slHipThrust: "hipThrust",
+  slideCurl: "slideCurl", slRDL: "slRDL", calfRaise: "calfRaise", hipHingeDrill: "hinge", walk: "walkDemo",
+};
+
+const DEMO_SIDE_OFFSET = [4, 2];
+function demoFlat(p) {
+  const o = DEMO_SIDE_OFFSET;
+  const d2 = (a, b) => p[a] ? p[a] : [p[b][0] + o[0], p[b][1] + o[1]];
+  return [p.hd, p.nk, p.hp, p.el, p.ha, d2("el2", "el"), d2("ha2", "ha"), p.kn, p.an, d2("kn2", "kn"), d2("an2", "an")];
+}
+
+let demoRAF = null;
+function stopDemo() { if (demoRAF) { cancelAnimationFrame(demoRAF); demoRAF = null; } }
+
+function mountDemo(container, exId, size) {
+  const id = DEMO_MAP[exId];
+  const demo = id && DEMOS[id];
+  if (!demo || !container) return false;
+  const w = size || 168;
+  container.innerHTML = `
+    <svg viewBox="0 0 120 100" width="${w}" height="${Math.round(w * 100 / 120)}" style="display:block">
+      <g stroke="var(--ink-3)" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.55">${demo.props.join("")}</g>
+      <g id="d-far" stroke="var(--ink-3)" stroke-width="3" stroke-linecap="round" fill="none">
+        <path id="d-armB" /><path id="d-legB" />
+      </g>
+      <g stroke="var(--ink)" stroke-width="3.2" stroke-linecap="round" fill="none">
+        <path id="d-torso" /><path id="d-armA" /><path id="d-legA" />
+      </g>
+      <circle id="d-head" r="5.6" fill="var(--ink)" />
+    </svg>`;
+  const el = (i) => container.querySelector("#" + i);
+  const parts = { head: el("d-head"), torso: el("d-torso"), armA: el("d-armA"), armB: el("d-armB"), legA: el("d-legA"), legB: el("d-legB") };
+  const flats = demo.poses.map(demoFlat);
+  const draw = (pose) => {
+    const [hd, nk, hp, elA, haA, elB, haB, knA, anA, knB, anB] = pose;
+    parts.head.setAttribute("cx", hd[0]); parts.head.setAttribute("cy", hd[1]);
+    parts.torso.setAttribute("d", `M${nk[0]},${nk[1]} L${hp[0]},${hp[1]}`);
+    parts.armA.setAttribute("d", `M${nk[0]},${nk[1]} L${elA[0]},${elA[1]} L${haA[0]},${haA[1]}`);
+    parts.armB.setAttribute("d", `M${nk[0]},${nk[1]} L${elB[0]},${elB[1]} L${haB[0]},${haB[1]}`);
+    parts.legA.setAttribute("d", `M${hp[0]},${hp[1]} L${knA[0]},${knA[1]} L${anA[0]},${anA[1]}`);
+    parts.legB.setAttribute("d", `M${hp[0]},${hp[1]} L${knB[0]},${knB[1]} L${anB[0]},${anB[1]}`);
+  };
+  const lerp = (a, b, t) => a.map((pt, i) => [pt[0] + (b[i][0] - pt[0]) * t, pt[1] + (b[i][1] - pt[1]) * t]);
+  const ease = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  let reduced = false;
+  try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (_) {}
+  if (reduced || flats.length < 2) { draw(flats[flats.length > 1 ? 1 : 0]); return true; }
+  stopDemo();
+  const seg = demo.dur, hold = 260, cycle = 2 * (seg + hold);
+  const t0 = performance.now();
+  const tick = (now) => {
+    let t = (now - t0) % cycle;
+    let pose;
+    if (t < seg) pose = lerp(flats[0], flats[1], ease(t / seg));
+    else if (t < seg + hold) pose = flats[1];
+    else if (t < 2 * seg + hold) pose = lerp(flats[1], flats[0], ease((t - seg - hold) / seg));
+    else pose = flats[0];
+    draw(pose);
+    demoRAF = requestAnimationFrame(tick);
+  };
+  demoRAF = requestAnimationFrame(tick);
+  return true;
+}
+/* ============================================================
+   FORGE — core engine
+   Store, streak engine (silent freezes + repair), XP,
+   pain-adaptive workout generation, ICS export, audio, wake lock.
+   ============================================================ */
+
+"use strict";
+
+/* ---------- date utils (all local time) ---------- */
+const dkey = (d = new Date()) => {
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+const dayShift = (key, delta) => {
+  const [y, m, d] = key.split("-").map(Number);
+  const dt = new Date(y, m - 1, d + delta);
+  return dkey(dt);
+};
+const todayKey = () => dkey(new Date());
+const fmtDate = (key) => {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+};
+const fmtMins = (s) => s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}` : `${s}s`;
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* ---------- store ---------- */
+const STORE_KEY = "forge.v1";
+
+const defaultState = () => ({
+  v: 1,
+  profile: null, // set by onboarding
+  levels: { vpull: 0, hpull: 0, dip: 0, push: 0, vpush: 0, vkr: 0, lsit: 0, squat: 0, hinge: 0 },
+  targets: {},   // per-ladder current rep/sec goal within the rung's window
+  phase: 2,
+  pain: {},      // date -> 'green' | 'yellow' | 'red'
+  log: [],       // {id, date, ts, type, name, mins, sets:[{ex,val,target,kind}], xp}
+  prs: {},       // exId -> best val
+  xp: 0,
+  streak: { current: 0, best: 0, freezes: 0, frozen: {}, lastRepair: null, earnedAt: 0 },
+  badges: [],
+  weights: [],   // {date, kg}
+  settings: { sound: true, restMain: 120, restAcc: 75, restSpine: 25, alertMin: 15, theme: "auto" },
+  seenGuide: false,
+  createdAt: todayKey(),
+});
+
+let S = defaultState();
+let storageOK = true;
+let RESCUE_RAW = null; // unparseable previous store, kept OUT of S so it's never re-saved
+
+/* Deep-validate an untrusted state object (imported backup or stored JSON).
+   Builds a fresh state and copies only well-typed values, clamping ranges.
+   Throws if it isn't a v1 FORGE state at all. */
+const isDateKey = (x) => typeof x === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x);
+const numOr = (x, d, lo = -Infinity, hi = Infinity) =>
+  typeof x === "number" && isFinite(x) ? Math.min(hi, Math.max(lo, x)) : d;
+const strOr = (x, d, max = 200) => (typeof x === "string" ? x.slice(0, max) : d);
+function sanitizeState(p) {
+  if (!p || typeof p !== "object" || p.v !== 1 || !("log" in p)) throw new Error("Not a FORGE v1 state");
+  const s = defaultState();
+  if (p.profile && typeof p.profile === "object") {
+    const pr = p.profile;
+    const days = Array.isArray(pr.trainDays) ? [...new Set(pr.trainDays.filter((n) => Number.isInteger(n) && n >= 0 && n <= 6))].sort() : [];
+    s.profile = {
+      trainDays: days.length ? days : [1, 2, 4, 5],
+      time: /^\d{2}:\d{2}$/.test(pr.time) ? pr.time : "18:00",
+      anchor: strOr(pr.anchor, "", 120),
+      legs: !!pr.legs,
+      created: isDateKey(pr.created) ? pr.created : todayKey(),
+    };
+  }
+  for (const k of Object.keys(s.levels)) {
+    s.levels[k] = Math.round(numOr(p.levels?.[k], 0, 0, LADDERS[k].rungs.length - 1));
+  }
+  if (p.targets && typeof p.targets === "object") {
+    for (const [k, v] of Object.entries(p.targets)) {
+      if (typeof k === "string" && k.length < 24 && typeof v === "number" && isFinite(v)) s.targets[k] = Math.round(Math.max(0, Math.min(600, v)));
+    }
+  }
+  s.phase = Math.round(numOr(p.phase, 2, 1, 4));
+  if (p.pain && typeof p.pain === "object") {
+    for (const [k, v] of Object.entries(p.pain)) if (isDateKey(k) && ["green", "yellow", "red"].includes(v)) s.pain[k] = v;
+  }
+  if (Array.isArray(p.log)) {
+    s.log = p.log.filter((l) => l && typeof l === "object" && isDateKey(l.date)).map((l) => ({
+      id: strOr(l.id, uid(), 40), date: l.date, ts: numOr(l.ts, 0),
+      type: ["strength", "spine", "rescue", "walk"].includes(l.type) ? l.type : "walk",
+      name: strOr(l.name, "Session", 80), mins: Math.round(numOr(l.mins, 1, 0, 600)),
+      sets: Array.isArray(l.sets) ? l.sets.filter((x) => x && typeof x === "object").slice(0, 200).map((x) => ({
+        ex: strOr(x.ex, "", 30), val: numOr(x.val, 0, 0, 6000), target: numOr(x.target, 0, 0, 6000), kind: strOr(x.kind, "reps", 10),
+      })) : [],
+      xp: Math.round(numOr(l.xp, 0, 0, 10000)), main: l.main !== false,
+    }));
+  }
+  if (p.prs && typeof p.prs === "object") {
+    for (const [k, v] of Object.entries(p.prs)) if (k in EX && typeof v === "number" && isFinite(v)) s.prs[k] = Math.max(0, Math.min(6000, v));
+  }
+  s.xp = Math.round(numOr(p.xp, 0, 0, 1e9));
+  const st = p.streak && typeof p.streak === "object" ? p.streak : {};
+  s.streak = {
+    current: Math.round(numOr(st.current, 0, 0, 100000)), best: Math.round(numOr(st.best, 0, 0, 100000)),
+    freezes: Math.round(numOr(st.freezes, 0, 0, 2)), frozen: {},
+    lastRepair: isDateKey(st.lastRepair) ? st.lastRepair : null, earnedAt: Math.round(numOr(st.earnedAt, 0, 0, 1e6)),
+  };
+  if (st.frozen && typeof st.frozen === "object") for (const k of Object.keys(st.frozen)) if (isDateKey(k)) s.streak.frozen[k] = true;
+  if (Array.isArray(p.badges)) s.badges = p.badges.filter((b) => BADGES.some((x) => x.id === b));
+  if (Array.isArray(p.weights)) {
+    s.weights = p.weights.filter((w) => w && isDateKey(w.date) && typeof w.kg === "number" && w.kg >= 25 && w.kg <= 350)
+      .map((w) => ({ date: w.date, kg: Math.round(w.kg * 10) / 10 })).sort((a, b) => a.date < b.date ? -1 : 1).slice(-500);
+  }
+  const se = p.settings && typeof p.settings === "object" ? p.settings : {};
+  s.settings = {
+    sound: se.sound !== false, restMain: Math.round(numOr(se.restMain, 120, 30, 600)),
+    restAcc: Math.round(numOr(se.restAcc, 75, 15, 600)), restSpine: Math.round(numOr(se.restSpine, 25, 5, 120)),
+    alertMin: Math.round(numOr(se.alertMin, 15, 0, 120)), theme: ["auto", "dark", "light"].includes(se.theme) ? se.theme : "auto",
+  };
+  s.seenGuide = !!p.seenGuide;
+  s.createdAt = isDateKey(p.createdAt) ? p.createdAt : todayKey();
+  return s;
+}
+
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
+  catch (e) { storageOK = false; }
+}
+function load() {
+  let raw = null;
+  try { raw = localStorage.getItem(STORE_KEY); } catch (e) { storageOK = false; return; }
+  if (!raw) return;
+  try { S = sanitizeState(JSON.parse(raw)); }
+  catch (e) { RESCUE_RAW = raw; } // corrupt/foreign state: keep for rescue, start fresh
+}
+try { navigator.storage && navigator.storage.persist && navigator.storage.persist().catch(() => {}); } catch (_) {}
+
+/* ---------- sessions per day ---------- */
+const sessionsOn = (date) => S.log.filter((l) => l.date === date);
+const dayCounts = (date) => sessionsOn(date).length > 0; // any completed session counts
+
+/* ---------- streak engine: silent freezes + repair window ---------- */
+function recomputeStreak() {
+  const t = todayKey();
+  // earn freezes: 1 per 7 counted days total, max 2 banked
+  const totalCounted = new Set(S.log.map((l) => l.date)).size;
+  const shouldHaveEarned = Math.floor(totalCounted / 7);
+  if (shouldHaveEarned > S.streak.earnedAt) {
+    S.streak.freezes = Math.min(2, S.streak.freezes + (shouldHaveEarned - S.streak.earnedAt));
+    S.streak.earnedAt = shouldHaveEarned;
+  }
+  // walk backward from today (today only counts if already done)
+  let cur = 0;
+  let d = dayCounts(t) ? t : dayShift(t, -1);
+  while (true) {
+    if (dayCounts(d) || S.streak.frozen[d]) { cur += (dayCounts(d) ? 1 : 0); d = dayShift(d, -1); continue; }
+    if (d === t) { d = dayShift(d, -1); continue; }
+    // missed day: silently apply a freeze if banked (never for >2 consecutive misses)
+    const prevMissed = !dayCounts(dayShift(d, -1)) && !S.streak.frozen[dayShift(d, -1)];
+    if (S.streak.freezes > 0 && !prevMissed && d >= S.createdAt) {
+      S.streak.freezes--; S.streak.frozen[d] = true; d = dayShift(d, -1); continue;
+    }
+    break;
+  }
+  S.streak.current = cur;
+  S.streak.best = Math.max(S.streak.best || 0, cur);
+  save();
+}
+/* Repair: if the chain broke in the last 1-2 days, one completed session
+   today bridges the gap (24-48h mercy window). Max once per 14 days. */
+function repairInfo() {
+  const t = todayKey();
+  const y1 = dayShift(t, -1), y2 = dayShift(t, -2), y3 = dayShift(t, -3);
+  const covered = (d) => dayCounts(d) || S.streak.frozen[d];
+  const cooldownOK = !S.streak.lastRepair || (new Date(t) - new Date(S.streak.lastRepair)) / 864e5 >= 14;
+  if (dayCounts(t) || covered(y1) || !cooldownOK) return { available: false, days: [] };
+  if (covered(y2)) return { available: true, days: [y1] };
+  if (covered(y3) && y2 >= S.createdAt) return { available: true, days: [y1, y2] };
+  return { available: false, days: [] };
+}
+function tryRepair() {
+  const r = repairInfo();
+  if (r.available) { r.days.forEach((d) => { S.streak.frozen[d] = true; }); S.streak.lastRepair = todayKey(); }
+}
+
+/* ---------- XP / levels / badges ---------- */
+function xpLevel() {
+  let lv = 0;
+  for (let i = 0; i < LEVELS_XP.length; i++) if (S.xp >= LEVELS_XP[i]) lv = i;
+  const cur = LEVELS_XP[lv], next = LEVELS_XP[lv + 1] ?? null;
+  return { lv, name: LEVEL_NAMES[lv], cur, next, pct: next ? Math.min(100, Math.round(((S.xp - cur) / (next - cur)) * 100)) : 100 };
+}
+function checkBadges() {
+  const earned = [];
+  for (const b of BADGES) if (!S.badges.includes(b.id) && b.test(S)) { S.badges.push(b.id); earned.push(b); }
+  return earned;
+}
+
+/* ---------- pain ---------- */
+const painToday = () => S.pain[todayKey()] || null;
+function setPain(level) { S.pain[todayKey()] = level; save(); }
+
+/* ---------- workout generation ---------- */
+function ladderRung(ladderKey) {
+  const ladder = LADDERS[ladderKey];
+  let idx = Math.min(S.levels[ladderKey] ?? 0, ladder.rungs.length - 1);
+  // clamp to the highest rung allowed by current phase
+  while (idx > 0 && EX[ladder.rungs[idx].ex].phase > S.phase) idx--;
+  if (EX[ladder.rungs[idx].ex].phase > S.phase) return null; // even rung 0 is phase-locked
+  return { idx, rung: ladder.rungs[idx] };
+}
+function ladderTarget(ladderKey) {
+  const r = ladderRung(ladderKey);
+  if (!r) return null;
+  const { idx, rung } = r;
+  const win = rung.scheme.reps || rung.scheme.secs;
+  const tkey = `${ladderKey}:${idx}`;
+  if (!(tkey in S.targets)) S.targets[tkey] = win[0];
+  return { idx, rung, target: Math.min(S.targets[tkey], win[1]), win, tkey, timed: !!rung.scheme.secs };
+}
+function nextDayType() {
+  const n = S.log.filter((l) => l.type === "strength" && l.main !== false).length;
+  return DAY_ORDER[n % DAY_ORDER.length];
+}
+function warmupBlocks(firstMain, dayType) {
+  const blocks = [
+    { ex: "walk", sets: 1, target: 120, warmup: true, label: "2-min march / easy movement" },
+    { ex: "catcamel", sets: 1, target: 8, warmup: true },
+    { ex: "curlup", sets: 1, target: 4, warmup: true, label: "4 short holds" },
+    { ex: "sideplank", sets: 1, target: 10, warmup: true, label: "10s each side" },
+    { ex: "birddog", sets: 1, target: 4, warmup: true, label: "4 each side, 8s holds" },
+  ];
+  if (dayType === "lowerA" || dayType === "lowerB") {
+    blocks.push({ ex: "gluteBridge", sets: 1, target: 10, warmup: true });
+    blocks.push({ ex: "hipHingeDrill", sets: 1, target: 6, warmup: true, label: "Groove the hinge" });
+  } else {
+    blocks.push({ ex: "scapPull", sets: 1, target: 6, warmup: true, label: "Easy scapular pulls" });
+  }
+  if (firstMain) blocks.push({ ...firstMain, sets: 1, warmup: true, ramp: true, label: "Ramp-up set — easy half effort" });
+  return blocks;
+}
+/* Build a concrete session item list. pain: green|yellow (red → spine only, handled upstream) */
+function buildWorkout(dayType, pain) {
+  const tpl = DAY_TEMPLATES[dayType];
+  const lite = pain === "yellow";
+  const items = [];
+  let firstMain = null;
+  for (const b of tpl.blocks) {
+    if (lite && b.lite) continue;
+    if (b.phaseMin && S.phase < b.phaseMin) continue;
+    if (b.ladder) {
+      const t = ladderTarget(b.ladder);
+      if (!t) continue; // whole ladder is phase-locked (e.g. Phase 1)
+      const ex = EX[t.rung.ex];
+      const sets = Math.max(2, (b.sets ?? t.rung.scheme.sets) - (lite ? 1 : 0));
+      // "volume"/B-day slots run easier than the stored target and never drive progression
+      const target = b.volume ? Math.max(t.win[0], t.target - 2) : t.target;
+      const item = { ladder: b.ladder, exId: t.rung.ex, ex, sets, target, tkey: t.tkey, win: t.win, rungIdx: t.idx,
+        timed: t.timed, note: b.note, volume: !!b.volume, main: !firstMain };
+      if (!firstMain) firstMain = { ex: t.rung.ex, target: Math.max(2, Math.ceil(target / 2)) };
+      items.push(item);
+    } else {
+      const ex = EX[b.ex];
+      if (ex.phase > S.phase) continue;
+      const timed = ex.kind === "secs" || ex.kind === "secside";
+      items.push({ exId: b.ex, ex, sets: Math.max(1, b.sets - (lite ? 1 : 0)), target: b.target, timed, note: b.note, pyramid: b.pyramid });
+    }
+  }
+  return { name: tpl.name, tag: tpl.tag, icon: tpl.icon, est: lite ? Math.round(tpl.est * 0.6) : tpl.est,
+    type: "strength", dayType, lite, warmup: warmupBlocks(firstMain, dayType), items };
+}
+function buildRoutine(def, type) {
+  const items = def.blocks.map((b) => {
+    const ex = EX[b.ex];
+    const timed = ex.kind === "secs" || ex.kind === "secside";
+    return { exId: b.ex, ex, sets: b.sets, target: b.target, timed, note: b.note, pyramid: b.pyramid };
+  }).filter((i) => i.ex.phase <= Math.max(S.phase, 1));
+  return { name: def.name, icon: def.icon, est: def.est, type, items, warmup: [] };
+}
+
+/* Progression after a completed strength session.
+   Evidence rule: advance only after hitting the target on all sets TWO sessions
+   running; then target+1 within the window, or a ladder-up offer at the top.
+   Volume (B-day) slots and yellow-day sessions never drive progression. */
+function applyProgression(session) {
+  const offers = [];
+  if (session.lite) return offers;
+  for (const it of session.items) {
+    if (!it.ladder || it.volume || it.warmup || !it.setLog) continue;
+    if (it.setLog.filter((v) => v != null).length < it.sets) continue;
+    const okKey = it.tkey + ":ok";
+    const allHit = it.setLog.every((v) => v >= it.target);
+    if (!allHit) { S.targets[okKey] = 0; continue; }
+    const okCount = (S.targets[okKey] || 0) + 1;
+    if (okCount < 2) { S.targets[okKey] = okCount; continue; }
+    S.targets[okKey] = 0;
+    if (it.target < it.win[1]) {
+      S.targets[it.tkey] = it.target + 1;
+    } else {
+      const ladder = LADDERS[it.ladder];
+      const builtIdx = it.rungIdx ?? 0;
+      // phase-limited (clamped below stored level): the user is boxed by phase, not ability
+      if (builtIdx < (S.levels[it.ladder] ?? 0)) continue;
+      if (builtIdx < ladder.rungs.length - 1) {
+        const nxt = ladder.rungs[builtIdx + 1];
+        offers.push({ ladder: it.ladder, from: EX[ladder.rungs[builtIdx].ex].name, to: EX[nxt.ex].name,
+          locked: EX[nxt.ex].phase > S.phase, needPhase: EX[nxt.ex].phase });
+      }
+    }
+  }
+  return offers;
+}
+function ladderUp(ladderKey) {
+  const ladder = LADDERS[ladderKey];
+  const cur = S.levels[ladderKey] ?? 0;
+  if (cur < ladder.rungs.length - 1) {
+    S.levels[ladderKey] = cur + 1;
+    const rung = ladder.rungs[cur + 1];
+    const win = rung.scheme.reps || rung.scheme.secs;
+    S.targets[`${ladderKey}:${cur + 1}`] = win[0];
+    save();
+  }
+}
+
+/* ---------- finish a session ---------- */
+function completeSession(session, mins) {
+  tryRepair();
+  const sets = [];
+  let setCount = 0, prList = [];
+  for (const it of session.items) {
+    if (!it.setLog || it.warmup) continue; // warm-up work earns nothing and records nothing
+    for (const v of it.setLog) {
+      if (v == null) continue;
+      sets.push({ ex: it.exId, val: v, target: it.target, kind: it.ex.kind });
+      setCount++;
+      if (!it.ex.kind.includes("side")) {
+        if (v > (S.prs[it.exId] || 0) && v >= 3) { S.prs[it.exId] = v; if (session.type === "strength") prList.push({ ex: it.ex.name, val: v, timed: it.timed }); }
+      }
+    }
+  }
+  const mainWork = session.type !== "strength" || setCount > 0;
+  let xp = (XP_RULES[session.type] || 10) + setCount * XP_RULES.set + prList.length * XP_RULES.pr;
+  S.xp += xp;
+  S.log.push({ id: uid(), date: todayKey(), ts: Date.now(), type: session.type, name: session.name, mins, sets, xp, main: mainWork });
+  const offers = session.type === "strength" ? applyProgression(session) : [];
+  recomputeStreak();
+  const badges = checkBadges();
+  save();
+  return { xp, prList, offers, badges };
+}
+
+/* ---------- ICS calendar generation (iOS-verified path) ---------- */
+const ICS_DAY = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+function icsEscape(s) { return String(s).replace(/\r/g, "").replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n"); }
+/* RFC 5545 line folding: max 75 octets per line, continuation lines start with a space */
+function icsFold(line) {
+  const enc = new TextEncoder();
+  if (enc.encode(line).length <= 74) return line;
+  const out = [];
+  let cur = "";
+  for (const ch of line) { // iterate by code point to never split a character
+    if (enc.encode(cur + ch).length > (out.length ? 73 : 74)) { out.push(cur); cur = ch; }
+    else cur += ch;
+  }
+  if (cur) out.push(cur);
+  return out.map((l, i) => (i ? " " + l : l)).join("\r\n");
+}
+function icsStamp() {
+  const d = new Date(), p = (n) => String(n).padStart(2, "0");
+  return `${d.getUTCFullYear()}${p(d.getUTCMonth() + 1)}${p(d.getUTCDate())}T${p(d.getUTCHours())}${p(d.getUTCMinutes())}${p(d.getUTCSeconds())}Z`;
+}
+function icsLocal(dateKey, timeHHMM) {
+  return dateKey.replace(/-/g, "") + "T" + timeHHMM.replace(":", "") + "00";
+}
+function nextWeekday(dow, timeHHMM) {
+  // next occurrence (incl. today if time is still ahead)
+  const now = new Date();
+  for (let i = 0; i < 8; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+    if (d.getDay() !== dow) continue;
+    if (i === 0) {
+      const [h, m] = timeHHMM.split(":").map(Number);
+      if (now.getHours() * 60 + now.getMinutes() >= h * 60 + m) continue;
+    }
+    return dkey(d);
+  }
+  return todayKey();
+}
+function makeEvent({ title, desc, dateKey, timeHHMM, durMin, rrule, alertMin }) {
+  const start = icsLocal(dateKey, timeHHMM);
+  const [sh, sm] = timeHHMM.split(":").map(Number);
+  const endMin = Math.min(sh * 60 + sm + durMin, 23 * 60 + 59); // cap at same-day 23:59 (avoid DTEND < DTSTART)
+  const endHH = String(Math.floor(endMin / 60)).padStart(2, "0"), endMM = String(endMin % 60).padStart(2, "0");
+  const end = icsLocal(dateKey, `${endHH}:${endMM}`);
+  const lines = [
+    "BEGIN:VEVENT",
+    `UID:${uid()}@forge.app`, // always-new UID: avoids the iOS re-import silent-fail bug
+    `DTSTAMP:${icsStamp()}`,
+    `DTSTART:${start}`,
+    `DTEND:${end}`,
+    `SUMMARY:${icsEscape(title)}`,
+    `DESCRIPTION:${icsEscape(desc)}`,
+  ];
+  if (rrule) lines.push(`RRULE:${rrule}`);
+  lines.push("BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${icsEscape(title)}`,
+    `TRIGGER:-PT${Math.max(0, alertMin)}M`, "END:VALARM", "END:VEVENT");
+  return lines;
+}
+function buildScheduleICS() {
+  const p = S.profile;
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "METHOD:PUBLISH", "PRODID:-//FORGE//Workout//EN", "CALSCALE:GREGORIAN"];
+  for (const dow of p.trainDays) {
+    lines.push(...makeEvent({
+      title: "🔥 FORGE — Training day",
+      desc: `${p.anchor ? "Cue: " + p.anchor + ". " : ""}Open the app, hit Start. Even 5 minutes counts. (Never within the first hour after waking — discs are vulnerable then.)`,
+      dateKey: nextWeekday(dow, p.time), timeHHMM: p.time, durMin: 45,
+      rrule: `FREQ=WEEKLY;BYDAY=${ICS_DAY[dow]};COUNT=12`, alertMin: S.settings.alertMin,
+    }));
+  }
+  lines.push("END:VCALENDAR");
+  return lines.map(icsFold).join("\r\n") + "\r\n";
+}
+function buildSpineICS(timeHHMM) {
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "METHOD:PUBLISH", "PRODID:-//FORGE//Spine//EN", "CALSCALE:GREGORIAN"];
+  const now = new Date();
+  const [h, m] = timeHHMM.split(":").map(Number);
+  const passed = now.getHours() * 60 + now.getMinutes() >= h * 60 + m;
+  lines.push(...makeEvent({
+    title: "🧘 FORGE — 10-min Spine Reset",
+    desc: "Cat-camel, curl-up, side plank, bird dog. Daily back armour — never within an hour of waking.",
+    dateKey: passed ? dayShift(todayKey(), 1) : todayKey(),
+    timeHHMM, durMin: 15, rrule: "FREQ=DAILY;COUNT=84", alertMin: S.settings.alertMin,
+  }));
+  lines.push("END:VCALENDAR");
+  return lines.map(icsFold).join("\r\n") + "\r\n";
+}
+
+/* ---------- getting files to the user ----------
+   iOS standalone (home-screen) web apps and sandboxed iframes (the claude.ai
+   artifact) can't reliably do <a download> — use the share sheet or a copy
+   fallback there. Plain Safari gets the normal download. */
+function isConstrained() {
+  try {
+    return navigator.standalone === true ||
+      (window.matchMedia && matchMedia("(display-mode: standalone)").matches) ||
+      window.self !== window.top;
+  } catch (_) { return true; }
+}
+function downloadFile(name, content, mime) {
+  const blob = new Blob([content], { type: mime }); // blob, never data: URI (iOS)
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 4000);
+}
+async function deliverFile(name, content, mime, label) {
+  // claude.ai artifact viewer: use the granted downloads capability when present
+  if (typeof window !== "undefined" && window.claude && window.claude.downloads) {
+    try {
+      await window.claude.downloads.save({ filename: name, data: content });
+      return "downloaded";
+    } catch (e) {
+      if (e && e.code === "declined") return "cancelled";
+      openCopySheet(name, content, label); // e.g. .ics is outside the viewer's allowlist
+      return "copy";
+    }
+  }
+  if (isConstrained()) {
+    try {
+      const f = new File([content], name, { type: mime.split(";")[0] });
+      if (navigator.canShare && navigator.canShare({ files: [f] })) {
+        await navigator.share({ files: [f] });
+        return "shared";
+      }
+    } catch (e) { if (e && e.name === "AbortError") return "cancelled"; }
+    openCopySheet(name, content, label); // defined in ui.js
+    return "copy";
+  }
+  downloadFile(name, content, mime);
+  return "downloaded";
+}
+
+/* ---------- backup ---------- */
+function exportData() { return deliverFile(`forge-backup-${todayKey()}.json`, JSON.stringify(S, null, 1), "application/json", "Backup"); }
+function importData(text) {
+  const prev = S;
+  try {
+    S = sanitizeState(JSON.parse(text)); // throws on anything that isn't a valid v1 state
+    save();
+  } catch (e) {
+    S = prev; // never let a failed import touch existing data
+    throw e;
+  }
+}
+
+/* ---------- audio (iOS-safe: <audio> element, gesture-unlocked) ---------- */
+let audioEl = null, audioReady = false;
+function makeBeepWav(freq = 880, ms = 160, count = 1, gapMs = 90) {
+  const rate = 22050, amp = 0.6;
+  const seg = Math.floor(rate * ms / 1000), gap = Math.floor(rate * gapMs / 1000);
+  const total = count * seg + (count - 1) * gap;
+  const data = new Int16Array(total);
+  for (let c = 0; c < count; c++) {
+    const off = c * (seg + gap);
+    for (let i = 0; i < seg; i++) {
+      const env = Math.min(1, i / (rate * 0.01), (seg - i) / (rate * 0.03));
+      data[off + i] = Math.round(Math.sin(2 * Math.PI * freq * i / rate) * amp * env * 32767);
+    }
+  }
+  const buf = new ArrayBuffer(44 + data.length * 2);
+  const v = new DataView(buf);
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, "RIFF"); v.setUint32(4, 36 + data.length * 2, true); ws(8, "WAVE"); ws(12, "fmt ");
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  ws(36, "data"); v.setUint32(40, data.length * 2, true);
+  new Int16Array(buf, 44).set(data);
+  return URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
+}
+let URL_BEEP1 = null, URL_BEEP3 = null, URL_SILENT = null;
+function makeSilentWav(ms = 120) {
+  const rate = 8000, n = Math.floor(rate * ms / 1000);
+  const buf = new ArrayBuffer(44 + n * 2);
+  const v = new DataView(buf);
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); ws(8, "WAVE"); ws(12, "fmt ");
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  ws(36, "data"); v.setUint32(40, n * 2, true); // samples stay zero = silence
+  return URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
+}
+function unlockAudio() { // call from a user gesture (Start button)
+  if (audioReady || !S.settings.sound) return;
+  try {
+    if (!URL_BEEP1) { URL_BEEP1 = makeBeepWav(880, 150, 1); URL_BEEP3 = makeBeepWav(988, 140, 3); URL_SILENT = makeSilentWav(); }
+    audioEl = audioEl || new Audio();
+    // iOS ignores element volume — unlock with a genuinely silent clip, unmuted
+    audioEl.src = URL_SILENT;
+    audioEl.play().then(() => { audioReady = true; }).catch(() => {});
+  } catch (_) {}
+}
+function beep(triple) {
+  if (!S.settings.sound || !audioEl) return;
+  try { audioEl.src = triple ? URL_BEEP3 : URL_BEEP1; audioEl.volume = 1; audioEl.currentTime = 0; audioEl.play().catch(() => {}); } catch (_) {}
+}
+
+/* ---------- wake lock (screen on during workouts) ---------- */
+let wakeLock = null, wantWake = false;
+async function acquireWake() {
+  wantWake = true;
+  try { if ("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); } catch (_) {}
+}
+function releaseWake() {
+  wantWake = false;
+  try { wakeLock && wakeLock.release(); } catch (_) {} wakeLock = null;
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && wantWake) acquireWake();
+});
+/* ============================================================
+   FORGE — UI layer
+   Screens, guided player, charts, sheets. Event delegation via data-a.
+   ============================================================ */
+
+const UI = { screen: "today", sheet: null, onboard: 0, ob: {}, session: null, rest: null, timer: null, libFilter: "", libQ: "" };
+
+const $app = () => document.getElementById("app");
+const NAV = [
+  { id: "today", ico: "⚒️", label: "Today" },
+  { id: "progress", ico: "📈", label: "Progress" },
+  { id: "plan", ico: "🗺️", label: "Plan" },
+  { id: "library", ico: "📚", label: "Moves" },
+  { id: "settings", ico: "⚙️", label: "Setup" },
+];
+
+/* ---------- generic helpers ---------- */
+function showToast(msg) {
+  document.getElementById("toast")?.remove();
+  const t = document.createElement("div");
+  t.id = "toast"; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+function confetti() {
+  const colors = ["#ff6a2b", "#57d98a", "#f5c542", "#4dc4b0", "#f5efe6"];
+  for (let i = 0; i < 90; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    const s = 5 + Math.random() * 7;
+    c.style.cssText = `left:${Math.random() * 100}vw;width:${s}px;height:${s * (0.6 + Math.random())}px;background:${colors[i % colors.length]};animation-duration:${1.3 + Math.random() * 1.6}s;animation-delay:${Math.random() * 0.5}s;`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3600);
+  }
+}
+const painChip = { green: ["😊", "Good", "sel-good"], yellow: ["😐", "Niggly", "sel-warn"], red: ["😖", "Rough", "sel-bad"] };
+
+/* ============================================================
+   ONBOARDING
+   ============================================================ */
+function renderOnboard() {
+  const step = UI.onboard;
+  const steps = [obWelcome, obBack, obLegs, obCapability, obSchedule, obBody, obDone];
+  $app().innerHTML = `<div class="screen" style="padding-top:12px">
+    <div class="row between" style="margin-bottom:18px">
+      <span class="kicker">FORGE</span>
+      <span>${step > 0 ? `<button class="chip" data-a="ob-prev">← back</button>` : ""} <span class="micro">${step + 1} / ${steps.length}</span></span>
+    </div>
+    <div class="progress-track" style="margin-bottom:22px"><div class="fill" style="width:${((step + 1) / steps.length) * 100}%"></div></div>
+    ${steps[step]()}
+  </div>`;
+  document.getElementById("nav")?.remove();
+}
+function obWelcome() {
+  if (UI.ob.rf) {
+    return `
+      <h1 class="display" style="color:var(--bad)">Doctor first.<br><span style="color:var(--ink)">Then we train.</span></h1>
+      <p class="sub" style="margin:14px 0 16px">Any of these can mean nerves are being compressed in a way that needs same-day medical attention — not a workout app:</p>
+      <div class="card" style="border-color:var(--bad)">
+        <ul style="margin-left:18px;font-size:14px;color:var(--ink-2);display:flex;flex-direction:column;gap:5px">
+          ${RED_FLAGS.map((r) => `<li>${r}</li>`).join("")}
+        </ul>
+      </div>
+      <p class="sub" style="margin-bottom:16px">Please get checked before starting any training. FORGE will be right here when you're cleared. 🧡</p>
+      <button class="btn ghost" data-a="ob-rf-back">← I misread — none of these apply</button>`;
+  }
+  const constrained = (() => { try { return navigator.standalone === true || matchMedia("(display-mode: standalone)").matches || window.self !== window.top; } catch (_) { return false; } })();
+  return `
+    <h1 class="display">Get strong.<br><span style="color:var(--accent)">Guard the back.</span></h1>
+    <p class="sub" style="margin:14px 0 18px">Your personal system for the power tower in your room: a back-safe strength program, a daily 10-minute spine routine, and streaks that keep you showing up.</p>
+    ${constrained ? `<div class="card accent"><div class="kicker">Coming from Safari?</div><p class="sub" style="margin:6px 0 10px">The home-screen app has its own storage. Import the backup you exported in Safari to carry your progress over.</p><button class="btn" data-a="sheet" data-v="import">Import my backup</button></div>` : ""}
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:8px">Quick safety check</div>
+      <p class="sub" style="margin-bottom:10px">Do you have any of these <b>right now</b>?</p>
+      <ul style="margin-left:18px;font-size:14px;color:var(--ink-2);display:flex;flex-direction:column;gap:5px">
+        ${RED_FLAGS.map((r) => `<li>${r}</li>`).join("")}
+      </ul>
+    </div>
+    <button class="btn primary big" data-a="ob-next">None of those — let's go</button>
+    <button class="btn ghost" data-a="ob-redflag" style="margin-top:10px">I have one of these</button>
+    <p class="micro" style="margin-top:14px;text-align:center">FORGE is a training tool, not medical advice. If in doubt, see a professional first.</p>`;
+}
+function obBack() {
+  return `
+    <h2 class="display">How's the back<br>been lately?</h2>
+    <div class="stack" style="margin-top:18px">
+      <button class="btn" data-a="ob-back" data-v="1" style="justify-content:flex-start;text-transform:none;letter-spacing:0;font-family:var(--font-body);font-weight:600;font-size:16px">😖&nbsp; Flared up / hurting right now</button>
+      <button class="btn" data-a="ob-back" data-v="2" style="justify-content:flex-start;text-transform:none;letter-spacing:0;font-family:var(--font-body);font-weight:600;font-size:16px">😐&nbsp; Niggly, but I can manage</button>
+      <button class="btn" data-a="ob-back" data-v="3" style="justify-content:flex-start;text-transform:none;letter-spacing:0;font-family:var(--font-body);font-weight:600;font-size:16px">🙂&nbsp; Mostly fine, occasional twinges</button>
+    </div>
+    <p class="micro" style="margin-top:14px">This sets your starting phase. You can change it any time in Plan.</p>`;
+}
+function obLegs() {
+  return `
+    <h2 class="display">Any pain, tingling or numbness running <span style="color:var(--accent)">down a leg</span>?</h2>
+    <p class="sub" style="margin:12px 0 18px">This matters more than back pain itself. Leg symptoms are the signal we never train through.</p>
+    <div class="grid-2">
+      <button class="btn" data-a="ob-legs" data-v="yes">Yes / sometimes</button>
+      <button class="btn" data-a="ob-legs" data-v="no">No</button>
+    </div>`;
+}
+function obCapability() {
+  const seg = (id, opts) => `<div class="seg" id="${id}">${opts.map((o, i) => `<button data-a="ob-seg" data-seg="${id}" data-i="${i}" class="${(UI.ob[id] ?? 0) === i ? "active" : ""}">${o}</button>`).join("")}</div>`;
+  return `
+    <h2 class="display">Where are you<br>starting from?</h2>
+    <p class="sub" style="margin:12px 0 16px">Best guesses are fine — the app adjusts as you log.</p>
+    <div class="field"><span class="lbl">Strict pull-ups in one go</span>${seg("vpull", ["0", "1–4", "5–9", "10+"])}</div>
+    <div class="field"><span class="lbl">Full dips in one go</span>${seg("dip", ["0", "1–4", "5–9", "10+"])}</div>
+    <div class="field"><span class="lbl">Push-ups in one go</span>${seg("push", ["0–5", "6–15", "16–30", "30+"])}</div>
+    <button class="btn primary big" data-a="ob-next" style="margin-top:8px">Next</button>`;
+}
+function obSchedule() {
+  const days = UI.ob.days || [1, 2, 4, 5];
+  return `
+    <h2 class="display">When do<br>you train?</h2>
+    <p class="sub" style="margin:12px 0 16px">4 days a week is the sweet spot. The 10-min Spine Reset happens every day regardless.</p>
+    <div class="field"><span class="lbl">Training days</span>
+      <div class="day-picker">${DAYS.map((d, i) => `<button data-a="ob-day" data-i="${i}" class="${days.includes(i) ? "on" : ""}">${d}</button>`).join("")}</div>
+    </div>
+    <label class="field"><span class="lbl">Usual time</span><input type="time" id="ob-time" value="${UI.ob.time || "18:00"}"></label>
+    <label class="field"><span class="lbl">Attach it to a habit you already have <span style="text-transform:none;font-weight:400">(this genuinely works)</span></span>
+      <input type="text" id="ob-anchor" placeholder="e.g. right after my evening tea" value="${esc(UI.ob.anchor || "")}"></label>
+    <div class="safety-note"><span class="si">☀️</span><span>Avoid the first hour after waking — discs are extra vulnerable then. Evening is perfect.</span></div>
+    <button class="btn primary big" data-a="ob-schedule-next" style="margin-top:14px">Next</button>`;
+}
+function obBody() {
+  return `
+    <h2 class="display">Bodyweight?<br><span style="color:var(--ink-3);font-size:0.6em">for the abs maths — optional</span></h2>
+    <p class="sub" style="margin:12px 0 16px">Six-pack visibility is mostly body-fat percentage. If you log a weight, FORGE gives you protein and deficit targets.</p>
+    <label class="field"><span class="lbl">Weight (kg)</span><input type="number" id="ob-kg" inputmode="decimal" placeholder="e.g. 78" value="${UI.ob.kg || ""}"></label>
+    <button class="btn primary big" data-a="ob-body-next">Next</button>
+    <button class="btn ghost" data-a="ob-body-skip" style="margin-top:10px">Skip</button>`;
+}
+function obDone() {
+  const ph = PHASES[(UI.ob.phase || 2) - 1];
+  return `
+    <h1 class="display">You're <span style="color:var(--accent)">forged in</span>.</h1>
+    <div class="card accent" style="margin-top:16px">
+      <div class="kicker">Starting point</div>
+      <p style="font-weight:700;font-size:18px;margin-top:6px">Phase ${ph.n} — ${ph.name}</p>
+      <p class="sub" style="margin-top:6px">${ph.desc}</p>
+    </div>
+    <div class="card">
+      <div class="kicker muted">The deal</div>
+      <ul style="margin:8px 0 0 18px;font-size:14px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+        <li><b>Every day:</b> 10-min Spine Reset (this is your streak anchor)</li>
+        <li><b>${(UI.ob.days || [1, 2, 4, 5]).length} days a week:</b> strength on the tower</li>
+        <li><b>Zero heroics:</b> strict reps, traffic-light pain rules, no morning training</li>
+        <li><b>Mercy built in:</b> streak freezes bank up automatically — one bad day never erases your work</li>
+      </ul>
+    </div>
+    <button class="btn primary big" data-a="ob-finish">Enter the Forge</button>`;
+}
+
+/* ============================================================
+   TODAY
+   ============================================================ */
+function renderToday() {
+  const t = todayKey();
+  const p = S.profile;
+  const pain = painToday();
+  const isTrainDay = p.trainDays.includes(new Date().getDay());
+  const doneToday = sessionsOn(t);
+  const didStrength = doneToday.some((l) => l.type === "strength");
+  const didSpine = doneToday.some((l) => l.type === "spine" || l.type === "rescue");
+  const repair = repairInfo();
+  const lvl = xpLevel();
+  const nudge = NUDGES[Math.floor((Date.now() / 864e5)) % NUDGES.length];
+  const dayType = nextDayType();
+  const tpl = DAY_TEMPLATES[dayType];
+  const lateNoLog = new Date().getHours() >= 20 && doneToday.length === 0;
+  const anchorLine = p.anchor
+    ? `<p class="micro" style="margin-top:6px">📌 ${esc(p.anchor)} · ${esc(p.time)}</p>`
+    : `<button class="chip" data-a="sheet" data-v="anchor" style="margin-top:8px">📌 Tie it to a habit — this genuinely works</button>`;
+
+  let mainCard;
+  if (pain === "red") {
+    mainCard = `<div class="card accent">
+      <div class="kicker" style="color:var(--bad)">Rough back day — we go gentle</div>
+      <h2 class="display" style="margin:8px 0 4px">${didSpine ? "Reset done — that was today's win." : "Spine Reset only"}</h2>
+      <p class="sub">${didSpine ? "Gentle work on a rough day is exactly right. A short walk stacks well if it feels OK." : "No strength today. Gentle McGill work + a walk is exactly the right training. That's not a cop-out — it's the protocol."}</p>
+      <p class="micro" style="margin-top:8px">Doctor same-day if: groin numbness · bladder/bowel changes · leg weakness.</p>
+      ${didSpine ? "" : `<button class="btn primary big" data-a="start-spine" style="margin-top:14px">🧘 Start Spine Reset · 10 min</button>`}
+      <div class="grid-2" style="margin-top:10px">
+        <button class="btn ghost" data-a="log-walk">🚶 Log a walk</button>
+        <button class="btn ghost" data-a="start-rescue">🚑 5-min Rescue</button>
+      </div>
+    </div>`;
+  } else if (S.phase === 1) {
+    mainCard = `<div class="card accent">
+      <div class="kicker" style="color:var(--warn)">Phase 1 · Calm the Fire</div>
+      <h2 class="display" style="margin:8px 0 4px">${didSpine ? "🔥 Streak fed." : "🧘 Spine Reset"}</h2>
+      <p class="sub">${didSpine ? "Today's work is done. Walking is the other half of the medicine." : "While the back calms down, the daily Spine Reset + walking IS the program. Strength unlocks in Phase 2."}</p>
+      ${anchorLine}
+      ${didSpine ? "" : `<button class="btn primary big" data-a="start-spine" style="margin-top:14px">Start Spine Reset · 10 min</button>`}
+      <div class="grid-2" style="margin-top:10px">
+        <button class="btn ghost" data-a="log-walk">🚶 Log a walk</button>
+        <button class="btn ghost" data-a="nav" data-v="plan">Phase gate →</button>
+      </div>
+    </div>`;
+  } else if (didStrength) {
+    mainCard = `<div class="card accent">
+      <div class="kicker" style="color:var(--good)">Done for today 💪</div>
+      <h2 class="display" style="margin:8px 0 4px">Forged.</h2>
+      <p class="sub">${didSpine ? "Strength AND spine work logged. Perfect day." : "Strength is in. Cap it with the Spine Reset if you have 10 minutes."}</p>
+      ${didSpine ? "" : `<button class="btn" data-a="start-spine" style="margin-top:14px">🧘 Spine Reset · 10 min</button>`}
+    </div>`;
+  } else if (isTrainDay && lateNoLog) {
+    mainCard = `<div class="card accent">
+      <div class="kicker">Late one? No problem.</div>
+      <h2 class="display" style="margin:8px 0 4px">🚑 5 minutes keeps the chain alive</h2>
+      <p class="sub">The Rescue circuit fully counts. ${tpl.name} will still be there next session.</p>
+      <button class="btn primary big" data-a="start-rescue" style="margin-top:14px">Start 5-min Rescue</button>
+      <div class="grid-2" style="margin-top:10px">
+        <button class="btn ghost" data-a="start-strength">${tpl.icon} Full ${tpl.name}</button>
+        <button class="btn ghost" data-a="start-spine">🧘 Spine Reset</button>
+      </div>
+    </div>`;
+  } else if (isTrainDay) {
+    mainCard = `<div class="card accent">
+      <div class="kicker">Today · ${tpl.tag}</div>
+      <h2 class="display" style="margin:8px 0 2px">${tpl.icon} ${tpl.name}</h2>
+      <p class="sub">~${tpl.est} min · rung-matched to your levels${pain === "yellow" ? " · <b>eased off for a niggly day</b>" : ""}</p>
+      ${anchorLine}
+      <button class="btn primary big" data-a="start-strength" style="margin-top:14px">Start ${tpl.name}</button>
+      <div class="grid-2" style="margin-top:10px">
+        <button class="btn ghost" data-a="start-spine">🧘 Spine Reset</button>
+        <button class="btn ghost" data-a="start-rescue">🚑 5-min Rescue</button>
+      </div>
+    </div>`;
+  } else if (didSpine) {
+    mainCard = `<div class="card accent">
+      <div class="kicker" style="color:var(--good)">Rest day · handled ✓</div>
+      <h2 class="display" style="margin:8px 0 4px">🔥 Streak fed.</h2>
+      <p class="sub">Spine work is in the bank. A walk stacks beautifully on top — or just enjoy the recovery.</p>
+      <button class="btn ghost" data-a="log-walk" style="margin-top:12px">🚶 Log a walk</button>
+    </div>`;
+  } else {
+    mainCard = `<div class="card accent">
+      <div class="kicker">Rest day · recovery builds the strength</div>
+      <h2 class="display" style="margin:8px 0 4px">🧘 Spine Reset</h2>
+      <p class="sub">10 minutes keeps the streak alive and the back armoured. A walk stacks beautifully on top.</p>
+      ${anchorLine}
+      <button class="btn primary big" data-a="start-spine" style="margin-top:14px">Start Spine Reset</button>
+      <div class="grid-2" style="margin-top:10px">
+        <button class="btn ghost" data-a="log-walk">🚶 Log a walk</button>
+        <button class="btn ghost" data-a="start-rescue">🚑 5-min Rescue</button>
+      </div>
+      <button class="btn ghost" data-a="start-strength" style="margin-top:10px">Train anyway</button>
+    </div>`;
+  }
+
+  $app().innerHTML = `<div class="screen">
+    <div class="row between" style="margin-bottom:16px">
+      <div><span class="kicker">FORGE</span><div class="micro">${new Date().toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}</div></div>
+      <button class="chip accent" data-a="sheet" data-v="level">Lv ${lvl.lv} · ${lvl.name}</button>
+    </div>
+    ${storageOK ? "" : `<div class="card" style="border-color:var(--bad)"><b style="color:var(--bad)">⚠️ Storage unavailable.</b><span class="sub"> Your data can't be saved on this device/browser — export backups won't survive. Try Safari (not private mode).</span></div>`}
+    ${window.self !== window.top ? `<div class="card" style="border-color:var(--warn)"><b style="color:var(--warn)">⚠️ This viewer may not keep your data between visits.</b><span class="sub"> Export a backup after each session (Setup → Backup → Export) and Import it next time — or move FORGE to a permanent web address for automatic saving.</span></div>` : ""}
+    ${RESCUE_RAW ? `<div class="card" style="border-color:var(--warn)"><b style="color:var(--warn)">⚠️ Previous data couldn't be read.</b><span class="sub"> It's preserved — go to Setup → Backup to rescue it.</span></div>` : ""}
+    <div class="card">
+      <div class="row between">
+        <div class="streak-hero">
+          <span class="flame">${S.streak.current > 0 ? "🔥" : "🪵"}</span>
+          <span class="count num">${S.streak.current}</span>
+          <span class="label">${S.streak.current === 0 ? (S.streak.best > 0 ? `best ${S.streak.best} — chains rebuild fast` : "day streak — light it today") : "day streak"}</span>
+        </div>
+        <div style="text-align:right">
+          <button class="chip" data-a="sheet" data-v="streak">❄️ ×${S.streak.freezes}</button>
+          <div class="micro" style="margin-top:4px">best ${S.streak.best}</div>
+        </div>
+      </div>
+      ${repair.available ? `<div class="safety-note" style="background:var(--accent-soft)"><span class="si">🔧</span><span><b>Chain repair available.</b> The last ${repair.days.length === 2 ? "two days" : "day"} slipped — finish anything today and the streak survives.</span></div>
+      <button class="btn" data-a="start-rescue" style="margin-top:10px">🚑 Repair it now · 5 minutes</button>` : ""}
+    </div>
+    ${pain === null ? `<div class="card">
+      <div class="kicker muted" style="margin-bottom:10px">Morning back check-in</div>
+      <div class="pain-picker">
+        ${Object.entries(painChip).map(([k, v]) => `<button data-a="pain" data-v="${k}"><span>${v[0]}</span>${v[1]}</button>`).join("")}
+      </div>
+    </div>` : `<div class="row" style="margin-bottom:14px"><span class="chip ${pain === "green" ? "good" : pain === "yellow" ? "warn" : "bad"}">${painChip[pain][0]} Back today: ${painChip[pain][1]}</span><button class="chip" data-a="pain-reset">change</button></div>`}
+    ${mainCard}
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:10px">This week</div>
+      <div class="week-dots">${weekDots()}</div>
+      <div class="micro" style="margin-top:10px">✓ trained &nbsp;·&nbsp; ~ spine/walk &nbsp;·&nbsp; ❄️ freeze &nbsp;·&nbsp; • planned</div>
+    </div>
+    <div class="card"><div class="row"><span style="font-size:22px">🔮</span><p class="sub" style="flex:1">${nudge}</p></div></div>
+    <button class="btn ghost" data-a="whatis" style="margin-bottom:10px">🧘🚑 What are the Spine Reset & 5-Min Rescue?</button>
+    ${!S.seenGuide ? `<button class="btn ghost" data-a="sheet" data-v="guide">📱 Set up iPhone reminders & home-screen app</button>` : ""}
+  </div>`;
+}
+function weekDots() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()); // Sunday
+  let html = "";
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+    const key = dkey(d);
+    const logs = sessionsOn(key);
+    const strength = logs.some((l) => l.type === "strength");
+    const any = logs.length > 0;
+    const frozen = S.streak.frozen[key];
+    const cls = `day ${strength ? "done" : any ? "partial" : ""} ${key === todayKey() ? "today" : ""}`;
+    const mark = strength ? "✓" : any ? "~" : frozen ? "❄️" : S.profile.trainDays.includes(d.getDay()) ? "•" : "";
+    html += `<div class="${cls}"><div class="dot">${mark}</div><div class="lbl">${DAYS[d.getDay()]}</div></div>`;
+  }
+  return html;
+}
+
+/* ============================================================
+   WORKOUT PLAYER
+   ============================================================ */
+function startSession(kind) {
+  unlockAudio();
+  let sess;
+  const pain = painToday() || "green";
+  if (kind === "strength") {
+    if (pain === "red") { showToast("Red day — Spine Reset instead 🙏"); return; }
+    sess = buildWorkout(nextDayType(), pain);
+    sess.queue = [...sess.warmup.map((b) => warmupItem(b)), ...sess.items];
+  } else if (kind === "spine") {
+    sess = buildRoutine(SPINE_ROUTINE, "spine"); sess.queue = sess.items;
+  } else {
+    sess = buildRoutine(RESCUE_ROUTINE, "rescue"); sess.queue = sess.items;
+  }
+  sess.queue.forEach((it) => { it.setLog = it.setLog || []; });
+  sess.items = sess.queue; // one flat list; warm-up items are flagged
+  sess.idx = 0; sess.setIdx = 0; sess.startTs = Date.now();
+  UI.session = sess;
+  acquireWake();
+  renderPlayer();
+}
+function warmupItem(b) {
+  const ex = EX[b.ex];
+  return { exId: b.ex, ex, sets: b.sets, target: b.target, timed: ex.kind === "secs" || ex.kind === "secside" || b.ex === "walk", warmup: true, label: b.label, ramp: b.ramp };
+}
+function curItem() { return UI.session.items[UI.session.idx]; }
+function setTarget(it, setIdx) { return it.pyramid ? it.pyramid[Math.min(setIdx, it.pyramid.length - 1)] : it.target; }
+
+function renderPlayer() {
+  const s = UI.session;
+  if (!s) return;
+  const it = curItem();
+  const totalSets = s.items.reduce((a, i) => a + i.sets, 0);
+  const doneSets = s.items.reduce((a, i) => a + (i.setLog?.filter((v) => v != null).length || 0), 0);
+  const tgt = setTarget(it, s.setIdx);
+  const kindLbl = it.ex.kind === "perside" ? "each side" : it.ex.kind === "secside" ? "sec each side" : it.timed ? "seconds" : "reps";
+  const old = document.getElementById("player");
+  const el = document.createElement("div");
+  el.id = "player";
+  el.innerHTML = `<div class="inner">
+    <div class="row between" style="margin-bottom:12px">
+      <button class="chip" data-a="quit">✕ End</button>
+      <span class="micro">${s.icon} ${s.name} · ${Math.round((Date.now() - s.startTs) / 60000)} min</span>
+      <button class="chip warn" data-a="sheet" data-v="hurts">Back hurts</button>
+    </div>
+    <div class="progress-track" style="margin-bottom:18px"><div class="fill" style="width:${(doneSets / totalSets) * 100}%"></div></div>
+    <div style="flex:1">
+      <div class="kicker ${it.warmup ? "muted" : ""}">${it.warmup ? "Warm-up" : `Exercise ${s.items.filter((x) => !x.warmup).indexOf(it) + 1} of ${s.items.filter((x) => !x.warmup).length}`}${it.note ? ` · ${esc(it.note)}` : ""}${it.label ? ` · ${esc(it.label)}` : ""}</div>
+      <h1 class="display" style="margin:6px 0 10px">${it.ex.icon} ${it.ex.name}</h1>
+      <div class="row" style="margin-bottom:14px">
+        <div class="set-dots">${Array.from({ length: it.sets }, (_, i) => `<div class="sd ${it.setLog[i] != null ? "done" : i === s.setIdx ? "now" : ""}">${it.setLog[i] != null ? "✓" : i + 1}</div>`).join("")}</div>
+        <span class="micro">set ${Math.min(s.setIdx + 1, it.sets)} / ${it.sets}</span>
+        <div id="demo-box" class="demo-box" style="margin-left:auto"></div>
+      </div>
+      ${it.timed ? timedBlock(it, tgt) : repsBlock(it, tgt, kindLbl)}
+      <details class="cues"><summary>Form cues</summary><ul>${it.ex.cues.map((c) => `<li>${c}</li>`).join("")}</ul></details>
+      <div class="safety-note"><span class="si">🦴</span><span>${it.ex.l5}</span></div>
+    </div>
+    <div class="grid-2" style="margin-top:16px">
+      <button class="btn ghost" data-a="skip-ex">Skip exercise</button>
+      <button class="btn ghost" data-a="swap-easier">Easier version</button>
+    </div>
+  </div>`;
+  old ? old.replaceWith(el) : document.body.appendChild(el);
+  mountDemo(document.getElementById("demo-box"), it.exId, 108);
+}
+function repsBlock(it, tgt, kindLbl) {
+  return `
+    <div class="card" style="text-align:center">
+      <div class="micro" style="margin-bottom:6px">TARGET · ${tgt} ${kindLbl}</div>
+      <div class="stepper">
+        <button data-a="step" data-v="-1">−</button>
+        <span class="value num" id="rep-val">${tgt}</span>
+        <button data-a="step" data-v="1">+</button>
+      </div>
+      <button class="btn primary big" data-a="log-set" style="margin-top:16px">Log set ✓</button>
+    </div>`;
+}
+function timedBlock(it, tgt) {
+  const isMove = it.exId === "walk";
+  return `
+    <div class="card" style="text-align:center">
+      <div class="micro" style="margin-bottom:6px">${isMove ? "GO" : "HOLD"} · ${it.ex.kind === "secside" ? "each side · " : ""}${fmtMins(tgt)}</div>
+      <div class="ring" style="margin:0 auto">
+        <svg viewBox="0 0 240 240" width="240" height="240">
+          <circle cx="120" cy="120" r="108" fill="none" stroke="var(--surface-2)" stroke-width="10"/>
+          <circle id="ring-arc" cx="120" cy="120" r="108" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="678.6" stroke-dashoffset="0"/>
+        </svg>
+        <span class="t2 num" id="timer-val">${fmtMins(tgt)}</span>
+      </div>
+      <div class="row" style="justify-content:center;gap:10px;margin-top:12px">
+        <button class="chip" data-a="time-adj" data-v="-5">−5s</button>
+        <button class="btn primary" id="timer-btn" data-a="timer-start" style="width:auto;padding:14px 34px">${isMove ? "Start" : "Start hold"}</button>
+        <button class="chip" data-a="time-adj" data-v="5">+5s</button>
+      </div>
+    </div>`;
+}
+
+/* --- timed hold --- */
+function startHold() {
+  const it = curItem();
+  const tgt = it._adj ?? setTarget(it, UI.session.setIdx);
+  const endTs = Date.now() + tgt * 1000;
+  clearInterval(UI.timer);
+  const btn = document.getElementById("timer-btn");
+  if (btn) { btn.textContent = "Going…"; btn.dataset.a = "timer-stop"; }
+  UI.timer = setInterval(() => {
+    const left = Math.max(0, Math.ceil((endTs - Date.now()) / 1000));
+    const el = document.getElementById("timer-val");
+    const arc = document.getElementById("ring-arc");
+    if (el) el.textContent = fmtMins(left);
+    if (arc) arc.style.strokeDashoffset = String(678.6 * (1 - left / tgt));
+    if (left === 0) { clearInterval(UI.timer); beep(true); logSet(tgt); }
+  }, 200);
+}
+function stopHoldEarly() {
+  clearInterval(UI.timer);
+  const it = curItem();
+  const tgt = it._adj ?? setTarget(it, UI.session.setIdx);
+  const shown = document.getElementById("timer-val")?.textContent || "0";
+  const left = shown.includes(":") ? Number(shown.split(":")[0]) * 60 + Number(shown.split(":")[1]) : parseInt(shown) || 0;
+  logSet(Math.max(1, tgt - left));
+}
+
+/* --- logging & rest --- */
+function logSet(val) {
+  const s = UI.session, it = curItem();
+  if (!it.timed) {
+    const v = document.getElementById("rep-val");
+    val = v ? parseInt(v.textContent) || 0 : val;
+  }
+  it.setLog[s.setIdx] = val;
+  delete it._adj;
+  // advance
+  const finishedItem = s.setIdx >= it.sets - 1;
+  const lastItem = s.idx >= s.items.length - 1;
+  if (finishedItem && lastItem) { finishSession(); return; }
+  if (finishedItem) { s.idx++; s.setIdx = 0; } else { s.setIdx++; }
+  // rest (skip after warm-up moves, short for spine)
+  const restSec = it.warmup ? 0 : s.type === "strength" ? (it.main || it.ladder ? S.settings.restMain : S.settings.restAcc) : S.settings.restSpine;
+  if (restSec > 0) startRest(restSec);
+  renderPlayer();
+}
+function startRest(sec) {
+  const endTs = Date.now() + sec * 1000;
+  UI.rest = { endTs, total: sec };
+  document.querySelectorAll("#rest-overlay").forEach((n) => n.remove());
+  const next = curItem();
+  const div = document.createElement("div");
+  div.id = "rest-overlay";
+  div.innerHTML = `
+    <div class="kicker">Rest — you earned it</div>
+    <div class="t num" id="rest-val">${fmtMins(sec)}</div>
+    <p class="sub">Next: ${next.ex.icon} ${next.ex.name} · set ${UI.session.setIdx + 1}</p>
+    <div class="row" style="gap:10px">
+      <button class="btn ghost" data-a="rest-add" style="width:auto;padding:12px 22px">+15s</button>
+      <button class="btn primary" data-a="rest-skip" style="width:auto;padding:12px 30px">Skip rest</button>
+    </div>
+    <button class="chip" data-a="quit" style="margin-top:6px">End session</button>`;
+  document.body.appendChild(div);
+  clearInterval(UI.restTimer);
+  let warned = false;
+  UI.restTimer = setInterval(() => {
+    const left = Math.max(0, Math.ceil((UI.rest.endTs - Date.now()) / 1000));
+    const el = document.getElementById("rest-val");
+    if (el) { el.textContent = fmtMins(left); if (left <= 5) el.classList.add("ending"); }
+    if (left === 10 && !warned) { warned = true; beep(false); }
+    if (left === 0) { endRest(); beep(true); }
+  }, 200);
+}
+function endRest() { clearInterval(UI.restTimer); UI.rest = null; document.querySelectorAll("#rest-overlay").forEach((n) => n.remove()); }
+
+function skipExercise() {
+  clearInterval(UI.timer); // a running hold must never outlive its exercise
+  const s = UI.session;
+  delete curItem()._adj;
+  if (s.idx >= s.items.length - 1) { finishSession(); return; }
+  s.idx++; s.setIdx = 0; renderPlayer();
+}
+function swapEasier() {
+  clearInterval(UI.timer);
+  const s = UI.session, it = curItem();
+  delete it._adj;
+  if (it.ladder) {
+    const ladder = LADDERS[it.ladder];
+    const curIdx = ladderRung(it.ladder)?.idx ?? 0;
+    if (curIdx > 0) {
+      const easier = ladder.rungs[curIdx - 1];
+      it.exId = easier.ex; it.ex = EX[easier.ex];
+      const win = easier.scheme.reps || easier.scheme.secs;
+      it.target = win[0]; it.timed = !!easier.scheme.secs; it.ladder = null; // no progression credit on swapped item
+      showToast(`Swapped to ${it.ex.name} for today`);
+    } else { it.target = Math.max(1, Math.floor(it.target * 0.6)); showToast("Target reduced — quality over quantity"); }
+  } else {
+    it.target = Math.max(1, Math.floor((it.target || 8) * 0.6));
+    showToast("Target reduced — listen to the body");
+  }
+  renderPlayer();
+}
+function quitSession() {
+  clearInterval(UI.timer); endRest();
+  releaseWake();
+  UI.session = null;
+  document.getElementById("player")?.remove();
+  render();
+}
+function finishSession() {
+  const s = UI.session;
+  clearInterval(UI.timer); endRest();
+  const mins = Math.max(1, Math.round((Date.now() - s.startTs) / 60000));
+  const res = completeSession(s, mins);
+  releaseWake();
+  UI.session = null;
+  document.getElementById("player")?.remove();
+  // variable reward: celebrate the special moments, not every routine completion
+  if (res.prList.length || res.badges.length || res.offers.some((o) => !o.locked) ||
+      (S.streak.current > 0 && S.streak.current % 7 === 0) || Math.random() < 0.1) confetti();
+  renderDone(s, mins, res);
+}
+function renderDone(s, mins, res) {
+  const lvl = xpLevel();
+  const div = document.createElement("div");
+  div.id = "player";
+  div.innerHTML = `<div class="inner">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+      <div style="font-size:64px">${s.type === "strength" ? "⚒️" : s.type === "spine" ? "🧘" : "🚑"}</div>
+      <h1 class="display" style="margin:10px 0 4px">${s.type === "strength" ? "Forged." : "Streak fed."}</h1>
+      <p class="sub">${s.name} · ${mins} min · <b style="color:var(--accent)">+${res.xp} XP</b></p>
+      <div class="card" style="text-align:left;margin-top:20px">
+        <div class="row between"><span class="kicker">🔥 Streak</span><span class="num" style="font-size:28px">${S.streak.current}</span></div>
+        <div class="xp-bar" style="margin-top:10px"><div class="fill" style="width:${lvl.pct}%"></div></div>
+        <div class="micro" style="margin-top:4px">Lv ${lvl.lv} ${lvl.name}${lvl.next ? ` · ${S.xp - lvl.cur}/${lvl.next - lvl.cur} XP` : ""}</div>
+      </div>
+      ${res.prList.length ? `<div class="card accent" style="text-align:left"><div class="kicker">🏆 New PR${res.prList.length > 1 ? "s" : ""}!</div>${res.prList.map((p) => `<p style="font-weight:700;margin-top:4px">${p.ex} — ${p.timed ? fmtMins(p.val) : p.val + " reps"}</p>`).join("")}</div>` : ""}
+      ${res.offers.map((o, i) => o.locked
+        ? `<div class="card" style="text-align:left"><div class="kicker muted">🔒 Ladder ready — phase-locked</div><p class="sub" style="margin-top:4px"><b>${o.to}</b> unlocks in Phase ${o.needPhase}. Your body's earned it — the timeline just needs to catch up.</p></div>`
+        : `<div class="card" style="text-align:left"><div class="kicker" style="color:var(--good)">📈 Ladder climb unlocked</div><p class="sub" style="margin:4px 0 10px"><b>${o.from}</b> is conquered. Ready for <b>${o.to}</b>?</p><button class="btn" data-a="ladder-up" data-v="${o.ladder}" data-i="${i}">Climb to ${o.to}</button></div>`).join("")}
+      ${res.badges.map((b) => `<div class="card accent" style="text-align:left"><div class="kicker">🎖️ Badge earned</div><p style="font-weight:700;margin-top:4px">${b.icon} ${b.name}</p></div>`).join("")}
+      ${S.log.length % 5 === 0 ? `<button class="btn ghost" data-a="export-data">💾 30-second habit: export a backup</button>` : ""}
+    </div>
+    <button class="btn primary big" data-a="done-close">Done</button>
+  </div>`;
+  document.body.appendChild(div);
+}
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+function renderProgress() {
+  const lvl = xpLevel();
+  const prEntries = Object.entries(S.prs).map(([ex, v]) => ({ ex: EX[ex], v })).filter((p) => p.ex).slice(-8).reverse();
+  $app().innerHTML = `<div class="screen">
+    <h1 class="display" style="margin-bottom:14px">Progress</h1>
+    <div class="card accent">
+      <div class="row between"><span class="kicker">Lv ${lvl.lv} · ${lvl.name}</span><span class="micro">${S.xp} XP</span></div>
+      <div class="xp-bar" style="margin-top:10px"><div class="fill" style="width:${lvl.pct}%"></div></div>
+      ${lvl.next ? `<div class="micro" style="margin-top:5px">${lvl.next - S.xp} XP to ${LEVEL_NAMES[lvl.lv + 1]}</div>` : ""}
+    </div>
+    ${S.log.length === 0 ? `<div class="card">
+      <div class="kicker muted" style="margin-bottom:8px">Consistency</div>
+      <p class="sub">Your chain starts with today's first session. Everything you log builds the picture here — the calendar, the charts, the records.</p>
+      <button class="btn primary" data-a="nav" data-v="today" style="margin-top:12px">Light it up →</button>
+    </div>` : `<div class="card">
+      <div class="kicker muted" style="margin-bottom:10px">Consistency — don't break the chain</div>
+      <div class="chart-wrap">${heatmapSVG()}</div>
+      <div class="row" style="margin-top:8px;gap:14px">
+        <span class="micro">■ trained</span><span class="micro">▪ spine/walk</span><span class="micro">❄️ freeze used</span>
+      </div>
+      <p class="micro" style="margin-top:4px">Tap a square for that day's detail.</p>
+    </div>
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:10px">Sessions per week</div>
+      <div class="chart-wrap" id="weekly-chart">${weeklyBarsSVG()}</div>
+    </div>`}
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:10px">Ladders</div>
+      ${Object.entries(LADDERS).map(([k, l]) => {
+        const idx = Math.min(S.levels[k] ?? 0, l.rungs.length - 1);
+        return `<button class="ex-item" data-a="sheet" data-v="ladder:${k}">
+          <span class="ico">${l.icon}</span>
+          <span class="meta"><span class="nm">${l.name}</span><br><span class="lv">Rung ${idx + 1}/${l.rungs.length} — ${EX[l.rungs[idx].ex].name}</span></span>
+          <span class="micro">${Math.round(((idx + 1) / l.rungs.length) * 100)}%</span>
+        </button>`;
+      }).join("")}
+    </div>
+    <div class="card">
+      <div class="row between" style="margin-bottom:10px"><span class="kicker muted">Bodyweight</span>
+        <button class="chip accent" data-a="sheet" data-v="weight">+ log</button></div>
+      ${S.weights.length >= 2 ? `<div class="chart-wrap">${weightLineSVG()}</div>` : `<p class="sub">${S.weights.length === 1 ? `Latest: <b>${S.weights[S.weights.length - 1].kg} kg</b>. Log again in a few days to see the trend.` : "Log your weight to track the road to visible abs."}</p>`}
+    </div>
+    ${prEntries.length ? `<div class="card"><div class="kicker muted" style="margin-bottom:8px">Personal records</div>
+      ${prEntries.map((p) => `<div class="row between" style="padding:7px 0;border-bottom:1px solid var(--line)"><span class="sub">${p.ex.icon} ${p.ex.name}</span><b class="num" style="font-size:18px">${p.ex.kind.includes("sec") ? fmtMins(p.v) : p.v}</b></div>`).join("")}</div>` : ""}
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:10px">${S.log.length === 0 ? "First badges within reach" : "Badges"}</div>
+      <div class="badge-grid">${(S.log.length === 0 ? BADGES.slice(0, 3) : BADGES).map((b) => `<div class="badge ${S.badges.includes(b.id) ? "earned" : "locked"}"><span class="bico">${b.icon}</span><span class="bnm">${b.name}</span></div>`).join("")}</div>
+    </div>
+  </div>`;
+}
+function heatmapSVG() {
+  const weeks = 16, cell = 13, gap = 3;
+  const today = new Date();
+  const end = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()));
+  let html = `<svg width="${weeks * (cell + gap)}" height="${7 * (cell + gap) + 14}" style="display:block">`;
+  for (let w = 0; w < weeks; w++) {
+    for (let d = 0; d < 7; d++) {
+      const dt = new Date(end.getFullYear(), end.getMonth(), end.getDate() - ((weeks - 1 - w) * 7 + (6 - d)));
+      if (dt > today) continue;
+      const key = dkey(dt);
+      const logs = sessionsOn(key);
+      const strength = logs.some((l) => l.type === "strength");
+      const any = logs.length > 0;
+      const frozen = S.streak.frozen[key];
+      const fill = strength ? "var(--chart-1)" : any ? "color-mix(in srgb, var(--chart-1) 45%, var(--surface-2))" : "var(--surface-2)";
+      const x = w * (cell + gap), y = d * (cell + gap);
+      const detail = esc(logs.length ? logs.map((l) => l.name).join(", ") : frozen ? "streak freeze ❄️" : "rest");
+      html += `<rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="3" fill="${fill}" data-a="hm-day" data-v="${fmtDate(key)}: ${detail}" style="cursor:pointer"><title>${fmtDate(key)}: ${detail}</title></rect>`;
+      if (frozen && !any) html += `<text x="${x + cell / 2}" y="${y + cell - 2.5}" font-size="9" text-anchor="middle" pointer-events="none">❄️</text>`;
+    }
+  }
+  html += `</svg>`;
+  return html;
+}
+function weekStart(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dkey(new Date(dt.getFullYear(), dt.getMonth(), dt.getDate() - dt.getDay()));
+}
+function weeklyBarsSVG() {
+  const weeks = [];
+  const now = new Date();
+  for (let i = 7; i >= 0; i--) {
+    const ws = dkey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - i * 7));
+    weeks.push({ ws, strength: 0, other: 0 });
+  }
+  for (const l of S.log) {
+    const ws = weekStart(l.date);
+    const w = weeks.find((x) => x.ws === ws);
+    if (w) (l.type === "strength" ? w.strength++ : w.other++);
+  }
+  const W = 340, H = 130, pad = 6, bw = 26;
+  const maxV = 2 * Math.ceil(Math.max(4, ...weeks.map((w) => w.strength + w.other)) / 2); // even axis top
+  const x0 = 10;
+  const step = (W - x0 - pad) / weeks.length;
+  let svg = `<svg viewBox="0 0 ${W} ${H + 20}" width="100%" style="display:block;max-width:420px">`;
+  for (let g = 1; g <= 2; g++) {
+    const gy = H - (H - 10) * (g * (maxV / 2) / maxV);
+    svg += `<line x1="${x0}" y1="${gy}" x2="${W}" y2="${gy}" stroke="var(--chart-grid)" stroke-width="1"/><text x="${x0 - 2}" y="${gy + 3}" font-size="9" fill="var(--ink-3)" text-anchor="end">${g * (maxV / 2)}</text>`;
+  }
+  weeks.forEach((w, i) => {
+    const x = x0 + i * step + (step - bw) / 2;
+    const hS = (H - 10) * (w.strength / maxV), hO = (H - 10) * (w.other / maxV);
+    const label = new Date(...w.ws.split("-").map((n, j) => j === 1 ? Number(n) - 1 : Number(n))).getDate();
+    if (w.other > 0) svg += `<rect x="${x}" y="${H - hO}" width="${bw}" height="${Math.max(1.5, hO - 1)}" rx="${hS > 0 ? 0 : 3}" fill="var(--chart-2)"><title>${w.other} spine/walk</title></rect>`;
+    if (w.strength > 0) svg += `<rect x="${x}" y="${H - hO - hS - (w.other ? 2 : 0)}" width="${bw}" height="${Math.max(1.5, hS)}" rx="3" fill="var(--chart-1)"><title>${w.strength} strength</title></rect>`;
+    svg += `<text x="${x + bw / 2}" y="${H + 13}" font-size="9" fill="var(--ink-3)" text-anchor="middle">${label}</text>`;
+  });
+  svg += `</svg>
+  <div class="row" style="gap:14px;margin-top:6px">
+    <span class="micro"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--chart-1);margin-right:4px"></span>strength</span>
+    <span class="micro"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--chart-2);margin-right:4px"></span>spine & walks</span>
+  </div>`;
+  return svg;
+}
+function weightLineSVG() {
+  const data = S.weights.slice(-30);
+  const W = 340, H = 110, padX = 30, padY = 14;
+  const vals = data.map((d) => d.kg);
+  const mn = Math.min(...vals), mx = Math.max(...vals);
+  const span = Math.max(1, mx - mn);
+  const px = (i) => padX + (i / Math.max(1, data.length - 1)) * (W - padX - 10);
+  const py = (v) => padY + (1 - (v - mn) / span) * (H - padY * 2);
+  let path = data.map((d, i) => `${i === 0 ? "M" : "L"}${px(i).toFixed(1)},${py(d.kg).toFixed(1)}`).join("");
+  const last = data[data.length - 1];
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;max-width:420px">
+    <line x1="${padX}" y1="${py(mn)}" x2="${W - 10}" y2="${py(mn)}" stroke="var(--chart-grid)"/>
+    <line x1="${padX}" y1="${py(mx)}" x2="${W - 10}" y2="${py(mx)}" stroke="var(--chart-grid)"/>
+    <text x="${padX - 4}" y="${py(mx) + 3}" font-size="9" fill="var(--ink-3)" text-anchor="end">${mx}</text>
+    <text x="${padX - 4}" y="${py(mn) + 3}" font-size="9" fill="var(--ink-3)" text-anchor="end">${mn}</text>
+    <path d="${path}" fill="none" stroke="var(--chart-2)" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="${px(data.length - 1)}" cy="${py(last.kg)}" r="4.5" fill="var(--chart-2)" stroke="var(--surface)" stroke-width="2"/>
+    <text x="${px(data.length - 1)}" y="${py(last.kg) - 9}" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="end">${last.kg} kg</text>
+  </svg>`;
+}
+
+/* ============================================================
+   PLAN
+   ============================================================ */
+function renderPlan() {
+  const ph = PHASES[S.phase - 1];
+  const kg = S.weights.length ? S.weights[S.weights.length - 1].kg : null;
+  $app().innerHTML = `<div class="screen">
+    <h1 class="display" style="margin-bottom:14px">The Plan</h1>
+    <div class="card accent">
+      <div class="row between">
+        <span class="kicker">Phase ${ph.n} · ${ph.name}</span>
+        <span class="chip">weeks ${ph.weeks}</span>
+      </div>
+      <p class="sub" style="margin-top:8px">${ph.desc}</p>
+      <div class="safety-note"><span class="si">🚦</span><span><b>Gate:</b> ${ph.gate}</span></div>
+      <div class="grid-2" style="margin-top:12px">
+        ${S.phase > 1 ? `<button class="btn ghost" data-a="phase-down">↓ Drop back</button>` : "<span></span>"}
+        ${S.phase < 4 ? `<button class="btn" data-a="phase-up">↑ Advance</button>` : "<span></span>"}
+      </div>
+    </div>
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:10px">The week</div>
+      <div class="stack">
+        <div class="row"><span style="font-size:20px">🧘</span><div><b>Every day</b><div class="micro">Spine Reset (10 min) + build toward a 30-min walk</div></div></div>
+        ${DAY_ORDER.map((d) => {
+          const t = DAY_TEMPLATES[d];
+          return `<button class="ex-item" data-a="sheet" data-v="daytpl:${d}"><span class="ico">${t.icon}</span><span class="meta"><span class="nm">${t.name}</span><br><span class="lv">${t.tag} · ~${t.est} min</span></span><span class="micro">›</span></button>`;
+        }).join("")}
+      </div>
+      <p class="micro" style="margin-top:10px">Your ${S.profile.trainDays.length} training days rotate through these four sessions in order.</p>
+    </div>
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:8px">🚦 The traffic-light rules</div>
+      <div class="stack">
+        <div class="row"><span class="chip good">GREEN</span><span class="sub">Feeling fine or symptoms shrinking toward the spine → train as planned, progress when targets are hit.</span></div>
+        <div class="row"><span class="chip warn">YELLOW</span><span class="sub">Niggly → the app trims volume ~40% automatically. Keep moving, don't push.</span></div>
+        <div class="row"><span class="chip bad">RED</span><span class="sub">Rough, or ANY symptoms running down the leg → Spine Reset + walk only. Leg symptoms are never trained through.</span></div>
+      </div>
+      <p class="micro" style="margin-top:10px">Judge yesterday's session by this morning's back. Worse morning = yesterday was too much.</p>
+    </div>
+    <div class="card" style="border-color:var(--bad)">
+      <div class="kicker" style="color:var(--bad);margin-bottom:8px">⛑️ See a doctor urgently if</div>
+      <ul style="margin-left:18px;font-size:14px;color:var(--ink-2);display:flex;flex-direction:column;gap:5px">${RED_FLAGS.map((r) => `<li>${r}</li>`).join("")}</ul>
+    </div>
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:8px">🍽️ The abs equation</div>
+      ${kg ? `
+        <p class="sub">At <b>${kg} kg</b>, your daily targets while cutting:</p>
+        <div class="grid-2" style="margin:10px 0">
+          <div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:28px">${Math.round(kg * 1.8)}–${Math.round(kg * 2.2)}g</div><div class="micro">protein / day</div></div>
+          <div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:28px">300–500</div><div class="micro">kcal deficit / day</div></div>
+        </div>
+        <p class="sub">Aim to lose <b>${(kg * 0.005).toFixed(1)}–${(kg * 0.01).toFixed(1)} kg/week</b> — faster costs you strength. Abs show for most men around 10–14% body fat. Weigh daily, judge by the weekly average.</p>`
+      : `<p class="sub">Visible abs = anti-core strength (you're building it) + body-fat around 10–14%. That second part is diet: a 300–500 kcal daily deficit, ~2g protein per kg bodyweight. Log a weight in Progress and I'll do the maths for you.</p>`}
+      <p class="micro" style="margin-top:8px">Diet break at maintenance every 6–8 weeks. If pull-up numbers drop two weeks running, eat a bit more.</p>
+    </div>
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:8px">🦴 Why this plan is shaped this way</div>
+      <p class="sub">Disc issues at L5 are aggravated by one thing above all: <b>bending the lower spine under load</b>, especially with rotation, especially in the morning. So: every exercise here keeps the spine neutral and moves through the hips. Core work is <i>anti</i>-movement (planks, bird dogs, carries) — which is also exactly how you build a six-pack that shows. Pull-ups gently decompress. Walking is medicine. The McGill Big 3 is your daily armour. Strong and safe aren't in tension — done right, they're the same program.</p>
+      <p class="micro" style="margin-top:8px">Educational tool, not medical advice. If symptoms persist or worsen over 6 weeks, get assessed by a physio.</p>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   LIBRARY
+   ============================================================ */
+const PATTERN_NAMES = { spine: "Spine", vpull: "Pull", hpull: "Row", dip: "Dip", push: "Push", vpush: "Handstand", vkr: "Knee raise", lsit: "L-sit", core: "Core", squat: "Squat", hinge: "Hinge" };
+function libListHTML() {
+  const q = UI.libQ.toLowerCase();
+  const entries = Object.entries(EX).filter(([id, e]) =>
+    (!UI.libFilter || e.pattern === UI.libFilter) && (!q || e.name.toLowerCase().includes(q)));
+  return entries.map(([id, e]) => `<button class="ex-item" data-a="sheet" data-v="ex:${id}">
+      <span class="ico">${e.icon}</span>
+      <span class="meta"><span class="nm">${e.name}</span><br><span class="lv">${PATTERN_NAMES[e.pattern] || e.pattern}${e.phase > S.phase ? ` · 🔒 phase ${e.phase}` : ""}</span></span>
+      ${S.prs[id] ? `<span class="chip">${e.kind.includes("sec") ? fmtMins(S.prs[id]) : S.prs[id] + "×"}</span>` : ""}
+    </button>`).join("") || `<p class="sub" style="padding:16px 0">Nothing matches.</p>`;
+}
+function renderLibrary() {
+  $app().innerHTML = `<div class="screen">
+    <h1 class="display" style="margin-bottom:14px">Moves</h1>
+    <input type="text" id="lib-q" placeholder="Search…" value="${esc(UI.libQ)}" style="margin-bottom:10px">
+    <div class="chart-wrap" style="margin-bottom:12px"><div class="row" style="gap:6px;width:max-content">
+      <button class="chip ${!UI.libFilter ? "accent" : ""}" data-a="lib-filter" data-v="">All</button>
+      ${Object.entries(PATTERN_NAMES).map(([k, n]) => `<button class="chip ${UI.libFilter === k ? "accent" : ""}" data-a="lib-filter" data-v="${k}">${n}</button>`).join("")}
+    </div></div>
+    <div class="card flush" style="padding:0 16px" id="lib-list">${libListHTML()}</div>
+  </div>`;
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function renderSettings() {
+  const p = S.profile;
+  $app().innerHTML = `<div class="screen">
+    <h1 class="display" style="margin-bottom:14px">Setup</h1>
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:10px">📅 Schedule</div>
+      <div class="field"><span class="lbl">Training days</span>
+        <div class="day-picker">${DAYS.map((d, i) => `<button data-a="set-day" data-i="${i}" class="${p.trainDays.includes(i) ? "on" : ""}">${d}</button>`).join("")}</div></div>
+      <label class="field"><span class="lbl">Time</span><input type="time" id="set-time" value="${esc(p.time)}"></label>
+      ${p.time < "08:00" ? `<div class="safety-note"><span class="si">☀️</span><span>That's early. Train 2–3h after waking — discs are most vulnerable in the first hour up.</span></div>` : ""}
+      <label class="field"><span class="lbl">Habit anchor</span><input type="text" id="set-anchor" value="${esc(p.anchor || "")}" placeholder="right after…"></label>
+    </div>
+    <div class="card accent">
+      <div class="kicker" style="margin-bottom:8px">📱 iPhone reminders & alarms</div>
+      <p class="sub" style="margin-bottom:10px">These download calendar files. Open the file after downloading (tap ⬇︎ in Safari, then the file) and hit <b>Add All</b> — you'll get real iPhone notifications.</p>
+      <div class="field"><span class="lbl">Alert before session</span>
+        <div class="seg">${[0, 15, 30, 60].map((m) => `<button data-a="set-alert" data-v="${m}" class="${S.settings.alertMin === m ? "active" : ""}">${m === 0 ? "On time" : m + " min"}</button>`).join("")}</div></div>
+      <button class="btn" data-a="ics-schedule">🔥 Training days → Calendar (12 weeks)</button>
+      <button class="btn" data-a="ics-spine" style="margin-top:10px">🧘 Daily Spine Reset → Calendar</button>
+      <button class="btn ghost" data-a="sheet" data-v="guide" style="margin-top:10px">Full iPhone setup guide</button>
+    </div>
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:6px">⏱️ In-workout</div>
+      <div class="toggle-row"><span class="sub">Timer sounds</span><label class="switch"><input type="checkbox" id="set-sound" ${S.settings.sound ? "checked" : ""}><span class="track"></span><span class="thumb"></span></label></div>
+      <div class="field" style="margin-top:10px"><span class="lbl">Rest after main lifts</span>
+        <div class="seg">${[90, 120, 150, 180].map((s) => `<button data-a="set-rest" data-v="${s}" class="${S.settings.restMain === s ? "active" : ""}">${s}s</button>`).join("")}</div></div>
+      <div class="field"><span class="lbl">Theme</span>
+        <div class="seg">${["auto", "dark", "light"].map((th) => `<button data-a="set-theme" data-v="${th}" class="${S.settings.theme === th ? "active" : ""}">${th}</button>`).join("")}</div></div>
+    </div>
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:8px">💾 Backup</div>
+      <p class="sub" style="margin-bottom:10px">Your data lives only on this device. Export regularly — especially if you might not open the app for a week+.</p>
+      <div class="grid-2">
+        <button class="btn" data-a="export-data">Export</button>
+        <button class="btn" data-a="sheet" data-v="import">Import</button>
+      </div>
+      ${RESCUE_RAW ? `<button class="btn ghost" data-a="rescue-dump" style="margin-top:10px">🚨 Show unreadable old data (rescue)</button>
+      <button class="btn ghost" data-a="rescue-dismiss" style="margin-top:8px">Dismiss old data</button>` : ""}
+    </div>
+    <div class="card">
+      <div class="kicker muted" style="margin-bottom:8px">☢️ Danger zone</div>
+      <button class="btn danger" data-a="reset-all">Reset everything</button>
+    </div>
+    <p class="micro" style="text-align:center;margin-top:6px">FORGE · built for Haris · not medical advice · see a professional for persistent symptoms</p>
+  </div>`;
+}
+
+/* ============================================================
+   SHEETS
+   ============================================================ */
+function renderSheet() {
+  document.querySelector(".sheet-backdrop")?.remove();
+  if (!UI.sheet) return;
+  const [kind, arg] = UI.sheet.split(":");
+  let body = "";
+  if (kind === "ex") {
+    const e = EX[arg];
+    const inLadder = Object.entries(LADDERS).find(([k, l]) => l.rungs.some((r) => r.ex === arg));
+    body = `<h2 class="display">${e.icon} ${e.name}</h2>
+      <div class="row" style="margin:8px 0"><span class="chip">${PATTERN_NAMES[e.pattern] || e.pattern}</span><span class="chip ${e.phase <= S.phase ? "good" : "warn"}">Phase ${e.phase}+</span>${S.prs[arg] ? `<span class="chip accent">PR ${e.kind.includes("sec") ? fmtMins(S.prs[arg]) : S.prs[arg] + " reps"}</span>` : ""}</div>
+      <div id="demo-box-sheet" class="demo-box" style="display:flex;justify-content:center;margin:12px 0;background:var(--surface-2);border-radius:var(--radius-sm);padding:8px 0"></div>
+      <div class="kicker muted" style="margin:12px 0 6px">Form</div>
+      <ul style="margin-left:18px;font-size:14px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">${e.cues.map((c) => `<li>${c}</li>`).join("")}</ul>
+      <div class="safety-note"><span class="si">🦴</span><span>${e.l5}</span></div>
+      ${inLadder ? `<button class="btn ghost" data-a="sheet" data-v="ladder:${inLadder[0]}" style="margin-top:12px">View the ${inLadder[1].name} ladder</button>` : ""}`;
+  } else if (kind === "ladder") {
+    const l = LADDERS[arg];
+    const idx = Math.min(S.levels[arg] ?? 0, l.rungs.length - 1);
+    body = `<h2 class="display">${l.icon} ${l.name} ladder</h2>
+      <div class="ladder" style="margin-top:14px">
+        ${l.rungs.map((r, i) => `<div class="rung ${i < idx ? "done" : i === idx ? "now" : ""}">
+          <div class="nm">${EX[r.ex].icon} ${EX[r.ex].name}${EX[r.ex].phase > S.phase ? " 🔒" : ""}</div>
+          <div class="crit">${i === idx ? "→ " : ""}Climb when: ${r.crit}${EX[r.ex].phase > S.phase ? ` · unlocks Phase ${EX[r.ex].phase}` : ""}</div>
+        </div>`).join("")}
+      </div>
+      ${idx > 0 ? `<button class="btn ghost" data-a="ladder-down" data-v="${arg}" style="margin-top:12px">↓ Drop a rung (too hard right now)</button>` : ""}`;
+  } else if (kind === "daytpl") {
+    const t = DAY_TEMPLATES[arg];
+    body = `<h2 class="display">${t.icon} ${t.name}</h2><p class="sub" style="margin:6px 0 12px">${t.tag} · ~${t.est} min · always preceded by the warm-up flow</p>
+      ${t.blocks.map((b) => {
+        if (b.ladder) { const { rung } = ladderRung(b.ladder); return `<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span class="ico" style="font-size:20px">${EX[rung.ex].icon}</span><div><b>${EX[rung.ex].name}</b><div class="micro">${LADDERS[b.ladder].name} ladder · ${b.sets ?? rung.scheme.sets} sets${b.note ? " · " + b.note : ""}</div></div></div>`; }
+        const e = EX[b.ex];
+        return `<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span class="ico" style="font-size:20px">${e.icon}</span><div><b>${e.name}</b><div class="micro">${b.sets} × ${b.target}${e.kind.includes("sec") ? "s" : ""}${b.note ? " · " + b.note : ""}${b.phaseMin && S.phase < b.phaseMin ? ` · 🔒 phase ${b.phaseMin}` : ""}</div></div></div>`;
+      }).join("")}`;
+  } else if (kind === "guide") {
+    body = `<h2 class="display">📱 iPhone setup</h2>
+      <div class="kicker muted" style="margin:14px 0 6px">1 · Real reminders with alarms (do this in Safari first)</div>
+      <p class="sub">FORGE has no server, so it can't send push notifications — the reliable route is <b>Calendar events with alerts</b>. In Setup, tap the Calendar buttons, open the downloaded file (⬇︎ icon in Safari → tap the file), then tap <b>Add All</b>. Every training day now fires a real iPhone notification. <i>Re-exporting after a schedule change? Delete the old FORGE events in Calendar first — each export adds fresh ones.</i></p>
+      <div class="kicker muted" style="margin:14px 0 6px">2 · Put FORGE on your home screen</div>
+      <p class="sub">In Safari: <b>Share → Add to Home Screen</b>. You get an app icon, full-screen mode, and iOS stops auto-deleting your saved data after a week of not visiting. <b>One catch:</b> the home-screen app starts with its own separate storage. So: <b>Export a backup first</b> (Setup → Backup), then open the new icon and <b>Import</b> it. Two minutes, once.</p>
+      <div class="kicker muted" style="margin:14px 0 6px">3 · Want a proper ALARM-alarm?</div>
+      <p class="sub">Ask Siri once: <i>“Set a repeating alarm at ${esc(S.profile?.time || "18:00")} on weekdays called Forge.”</i> Clock-app alarms break through silent mode.</p>
+      <div class="kicker muted" style="margin:14px 0 6px">4 · During workouts</div>
+      <p class="sub">Keep the screen on — iOS pauses web timers when it locks. FORGE asks the phone to keep the screen awake, but on some iOS versions that silently fails in home-screen apps.</p>
+      <div class="kicker muted" style="margin:14px 0 6px">5 · Keep your data safe</div>
+      <p class="sub">Everything lives on your phone only. Export a backup after milestones (Setup → Backup → Export). Ten seconds, total peace of mind.</p>
+      <button class="btn primary" data-a="guide-done" style="margin-top:14px">Got it</button>`;
+  } else if (kind === "streak") {
+    body = `<h2 class="display">❄️ Streak insurance</h2>
+      <p class="sub" style="margin:12px 0">Your streak is protected three ways — so one bad day never erases your work:</p>
+      <div class="stack">
+        <div class="row"><span style="font-size:22px">❄️</span><span class="sub"><b>Freezes.</b> You bank 1 for every 7 active days (max 2). Miss a day and one is spent automatically — you'll see a ❄️ on the calendar.</span></div>
+        <div class="row"><span style="font-size:22px">🔧</span><span class="sub"><b>Repair.</b> Slipped without a freeze? Finish anything within a day or two and the chain re-links (once a fortnight).</span></div>
+        <div class="row"><span style="font-size:22px">🚑</span><span class="sub"><b>Rescue.</b> The 5-minute circuit fully counts. Showing up IS the metric.</span></div>
+      </div>
+      <p class="micro" style="margin-top:12px">You have ${S.streak.freezes} freeze${S.streak.freezes === 1 ? "" : "s"} banked. Best streak so far: ${S.streak.best}.</p>`;
+  } else if (kind === "anchor") {
+    body = `<h2 class="display">📌 Tie it to a habit</h2>
+      <p class="sub" style="margin:10px 0 12px">People who decide <i>when and after what</i> they'll train show up far more often — it's the best-evidenced trick in behaviour science. Finish the sentence:</p>
+      <label class="field"><span class="lbl">Right after…</span><input type="text" id="anchor-in" placeholder="my evening tea / dinner / brushing my teeth" value="${esc(S.profile?.anchor || "")}"></label>
+      <button class="btn primary" data-a="anchor-save">Set the cue</button>`;
+  } else if (kind === "paincheck") {
+    body = `<h2 class="display">Quick back check-in first</h2>
+      <p class="sub" style="margin:10px 0 14px">30 seconds of honesty = the right workout for today.</p>
+      <div class="pain-picker">
+        ${Object.entries(painChip).map(([k, v]) => `<button data-a="pain-then-start" data-v="${k}"><span>${v[0]}</span>${v[1]}</button>`).join("")}
+      </div>
+      <p class="micro" style="margin-top:12px">🟡 trims the volume ~40% · 🔴 swaps to the gentle Spine Reset.</p>`;
+  } else if (kind === "quitconfirm") {
+    body = `<h2 class="display">Stop here?</h2>
+      <p class="sub" style="margin:10px 0 14px">Nothing's logged yet — but the 5-minute Rescue still counts for the streak. Bad days are what it's for.</p>
+      <div class="stack">
+        <button class="btn primary" data-a="sheet-close">Keep going</button>
+        <button class="btn" data-a="quit-rescue">🚑 Switch to the 5-min Rescue</button>
+        <button class="btn ghost" data-a="quit-anyway">Stop anyway</button>
+      </div>`;
+  } else if (kind === "copyout") {
+    body = UI.copyBody || "";
+  } else if (kind === "confirm") {
+    const c = UI.confirmCfg || {};
+    body = `<h2 class="display">${c.title || "Sure?"}</h2>
+      <p class="sub" style="margin:10px 0 14px">${c.body || ""}</p>
+      <div class="stack">
+        <button class="btn ${c.danger ? "danger" : "primary"}" data-a="confirm-yes">${c.yes || "Yes"}</button>
+        <button class="btn ghost" data-a="sheet-close">${c.no || "Cancel"}</button>
+      </div>`;
+  } else if (kind === "legstop") {
+    body = `<h2 class="display" style="color:var(--bad)">Right call. We stop.</h2>
+      <p class="sub" style="margin:10px 0 12px">Leg symptoms mean no strength work today — that rule is what gets you strong long-term. Your logged sets are saved.</p>
+      <ul style="margin-left:18px;font-size:14px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px">
+        <li>Do the gentle Spine Reset later if it feels OK</li>
+        <li>Take a short, easy walk</li>
+        <li>Judge today by how tomorrow morning feels</li>
+      </ul>
+      <div class="safety-note" style="background:var(--bad-soft)"><span class="si">⛑️</span><span>Same-day doctor if: groin numbness, bladder/bowel changes, or leg weakness.</span></div>
+      <button class="btn primary" data-a="legstop-done" style="margin-top:14px">End session safely</button>`;
+  } else if (kind === "whatis") {
+    body = `<h2 class="display">The two daily tools</h2>
+      <div class="kicker muted" style="margin:14px 0 6px">🧘 Spine Reset · ~10 min</div>
+      <p class="sub">Your daily physio routine — the McGill Big 3 (curl-up, side plank, bird dog) plus cat-camels and an optional dead hang. It builds endurance in the muscles that hold your spine neutral, which is the rehab AND the injury-proofing. It's deliberately gentle: it belongs on rest days, rough days, every day. It's also your streak anchor — doing it counts.</p>
+      <div class="kicker muted" style="margin:14px 0 6px">🚑 5-Min Rescue · ~5 min</div>
+      <p class="sub">The bare-minimum circuit for days when life wins: a few cat-camels, bird dogs, easy push-ups, comfortable squats, a short hang. It exists because the research is clear — what kills progress isn't small workouts, it's zero-days becoming the habit. It fully counts for your streak. No guilt, ever.</p>`;
+  } else if (kind === "weight") {
+    body = `<h2 class="display">Log bodyweight</h2>
+      <label class="field" style="margin-top:12px"><span class="lbl">Today's weight (kg)</span><input type="number" id="w-kg" inputmode="decimal" placeholder="${S.weights.length ? S.weights[S.weights.length - 1].kg : "e.g. 78"}"></label>
+      <button class="btn primary" data-a="weight-save">Save</button>`;
+  } else if (kind === "import") {
+    body = `<h2 class="display">Import backup</h2>
+      <p class="sub" style="margin:8px 0 12px">Paste the contents of a <code>forge-backup-*.json</code> file. <b>This replaces current data.</b></p>
+      <textarea id="import-text" rows="6" placeholder='{"v":1,…}'></textarea>
+      <button class="btn primary" data-a="import-go" style="margin-top:12px">Import</button>`;
+  } else if (kind === "hurts") {
+    body = `<h2 class="display">Back talking to you?</h2>
+      <p class="sub" style="margin:8px 0 14px">Good call checking in. What's happening?</p>
+      <div class="stack">
+        <button class="btn" data-a="hurts-mild" style="text-transform:none;letter-spacing:0;font-family:var(--font-body);font-size:15px">Mild, just in the back (≤3/10)</button>
+        <button class="btn" data-a="hurts-skip" style="text-transform:none;letter-spacing:0;font-family:var(--font-body);font-size:15px">This exercise doesn't feel right</button>
+        <button class="btn danger" data-a="hurts-leg" style="text-transform:none;letter-spacing:0;font-family:var(--font-body);font-size:15px">Pain / tingling going into a leg</button>
+        <button class="btn ghost" data-a="sheet-close">False alarm — carry on</button>
+      </div>
+      <p class="micro" style="margin-top:12px">Rule of thumb: back-only soreness that fades between sets is usually OK to work around. Anything into the leg = we stop. No exceptions, no ego.</p>`;
+  } else if (kind === "walk") {
+    body = `<h2 class="display">🚶 Log a walk</h2>
+      <label class="field" style="margin-top:12px"><span class="lbl">Minutes</span>
+        <div class="seg">${[10, 15, 20, 30, 45].map((m) => `<button data-a="walk-save" data-v="${m}">${m}</button>`).join("")}</div></label>
+      <p class="micro">Walking is the best-evidenced daily medicine for your back. Every bout counts.</p>`;
+  } else if (kind === "level") {
+    const lvl = xpLevel();
+    body = `<h2 class="display">Lv ${lvl.lv} · ${lvl.name}</h2>
+      <div class="xp-bar" style="margin:14px 0 6px"><div class="fill" style="width:${lvl.pct}%"></div></div>
+      <p class="micro">${S.xp} XP total${lvl.next ? ` · ${lvl.next - S.xp} to ${LEVEL_NAMES[lvl.lv + 1]}` : " · max level!"}</p>
+      <p class="sub" style="margin-top:12px">XP comes from showing up: sets, sessions, PRs. It never gates anything — it's just the story of your consistency adding up.</p>`;
+  }
+  const bd = document.createElement("div");
+  bd.className = "sheet-backdrop";
+  bd.innerHTML = `<div class="sheet"><div class="row between" style="margin-bottom:4px"><div class="grab" style="margin:4px auto"></div><button class="sheet-x" data-a="sheet-close">✕</button></div>${body}</div>`;
+  bd.addEventListener("click", (e) => { if (e.target === bd) { UI.sheet = null; bd.remove(); } });
+  document.body.appendChild(bd);
+  if (kind === "ex") mountDemo(document.getElementById("demo-box-sheet"), arg, 200);
+}
+/* In-app confirm — native confirm()/alert() are silently blocked in sandboxed
+   iframes (the claude.ai artifact), so every confirmation goes through a sheet. */
+function askConfirm(cfg) {
+  UI.confirmCfg = cfg;
+  UI.pendingConfirm = cfg.onYes || null;
+  UI.sheet = "confirm";
+  renderSheet();
+}
+
+/* Copy-based fallback for contexts where downloads don't work (home-screen app, artifact) */
+function openCopySheet(name, content, label) {
+  UI.copyBody = `<h2 class="display">${esc(label || "Your file")}</h2>
+    <p class="sub" style="margin:10px 0 12px">Downloads don't work in this mode. Copy the text below and paste it into Notes/Files as <b>${esc(name)}</b>${name.endsWith(".ics") ? " — then open that file to add the events to Calendar. (Or open FORGE in Safari, where one-tap download works.)" : "."}</p>
+    <textarea rows="7" readonly id="copy-src">${esc(content)}</textarea>
+    <button class="btn primary" data-a="copy-text" style="margin-top:12px">Copy to clipboard</button>`;
+  UI.sheet = "copyout";
+  renderSheet();
+}
+
+/* ============================================================
+   RENDER ROOT + NAV
+   ============================================================ */
+function renderNav() {
+  document.getElementById("nav")?.remove();
+  const nav = document.createElement("div");
+  nav.id = "nav";
+  nav.innerHTML = `<div class="inner">${NAV.map((n) => `<button data-a="nav" data-v="${n.id}" class="${UI.screen === n.id ? "active" : ""}"><span class="ico">${n.ico}</span>${n.label}</button>`).join("")}</div>`;
+  document.body.appendChild(nav);
+}
+function render() {
+  applyTheme();
+  if (!S.profile) { renderOnboard(); return; }
+  recomputeStreak();
+  ({ today: renderToday, progress: renderProgress, plan: renderPlan, library: renderLibrary, settings: renderSettings }[UI.screen] || renderToday)();
+  renderNav();
+}
+function applyTheme() {
+  const t = S.settings.theme;
+  if (t === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", t);
+  // keep browser chrome color in sync when a theme is forced (no-op in the artifact)
+  document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
+    if (t === "auto") m.content = m.media && m.media.includes("light") ? "#f6f1ea" : "#131110";
+    else m.content = t === "light" ? "#f6f1ea" : "#131110";
+  });
+}
+
+/* ============================================================
+   ACTIONS (event delegation)
+   ============================================================ */
+const ACTIONS = {
+  "nav": (el) => { UI.screen = el.dataset.v; UI.sheet = null; render(); },
+  "sheet": (el) => { UI.sheet = el.dataset.v; renderSheet(); },
+  /* onboarding */
+  "ob-next": () => { UI.onboard++; renderOnboard(); },
+  "ob-prev": () => { UI.onboard = Math.max(0, UI.onboard - 1); renderOnboard(); },
+  "ob-redflag": () => { UI.ob.rf = true; renderOnboard(); },
+  "ob-rf-back": () => { UI.ob.rf = false; renderOnboard(); },
+  "ob-back": (el) => { const v = Number(el.dataset.v); UI.ob.phase = v === 1 ? 1 : 2; UI.ob.backState = v; UI.onboard++; renderOnboard(); },
+  "ob-legs": (el) => {
+    UI.ob.legs = el.dataset.v === "yes";
+    if (UI.ob.legs && UI.ob.backState === 1) UI.ob.phase = 1;
+    UI.onboard++; renderOnboard();
+    if (UI.ob.legs) {
+      UI.confirmCfg = { title: "Noted — one golden rule", yes: "Understood",
+        body: "Symptoms moving DOWN the leg = stop that exercise, even if the back itself feels fine. Symptoms retreating toward the spine as you move = usually a good sign. The app will remind you, every time it matters." };
+      UI.pendingConfirm = null; UI.sheet = "confirm"; renderSheet();
+    }
+  },
+  "ob-seg": (el) => { UI.ob[el.dataset.seg] = Number(el.dataset.i); renderOnboard(); },
+  "ob-day": (el) => {
+    const i = Number(el.dataset.i);
+    UI.ob.days = UI.ob.days || [1, 2, 4, 5];
+    UI.ob.days = UI.ob.days.includes(i) ? UI.ob.days.filter((d) => d !== i) : [...UI.ob.days, i].sort();
+    renderOnboard();
+  },
+  "ob-schedule-next": () => {
+    UI.ob.time = document.getElementById("ob-time").value || "18:00";
+    UI.ob.anchor = document.getElementById("ob-anchor").value.trim();
+    if (!(UI.ob.days || [1, 2, 4, 5]).length) { showToast("Pick at least one day"); return; }
+    UI.onboard++; renderOnboard();
+  },
+  "ob-body-next": () => { UI.ob.kg = parseFloat(document.getElementById("ob-kg").value) || null; UI.onboard++; renderOnboard(); },
+  "ob-body-skip": () => { UI.ob.kg = null; UI.onboard++; renderOnboard(); },
+  "ob-finish": () => {
+    const map = { vpull: [0, 3, 5, 6], dip: [0, 2, 3, 4], push: [0, 1, 2, 3] };
+    S.levels.vpull = map.vpull[UI.ob.vpull ?? 0];
+    S.levels.dip = map.dip[UI.ob.dip ?? 0];
+    S.levels.push = map.push[UI.ob.push ?? 0];
+    S.phase = UI.ob.phase || 2;
+    if (S.phase === 1) { S.levels.vpull = Math.min(S.levels.vpull, 0); S.levels.dip = 0; }
+    S.profile = { trainDays: UI.ob.days || [1, 2, 4, 5], time: UI.ob.time || "18:00", anchor: UI.ob.anchor || "", legs: !!UI.ob.legs, created: todayKey() };
+    if (UI.ob.kg) S.weights.push({ date: todayKey(), kg: UI.ob.kg });
+    save(); render();
+  },
+  /* today */
+  "pain": (el) => { setPain(el.dataset.v); render(); },
+  "pain-reset": () => { delete S.pain[todayKey()]; save(); render(); },
+  "start-strength": () => {
+    if (!painToday()) { UI.sheet = "paincheck"; renderSheet(); return; } // never assume green
+    const h = new Date().getHours();
+    if (h < 8 && !UI.morningOK) {
+      askConfirm({
+        title: "Early bird check", danger: false,
+        body: "Have you been up for at least an hour? Discs are extra vulnerable right after waking — if you just got up, do the walk first and train later.",
+        yes: "Been up a while — let's go", no: "Good point, later",
+        onYes: () => { UI.morningOK = true; startSession("strength"); },
+      });
+      return;
+    }
+    startSession("strength");
+  },
+  "pain-then-start": (el) => {
+    setPain(el.dataset.v);
+    UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove();
+    ACTIONS["start-strength"]();
+  },
+  "start-spine": () => startSession("spine"),
+  "start-rescue": () => startSession("rescue"),
+  "log-walk": () => { UI.sheet = "walk"; renderSheet(); },
+  "walk-save": (el) => {
+    const mins = Number(el.dataset.v);
+    tryRepair();
+    S.xp += XP_RULES.walk;
+    S.log.push({ id: uid(), date: todayKey(), ts: Date.now(), type: "walk", name: `${mins}-min walk`, mins, sets: [], xp: XP_RULES.walk });
+    recomputeStreak(); checkBadges(); save();
+    UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove();
+    showToast(`🚶 +${XP_RULES.walk} XP — walking is back medicine`);
+    render();
+  },
+  /* player */
+  "step": (el) => { const v = document.getElementById("rep-val"); if (v) v.textContent = Math.max(0, (parseInt(v.textContent) || 0) + Number(el.dataset.v)); },
+  "log-set": () => logSet(),
+  "timer-start": () => startHold(),
+  "timer-stop": () => stopHoldEarly(),
+  "time-adj": (el) => {
+    const it = curItem();
+    it._adj = Math.max(5, (it._adj ?? setTarget(it, UI.session.setIdx)) + Number(el.dataset.v));
+    const tv = document.getElementById("timer-val"); if (tv) tv.textContent = fmtMins(it._adj);
+  },
+  "rest-add": () => { if (UI.rest) UI.rest.endTs += 15000; },
+  "rest-skip": () => endRest(),
+  "skip-ex": () => skipExercise(),
+  "swap-easier": () => swapEasier(),
+  "quit": () => {
+    if (!UI.session) return;
+    const hasMain = UI.session.items.some((i) => !i.warmup && i.setLog?.some((v) => v != null));
+    if (hasMain) {
+      askConfirm({ title: "End here?", body: "Everything you've logged is saved and counts. Stopping early beats not starting — every time.",
+        yes: "Save & end", no: "Keep going", onYes: () => finishSession() });
+    } else { UI.sheet = "quitconfirm"; renderSheet(); }
+  },
+  "quit-rescue": () => {
+    UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove();
+    quitSession(); startSession("rescue");
+  },
+  "quit-anyway": () => {
+    UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove();
+    quitSession(); showToast("No worries. The chain's still yours today. 🧡");
+  },
+  "sheet-close": () => { UI.sheet = null; UI.pendingConfirm = null; document.querySelector(".sheet-backdrop")?.remove(); },
+  "confirm-yes": () => {
+    const fn = UI.pendingConfirm;
+    UI.pendingConfirm = null; UI.sheet = null;
+    document.querySelector(".sheet-backdrop")?.remove();
+    if (fn) fn();
+  },
+  "whatis": () => { UI.sheet = "whatis"; renderSheet(); },
+  "anchor-save": () => {
+    const v = document.getElementById("anchor-in")?.value.trim() || "";
+    S.profile.anchor = v; save();
+    UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove();
+    if (v) showToast("📌 Anchored. Cue set.");
+    render();
+  },
+  "done-close": () => { document.getElementById("player")?.remove(); render(); },
+  "ladder-up": (el) => { ladderUp(el.dataset.v); el.closest(".card").innerHTML = `<div class="kicker" style="color:var(--good)">⚡ Climbed. New challenge loads next session.</div>`; },
+  "ladder-down": (el) => { const k = el.dataset.v; S.levels[k] = Math.max(0, (S.levels[k] ?? 0) - 1); save(); showToast("Dropped a rung — smart training"); UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove(); render(); },
+  /* hurts flow */
+  "hurts-mild": () => { UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove(); setPain("yellow"); showToast("Logged. Ease the range, keep it smooth."); },
+  "hurts-skip": () => { UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove(); swapEasier(); },
+  "hurts-leg": () => {
+    setPain("red");
+    UI.sheet = "legstop"; renderSheet();
+  },
+  "legstop-done": () => {
+    UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove();
+    if (!UI.session) { render(); return; }
+    if (UI.session.items.some((i) => !i.warmup && i.setLog?.some((v) => v != null))) finishSession(); else quitSession();
+  },
+  /* phase */
+  "phase-up": () => {
+    const ph = PHASES[S.phase - 1];
+    askConfirm({ title: `Advance to Phase ${S.phase + 1}?`,
+      body: `Gate check — be honest with yourself:<br><br><b>${ph.gate}</b><br><br>Only advance if that's true. The phase will still be here next week.`,
+      yes: "That's me — advance", no: "Not yet",
+      onYes: () => { S.phase++; checkBadges(); save(); render(); showToast(`Welcome to Phase ${S.phase} 🔓`); } });
+  },
+  "phase-down": () => {
+    askConfirm({ title: "Drop back a phase?", body: "Smart move during a flare — zero shame in it. Your rung levels are kept; harder exercises just wait until you're ready again.",
+      yes: "Drop back", onYes: () => { S.phase--; save(); render(); showToast("Phase adjusted. The ladder isn't going anywhere."); } });
+  },
+  /* settings */
+  "set-day": (el) => {
+    const i = Number(el.dataset.i);
+    const d = S.profile.trainDays;
+    S.profile.trainDays = d.includes(i) ? d.filter((x) => x !== i) : [...d, i].sort();
+    if (!S.profile.trainDays.length) S.profile.trainDays = [i];
+    save(); renderSettings();
+  },
+  "set-alert": (el) => { S.settings.alertMin = Number(el.dataset.v); save(); renderSettings(); },
+  "set-rest": (el) => { S.settings.restMain = Number(el.dataset.v); save(); renderSettings(); },
+  "set-theme": (el) => { S.settings.theme = el.dataset.v; save(); applyTheme(); renderSettings(); },
+  "ics-schedule": async () => {
+    S.profile.time = document.getElementById("set-time")?.value || S.profile.time;
+    S.profile.anchor = document.getElementById("set-anchor")?.value ?? S.profile.anchor;
+    save();
+    const r = await deliverFile("forge-training.ics", buildScheduleICS(), "text/calendar;charset=utf-8", "Training calendar");
+    if (r === "downloaded") showToast("Downloaded! Open the file → Add All");
+    else if (r === "shared") showToast("Shared — open it in Calendar → Add All");
+  },
+  "ics-spine": async () => {
+    const r = await deliverFile("forge-spine-reset.ics", buildSpineICS(S.profile.time), "text/calendar;charset=utf-8", "Spine Reset calendar");
+    if (r === "downloaded") showToast("Downloaded! Open the file → Add All");
+    else if (r === "shared") showToast("Shared — open it in Calendar → Add All");
+  },
+  "guide-done": () => { S.seenGuide = true; save(); UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove(); render(); },
+  "export-data": async () => {
+    const r = await exportData();
+    if (r === "downloaded") showToast("Backup downloaded 💾");
+    else if (r === "shared") showToast("Backup shared — save it somewhere safe 💾");
+  },
+  "copy-text": () => {
+    const src = document.getElementById("copy-src");
+    if (!src) return;
+    src.select();
+    const done = () => showToast("Copied ✓");
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(src.value).then(done, () => { document.execCommand("copy"); done(); });
+    else { document.execCommand("copy"); done(); }
+  },
+  "import-go": () => {
+    try { importData(document.getElementById("import-text").value); UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove(); render(); showToast("Imported ✓ Welcome back"); }
+    catch (e) { showToast("That doesn't look like a FORGE backup"); }
+  },
+  "rescue-dump": () => { openCopySheet("forge-rescued-data.json", RESCUE_RAW || "", "Rescued data"); },
+  "rescue-dismiss": () => { RESCUE_RAW = null; UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove(); render(); showToast("Old data dismissed"); },
+  "reset-all": () => {
+    askConfirm({ title: "Wipe everything?", danger: true,
+      body: "All history, streaks, levels and settings on this device. Export a backup first if there's any doubt.",
+      yes: "Continue to final check", no: "Keep my data",
+      onYes: () => askConfirm({ title: "Really sure?", danger: true,
+        body: "This can't be undone. Last chance.",
+        yes: "Yes — wipe it all", no: "Cancel",
+        onYes: () => { localStorage.removeItem(STORE_KEY); S = defaultState(); UI.screen = "today"; UI.onboard = 0; UI.ob = {}; render(); } }) });
+  },
+  "lib-filter": (el) => { UI.libFilter = el.dataset.v; renderLibrary(); },
+  "hm-day": (el) => { showToast(el.dataset.v || el.getAttribute("data-v") || ""); },
+  "weight-save": () => {
+    const kg = parseFloat(document.getElementById("w-kg").value);
+    if (!kg || kg < 25 || kg > 350) { showToast("Enter a weight in kg"); return; }
+    const t = todayKey();
+    S.weights = S.weights.filter((w) => w.date !== t);
+    S.weights.push({ date: t, kg: Math.round(kg * 10) / 10 });
+    save(); UI.sheet = null; document.querySelector(".sheet-backdrop")?.remove(); render(); showToast("Logged ⚖️");
+  },
+};
+
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-a]");
+  if (!el) return;
+  const fn = ACTIONS[el.dataset.a];
+  if (fn) {
+    e.preventDefault();
+    try { fn(el); }
+    catch (err) { showToast("⚠️ " + (err && err.message ? err.message : "Something went wrong")); }
+  }
+});
+document.addEventListener("input", (e) => {
+  if (e.target.id === "lib-q") { // patch only the list so the input keeps focus + keyboard
+    UI.libQ = e.target.value;
+    const list = document.getElementById("lib-list");
+    if (list) list.innerHTML = libListHTML();
+  }
+  if (e.target.id === "set-sound") { S.settings.sound = e.target.checked; save(); }
+  if (e.target.id === "set-time") { S.profile.time = e.target.value; save(); }
+  if (e.target.id === "set-anchor") { S.profile.anchor = e.target.value; save(); }
+});
+
+/* ---------- boot ---------- */
+try {
+  load();
+  render();
+} catch (e) {
+  const app = document.getElementById("app");
+  if (app) app.innerHTML = `<div class="card" style="margin-top:40px"><b style="color:var(--bad)">⚠️ FORGE hit an error starting up.</b><p class="sub" style="margin-top:8px">${esc(e && e.message ? e.message : String(e))}</p><button class="btn" onclick="location.reload()" style="margin-top:12px">Reload</button></div>`;
+}
+</script>
