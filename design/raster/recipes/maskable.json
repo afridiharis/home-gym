@@ -1,0 +1,67 @@
+{
+ "new": {
+  "width": 1024,
+  "height": 1024,
+  "background": "#EE4A12",
+  "name": "icon-maskable"
+ },
+ "steps": [
+  {
+   "id": "gradient.fill.create",
+   "params": {
+    "from": [
+     512,
+     0
+    ],
+    "to": [
+     512,
+     1023
+    ],
+    "style": "linear",
+    "dither": false,
+    "stops": [
+     [
+      0,
+      "#FF8A3D"
+     ],
+     [
+      1,
+      "#EE4A12"
+     ]
+    ],
+    "transparency": [
+     [
+      0,
+      100
+     ],
+     [
+      1,
+      100
+     ]
+    ]
+   },
+   "as": "background"
+  },
+  {
+   "place": "design/raster/src/mark-white.svg",
+   "width": 630.0,
+   "center": [
+    512,
+    498.56
+   ],
+   "as": "figure"
+  }
+ ],
+ "save": [
+  "design/raster/icon-maskable-1024.pcraft"
+ ],
+ "renditions": [
+  {
+   "width": 512,
+   "height": 512,
+   "save": [
+    "assets/icons/icon-maskable-512.png"
+   ]
+  }
+ ]
+}

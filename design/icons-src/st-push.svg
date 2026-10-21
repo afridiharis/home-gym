@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <g id="Layer_1" data-name="Layer 1">
+    <g id="st-push">
+      <path d="M6 55 L58 55 M44 34 L10 47 M42 35 L42 48 M36 48 L48 48" fill="none" stroke="#142033" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M45 29 C45 32.314 47.686 35 51 35 C54.314 35 57 32.314 57 29 C57 25.686 54.314 23 51 23 C47.686 23 45 25.686 45 29 Z" fill="#142033"/>
+    </g>
+  </g>
+</svg>

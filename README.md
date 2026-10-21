@@ -1,17 +1,18 @@
-# ⚒️ FORGE — Home Gym
+# FORGE — Home Gym
 
-A self-contained, back-safe strength & rehab web app for a power-tower home gym (pull-up bar, dips, knee-raise station, push-up handles), built around an L5-sensitive spine.
+A back-safe strength and rehab app for a Sportsroyals power tower, built around an L5-sensitive spine. It runs as an iPhone Home Screen web app.
 
-**Use it:** open `index.html` — everything is in that one file. No server, no dependencies, no accounts. All data stays in your browser's local storage (export backups from Setup → Backup).
+**Use it:** https://afridiharis.github.io/home-gym/ → Share → Add to Home Screen. No accounts. Your data stays on your phone (Me → Back up my data).
 
-- Daily 10-minute **Spine Reset** (McGill Big 3) as the streak anchor
-- 4-day Upper/Lower split with 9 progression ladders and rep-window progression
-- Traffic-light pain system; leg symptoms always stop the session
-- Streaks with automatic freezes + repair windows, XP, badges, animated exercise demos
-- iPhone Calendar reminders via `.ics` export with alerts
+- **Today** always shows one big next step: the workout, the 10-minute Spine Reset, or a quick 8-minute version when you're short on time.
+- **Built around your tower:** every move shows which station (bar, dips, knee raise, front-foot handles, floor) and how to set it up, with a photo of your actual tower.
+- **Split days and two-a-days** with research-backed limits (see [PLAN.md](PLAN.md)).
+- Traffic-light back check before strength work; leg symptoms always stop the session.
+- Weekly ring + forgiving streaks, XP, badges, demos for every move, sound cues, resumable sessions.
+- iPhone Calendar reminders via `.ics` files with alerts.
 
-**Develop:** sources live in `src/` (`styles.css`, `data.js`, `demos.js`, `core.js`, `ui.js`). `./build.sh` assembles `index.html` (standalone) and `artifact.html` (Claude Artifact fragment).
+**Develop:** sources in `src/` (`data.js`, `tower.js`, `guard.js`, `core.js`, `demos.js`, `ui/*.js`, `styles/*.css`). `python3 tools/build.py` builds `index.html`, `manifest.webmanifest` and `sw.js`. Design sources (VectorCraft, FigCraft, LightCraft, SoundCraft, EffectCraft, PhotoCraft recipes) live in `design/`; print files in `print/`. Raw photos go in `media/` (git-ignored, since the repo is public).
 
-The full training program rationale is in [PLAN.md](PLAN.md). Not medical advice — see the disclaimers in the app.
+The training rationale is in [PLAN.md](PLAN.md); the redesign research is in [docs/redesign/research.md](docs/redesign/research.md). Not medical advice.
 
-🤖 Built with [Claude Code](https://claude.com/claude-code)
+Built with [Claude Code](https://claude.com/claude-code).

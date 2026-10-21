@@ -29,7 +29,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const STORE_KEY = "forge.v1";
 
 const defaultState = () => ({
-  v: 1,
+  v: 2,
   profile: null, // set by onboarding
   levels: { vpull: 0, hpull: 0, dip: 0, push: 0, vpush: 0, vkr: 0, lsit: 0, squat: 0, hinge: 0 },
   targets: {},   // per-ladder current rep/sec goal within the rung's window
@@ -44,6 +44,12 @@ const defaultState = () => ({
   settings: { sound: true, restMain: 120, restAcc: 75, restSpine: 25, alertMin: 15, theme: "auto" },
   seenGuide: false,
   createdAt: todayKey(),
+  plans: {},         // date -> {mode: "one"|"split"}
+  active: null,      // in-progress session (resume after interruption)
+  towerCheck: null,  // date of last bolt check
+  deload: null,      // start date of a lighter week
+  deloadDismissed: null,
+  seenV2: false,
 });
 
 let S = defaultState();
@@ -58,7 +64,7 @@ const numOr = (x, d, lo = -Infinity, hi = Infinity) =>
   typeof x === "number" && isFinite(x) ? Math.min(hi, Math.max(lo, x)) : d;
 const strOr = (x, d, max = 200) => (typeof x === "string" ? x.slice(0, max) : d);
 function sanitizeState(p) {
-  if (!p || typeof p !== "object" || p.v !== 1 || !("log" in p)) throw new Error("Not a FORGE v1 state");
+  if (!p || typeof p !== "object" || (p.v !== 1 && p.v !== 2) || !("log" in p)) throw new Error("Not a FORGE state");
   const s = defaultState();
   if (p.profile && typeof p.profile === "object") {
     const pr = p.profile;
@@ -69,6 +75,9 @@ function sanitizeState(p) {
       anchor: strOr(pr.anchor, "", 120),
       legs: !!pr.legs,
       created: isDateKey(pr.created) ? pr.created : todayKey(),
+      wake: /^\d{2}:\d{2}$/.test(pr.wake) ? pr.wake : "07:00",
+      weeklyTarget: Math.round(numOr(pr.weeklyTarget, Math.min(5, days.length || 4), 1, 7)),
+      barSetting: Number.isInteger(pr.barSetting) && pr.barSetting >= 1 && pr.barSetting <= 9 ? pr.barSetting : null,
     };
   }
   for (const k of Object.keys(s.levels)) {
@@ -86,12 +95,16 @@ function sanitizeState(p) {
   if (Array.isArray(p.log)) {
     s.log = p.log.filter((l) => l && typeof l === "object" && isDateKey(l.date)).map((l) => ({
       id: strOr(l.id, uid(), 40), date: l.date, ts: numOr(l.ts, 0),
-      type: ["strength", "spine", "rescue", "walk"].includes(l.type) ? l.type : "walk",
+      type: ["strength", "spine", "rescue", "walk", "quick"].includes(l.type) ? l.type : "walk",
       name: strOr(l.name, "Session", 80), mins: Math.round(numOr(l.mins, 1, 0, 600)),
       sets: Array.isArray(l.sets) ? l.sets.filter((x) => x && typeof x === "object").slice(0, 200).map((x) => ({
         ex: strOr(x.ex, "", 30), val: numOr(x.val, 0, 0, 6000), target: numOr(x.target, 0, 0, 6000), kind: strOr(x.kind, "reps", 10),
       })) : [],
       xp: Math.round(numOr(l.xp, 0, 0, 10000)), main: l.main !== false,
+      dayType: DAY_TEMPLATES[l.dayType] ? l.dayType : undefined,
+      part: l.part === 1 || l.part === 2 ? l.part : undefined,
+      rpe: ["easy", "right", "hard"].includes(l.rpe) ? l.rpe : undefined,
+      back: ["ok", "worse"].includes(l.back) ? l.back : undefined,
     }));
   }
   if (p.prs && typeof p.prs === "object") {
@@ -118,6 +131,14 @@ function sanitizeState(p) {
   };
   s.seenGuide = !!p.seenGuide;
   s.createdAt = isDateKey(p.createdAt) ? p.createdAt : todayKey();
+  if (p.plans && typeof p.plans === "object") {
+    for (const [k, v] of Object.entries(p.plans)) if (isDateKey(k) && v && ["one", "split"].includes(v.mode)) s.plans[k] = { mode: v.mode };
+  }
+  s.towerCheck = isDateKey(p.towerCheck) ? p.towerCheck : null;
+  s.deload = isDateKey(p.deload) ? p.deload : null;
+  s.deloadDismissed = isDateKey(p.deloadDismissed) ? p.deloadDismissed : null;
+  s.seenV2 = !!p.seenV2;
+  s.active = sanitizeActive(p.active);
   return s;
 }
 
@@ -137,6 +158,7 @@ try { navigator.storage && navigator.storage.persist && navigator.storage.persis
 /* ---------- sessions per day ---------- */
 const sessionsOn = (date) => S.log.filter((l) => l.date === date);
 const dayCounts = (date) => sessionsOn(date).length > 0; // any completed session counts
+const dayPaused = (date) => S.pain[date] === "red";       // a red back day pauses the chain, never breaks it
 
 /* ---------- streak engine: silent freezes + repair window ---------- */
 function recomputeStreak() {
@@ -152,7 +174,7 @@ function recomputeStreak() {
   let cur = 0;
   let d = dayCounts(t) ? t : dayShift(t, -1);
   while (true) {
-    if (dayCounts(d) || S.streak.frozen[d]) { cur += (dayCounts(d) ? 1 : 0); d = dayShift(d, -1); continue; }
+    if (dayCounts(d) || S.streak.frozen[d] || dayPaused(d)) { cur += (dayCounts(d) ? 1 : 0); d = dayShift(d, -1); continue; }
     if (d === t) { d = dayShift(d, -1); continue; }
     // missed day: silently apply a freeze if banked (never for >2 consecutive misses)
     const prevMissed = !dayCounts(dayShift(d, -1)) && !S.streak.frozen[dayShift(d, -1)];
@@ -217,11 +239,25 @@ function ladderTarget(ladderKey) {
   if (!(tkey in S.targets)) S.targets[tkey] = win[0];
   return { idx, rung, target: Math.min(S.targets[tkey], win[1]), win, tkey, timed: !!rung.scheme.secs };
 }
+/* Rotation advances once per completed template: a split day (part 1 + part 2) counts once. */
 function nextDayType() {
-  const n = S.log.filter((l) => l.type === "strength" && l.main !== false).length;
+  const n = S.log.filter((l) => l.type === "strength" && l.main !== false && l.part !== 1).length;
   return DAY_ORDER[n % DAY_ORDER.length];
 }
-function warmupBlocks(firstMain, dayType) {
+/* Today's template: if a split day is underway, stay on it for part 2. */
+function todaysDayType() {
+  const p1 = sessionsOn(todayKey()).find((l) => l.type === "strength" && l.part === 1);
+  if (p1 && !sessionsOn(todayKey()).some((l) => l.dayType === p1.dayType && l.part === 2)) return p1.dayType;
+  return nextDayType();
+}
+function warmupBlocks(firstMain, dayType, short) {
+  if (short) { // part 2 of a split day: the body's been moving today, a 3-minute primer is enough
+    const b = [{ ex: "walk", sets: 1, target: 60, warmup: true, label: "1-min march" },
+               { ex: "catcamel", sets: 1, target: 6, warmup: true },
+               { ex: "birddog", sets: 1, target: 3, warmup: true, label: "3 each side, 8s holds" }];
+    if (firstMain) b.push({ ...firstMain, sets: 1, warmup: true, ramp: true, label: "Ramp-up set — easy half effort" });
+    return b;
+  }
   const blocks = [
     { ex: "walk", sets: 1, target: 120, warmup: true, label: "2-min march / easy movement" },
     { ex: "catcamel", sets: 1, target: 8, warmup: true },
@@ -238,35 +274,55 @@ function warmupBlocks(firstMain, dayType) {
   if (firstMain) blocks.push({ ...firstMain, sets: 1, warmup: true, ramp: true, label: "Ramp-up set — easy half effort" });
   return blocks;
 }
-/* Build a concrete session item list. pain: green|yellow (red → spine only, handled upstream) */
-function buildWorkout(dayType, pain) {
+/* Build a concrete session. pain: green|yellow (red → spine only, handled upstream).
+   part: null (whole day) | 1 | 2 (AM/PM split: blocks before tpl.split are part 1).
+   Deload weeks cut sets ~40% and never drive progression. */
+function buildWorkout(dayType, pain, part = null) {
   const tpl = DAY_TEMPLATES[dayType];
   const lite = pain === "yellow";
+  const deload = deloadActive();
   const items = [];
   let firstMain = null;
-  for (const b of tpl.blocks) {
-    if (lite && b.lite) continue;
-    if (b.phaseMin && S.phase < b.phaseMin) continue;
+  tpl.blocks.forEach((b, bi) => {
+    if (part === 1 && bi >= tpl.split) return;
+    if (part === 2 && bi < tpl.split) return;
+    if (lite && b.lite) return;
+    if (b.phaseMin && S.phase < b.phaseMin) return;
+    if (lite && b.ladder === "vkr") return; // yellow: no knee raises (research §2)
+    const cut = (n, min) => Math.max(min, deload ? Math.round(n * 0.6) : n - (lite ? 1 : 0));
     if (b.ladder) {
       const t = ladderTarget(b.ladder);
-      if (!t) continue; // whole ladder is phase-locked (e.g. Phase 1)
+      if (!t) return; // whole ladder is phase-locked (e.g. Phase 1)
       const ex = EX[t.rung.ex];
-      const sets = Math.max(2, (b.sets ?? t.rung.scheme.sets) - (lite ? 1 : 0));
+      const sets = cut(b.sets ?? t.rung.scheme.sets, 2);
       // "volume"/B-day slots run easier than the stored target and never drive progression
-      const target = b.volume ? Math.max(t.win[0], t.target - 2) : t.target;
+      const target = b.volume || deload ? Math.max(t.win[0], t.target - 2) : t.target;
       const item = { ladder: b.ladder, exId: t.rung.ex, ex, sets, target, tkey: t.tkey, win: t.win, rungIdx: t.idx,
-        timed: t.timed, note: b.note, volume: !!b.volume, main: !firstMain };
+        timed: t.timed, note: b.note, volume: !!b.volume || deload, main: !firstMain };
       if (!firstMain) firstMain = { ex: t.rung.ex, target: Math.max(2, Math.ceil(target / 2)) };
       items.push(item);
     } else {
       const ex = EX[b.ex];
-      if (ex.phase > S.phase) continue;
+      if (ex.phase > S.phase) return;
       const timed = ex.kind === "secs" || ex.kind === "secside";
-      items.push({ exId: b.ex, ex, sets: Math.max(1, b.sets - (lite ? 1 : 0)), target: b.target, timed, note: b.note, pyramid: b.pyramid });
+      items.push({ exId: b.ex, ex, sets: cut(b.sets, 1), target: b.target, timed, note: b.note, pyramid: b.pyramid });
     }
-  }
-  return { name: tpl.name, tag: tpl.tag, icon: tpl.icon, est: lite ? Math.round(tpl.est * 0.6) : tpl.est,
-    type: "strength", dayType, lite, warmup: warmupBlocks(firstMain, dayType), items };
+  });
+  const share = part ? (part === 1 ? 0.55 : 0.45) : 1;
+  const est = Math.round(tpl.est * share * (lite || deload ? 0.65 : 1));
+  const name = part ? `${tpl.name} · part ${part}` : tpl.name;
+  return { name, tag: tpl.tag, est, type: "strength", dayType, part, lite: lite || deload, deload,
+    warmup: warmupBlocks(firstMain, dayType, part === 2), items };
+}
+
+/* "Quick version": the minimum dose that still counts — one hard set of each of
+   today's main moves after a 1-minute warm-up. Never moves the split rotation. */
+function buildQuick(dayType, pain) {
+  const full = buildWorkout(dayType, pain);
+  const items = full.items.filter((i) => i.ladder).slice(0, 3).map((i) => ({ ...i, sets: 1, main: false, volume: true }));
+  return { name: `${DAY_TEMPLATES[dayType].name} · quick`, est: 8, type: "quick", dayType, lite: true,
+    warmup: [{ ex: "catcamel", sets: 1, target: 5, warmup: true }, { ex: "birddog", sets: 1, target: 3, warmup: true, label: "3 each side, 8s holds" }],
+    items };
 }
 function buildRoutine(def, type) {
   const items = def.blocks.map((b) => {
@@ -321,9 +377,13 @@ function ladderUp(ladderKey) {
   }
 }
 
-/* ---------- finish a session ---------- */
+/* ---------- finish a session ----------
+   Step 1 (completeSession): log it, PRs, XP, streak. Step 2 (finalizeSession): the
+   one-tap "how did that feel?" feedback, then progression — a "hard" session or a
+   worse back never moves targets up (research: pain-monitoring + RPE rules). */
 function completeSession(session, mins) {
   tryRepair();
+  const lvBefore = xpLevel().lv;
   const sets = [];
   let setCount = 0, prList = [];
   for (const it of session.items) {
@@ -333,19 +393,86 @@ function completeSession(session, mins) {
       sets.push({ ex: it.exId, val: v, target: it.target, kind: it.ex.kind });
       setCount++;
       if (!it.ex.kind.includes("side")) {
-        if (v > (S.prs[it.exId] || 0) && v >= 3) { S.prs[it.exId] = v; if (session.type === "strength") prList.push({ ex: it.ex.name, val: v, timed: it.timed }); }
+        if (v > (S.prs[it.exId] || 0) && v >= 3) { S.prs[it.exId] = v; if (session.type === "strength" || session.type === "quick") prList.push({ ex: it.ex.name, val: v, timed: it.timed }); }
       }
     }
   }
   const mainWork = session.type !== "strength" || setCount > 0;
-  let xp = (XP_RULES[session.type] || 10) + setCount * XP_RULES.set + prList.length * XP_RULES.pr;
+  const xp = (XP_RULES[session.type] || 30) + setCount * XP_RULES.set + prList.length * XP_RULES.pr;
   S.xp += xp;
-  S.log.push({ id: uid(), date: todayKey(), ts: Date.now(), type: session.type, name: session.name, mins, sets, xp, main: mainWork });
-  const offers = session.type === "strength" ? applyProgression(session) : [];
+  const log = { id: uid(), date: todayKey(), ts: Date.now(), type: session.type, name: session.name, mins, sets, xp, main: mainWork };
+  if (session.dayType) log.dayType = session.dayType;
+  if (session.part) log.part = session.part;
+  log.hard = hardOf(log);
+  S.log.push(log);
+  S.active = null;
   recomputeStreak();
   const badges = checkBadges();
   save();
-  return { xp, prList, offers, badges };
+  return { logId: log.id, xp, prList, badges, levelUp: xpLevel().lv > lvBefore };
+}
+function finalizeSession(logId, session, rpe, back) {
+  const log = S.log.find((l) => l.id === logId);
+  if (log) { if (rpe) log.rpe = rpe; if (back) log.back = back; }
+  let offers = [];
+  if (session.type === "strength" && rpe !== "hard" && back !== "worse") offers = applyProgression(session);
+  if (back === "worse") S.pain[dayShift(todayKey(), 1)] = S.pain[dayShift(todayKey(), 1)] || "yellow"; // be gentle tomorrow
+  save();
+  return { offers };
+}
+
+/* ---------- weeks: ring + weekly streak (the primary consistency signal) ---------- */
+const weekStart = (key) => { // Monday
+  const [y, m, d] = key.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dkey(new Date(y, m - 1, d - ((dt.getDay() + 6) % 7)));
+};
+const countsForWeek = (l) => l.type === "strength" || l.type === "quick" || l.type === "rescue";
+function weekTarget(ws) {
+  const base = S.profile?.weeklyTarget || 4;
+  let red = 0;
+  for (let i = 0; i < 7; i++) if (S.pain[dayShift(ws, i)] === "red") red++;
+  return Math.max(1, base - red); // red back days lower the bar, never break it
+}
+function weekCount(ws) {
+  const days = new Set();
+  for (const l of S.log) if (countsForWeek(l) && weekStart(l.date) === ws) days.add(l.date);
+  return days.size;
+}
+function weekInfo() {
+  const ws = weekStart(todayKey());
+  const target = weekTarget(ws), done = weekCount(ws);
+  // consecutive full weeks hitting the target, counting this week only once it's hit
+  const first = S.log.length ? weekStart(S.log.reduce((a, l) => (l.date < a ? l.date : a), S.log[0].date)) : ws;
+  let streak = done >= target ? 1 : 0;
+  let w = dayShift(ws, -7);
+  while (w >= first) {
+    if (weekCount(w) >= weekTarget(w)) { streak++; w = dayShift(w, -7); } else break;
+  }
+  return { ws, target, done, streak, activeDays: new Set(S.log.map((l) => l.date)).size };
+}
+
+/* ---------- resume an interrupted session ---------- */
+function snapshotActive(sess) {
+  S.active = {
+    date: todayKey(), kind: sess.kind, type: sess.type, name: sess.name, dayType: sess.dayType || null, part: sess.part || null,
+    idx: sess.idx, setIdx: sess.setIdx, startTs: sess.startTs,
+    items: sess.items.map((i) => ({ exId: i.exId, sets: i.sets, target: i.target, timed: !!i.timed, warmup: !!i.warmup,
+      label: i.label || null, note: i.note || null, pyramid: i.pyramid || null, ladder: i.ladder || null, tkey: i.tkey || null,
+      win: i.win || null, rungIdx: i.rungIdx ?? null, volume: !!i.volume, main: !!i.main, setLog: i.setLog || [] })),
+  };
+  save();
+}
+function sanitizeActive(a) {
+  if (!a || typeof a !== "object" || !isDateKey(a.date) || !Array.isArray(a.items)) return null;
+  const items = a.items.filter((i) => i && EX[i.exId]).slice(0, 60);
+  if (!items.length) return null;
+  return { ...a, idx: Math.min(Math.max(0, a.idx | 0), items.length - 1), setIdx: Math.max(0, a.setIdx | 0), items };
+}
+function restoreActive() {
+  const a = S.active;
+  if (!a || a.date !== todayKey()) return null;
+  return { ...a, lite: false, items: a.items.map((i) => ({ ...i, ex: EX[i.exId], setLog: (i.setLog || []).slice() })) };
 }
 
 /* ---------- ICS calendar generation (iOS-verified path) ---------- */
@@ -493,10 +620,13 @@ function importData(text) {
   }
 }
 
-/* ---------- audio (iOS-safe: <audio> element, gesture-unlocked) ---------- */
+/* ---------- audio (iOS-safe: one <audio> element, gesture-unlocked) ----------
+   Cues are SoundCraft-made files in assets/audio/. HTML audio plays even with the
+   silent switch on (Web Audio doesn't). iOS ignores element volume, so the unlock
+   plays a genuinely silent clip, unmuted. A synthesized beep covers a missing file. */
 let audioEl = null, audioReady = false;
-function makeBeepWav(freq = 880, ms = 160, count = 1, gapMs = 90) {
-  const rate = 22050, amp = 0.6;
+function makeWav(freq, ms, count = 1, gapMs = 90) {
+  const rate = 22050, amp = freq ? 0.6 : 0;
   const seg = Math.floor(rate * ms / 1000), gap = Math.floor(rate * gapMs / 1000);
   const total = count * seg + (count - 1) * gap;
   const data = new Int16Array(total);
@@ -517,32 +647,28 @@ function makeBeepWav(freq = 880, ms = 160, count = 1, gapMs = 90) {
   new Int16Array(buf, 44).set(data);
   return URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
 }
-let URL_BEEP1 = null, URL_BEEP3 = null, URL_SILENT = null;
-function makeSilentWav(ms = 120) {
-  const rate = 8000, n = Math.floor(rate * ms / 1000);
-  const buf = new ArrayBuffer(44 + n * 2);
-  const v = new DataView(buf);
-  const ws = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
-  ws(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); ws(8, "WAVE"); ws(12, "fmt ");
-  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
-  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
-  ws(36, "data"); v.setUint32(40, n * 2, true); // samples stay zero = silence
-  return URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
+const SFX_FALLBACK = { tick: [1320, 70], go: [990, 180], warn10: [880, 160], "rest-end": [988, 140, 3],
+  "set-done": [660, 90], complete: [1047, 160, 3], pr: [1175, 120, 4], levelup: [1319, 120, 3], silence: [0, 120] };
+const sfxFallbackUrl = {};
+const fallbackFor = (name) => sfxFallbackUrl[name] || (sfxFallbackUrl[name] = makeWav(...(SFX_FALLBACK[name] || [880, 150])));
+function playSrc(name) {
+  audioEl.onerror = () => { audioEl.onerror = null; audioEl.src = fallbackFor(name); audioEl.play().catch(() => {}); };
+  audioEl.src = `assets/audio/${name}.m4a`;
+  audioEl.currentTime = 0;
+  return audioEl.play();
 }
 function unlockAudio() { // call from a user gesture (Start button)
   if (audioReady || !S.settings.sound) return;
   try {
-    if (!URL_BEEP1) { URL_BEEP1 = makeBeepWav(880, 150, 1); URL_BEEP3 = makeBeepWav(988, 140, 3); URL_SILENT = makeSilentWav(); }
     audioEl = audioEl || new Audio();
-    // iOS ignores element volume — unlock with a genuinely silent clip, unmuted
-    audioEl.src = URL_SILENT;
-    audioEl.play().then(() => { audioReady = true; }).catch(() => {});
+    playSrc("silence").then(() => { audioReady = true; }).catch(() => {});
   } catch (_) {}
 }
-function beep(triple) {
+function sfx(name) {
   if (!S.settings.sound || !audioEl) return;
-  try { audioEl.src = triple ? URL_BEEP3 : URL_BEEP1; audioEl.volume = 1; audioEl.currentTime = 0; audioEl.play().catch(() => {}); } catch (_) {}
+  try { playSrc(name).catch(() => {}); } catch (_) {}
 }
+const beep = (triple) => sfx(triple ? "rest-end" : "warn10");
 
 /* ---------- wake lock (screen on during workouts) ---------- */
 let wakeLock = null, wantWake = false;

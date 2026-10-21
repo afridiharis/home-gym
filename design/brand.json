@@ -1,0 +1,385 @@
+{
+ "comment": "FORGE brand: bespoke monoline lowercase wordmark (round caps, no font licence needed) + 'chin over the bar' mark. Ink #142033, ember #F2541B. Run from repo root: python3 ~/.claude/skills/vectorcraft/scripts/vcraft.py design/brand.json --root .",
+ "new": {
+  "width": 420,
+  "height": 160,
+  "units": "Pixels",
+  "name": "FORGE brand"
+ },
+ "paint": {
+  "fill": "none",
+  "stroke": "none"
+ },
+ "shapes": {
+  "word": "M14 60 V16 A12 12 0 0 1 26 4 H33 M3 20 H27 M47 40 A20 20 0 1 1 87 40 A20 20 0 1 1 47 40 Z M108 60 V20 M108 38 A18 18 0 0 1 126 20 H130 M141 40 A20 20 0 1 1 181 40 A20 20 0 1 1 141 40 Z M181 20 V64 A18 18 0 0 1 163 82 H151 M201.5 40 H241.5 M241.5 40 A20 20 0 1 0 236.8 52.9",
+  "bar": "M7 17 H57",
+  "head": "M25.5 8.5 A6.5 6.5 0 1 1 38.5 8.5 A6.5 6.5 0 1 1 25.5 8.5 Z",
+  "arms": "M20 17 L14.5 31 L25 38.5 M44 17 L49.5 31 L39 38.5",
+  "torso": "M32 39 V54"
+ },
+ "steps": [
+  {
+   "comment": "Mark, drawn in a 64 box at the origin."
+  },
+  {
+   "tool": "draw_path",
+   "args": {
+    "d": "$shapes.bar",
+    "fill": "none",
+    "stroke": "#142033",
+    "strokeWidth": 6,
+    "cap": "round",
+    "join": "round"
+   },
+   "as": "mBar"
+  },
+  {
+   "tool": "draw_path",
+   "args": {
+    "d": "$shapes.arms",
+    "fill": "none",
+    "stroke": "#F2541B",
+    "strokeWidth": 7,
+    "cap": "round",
+    "join": "round"
+   },
+   "as": "mArms"
+  },
+  {
+   "tool": "draw_path",
+   "args": {
+    "d": "$shapes.torso",
+    "fill": "none",
+    "stroke": "#F2541B",
+    "strokeWidth": 14,
+    "cap": "round",
+    "join": "round"
+   },
+   "as": "mTorso"
+  },
+  {
+   "tool": "draw_path",
+   "args": {
+    "d": "$shapes.head",
+    "fill": "#F2541B",
+    "stroke": "none"
+   },
+   "as": "mHead"
+  },
+  {
+   "id": "select.set",
+   "params": {
+    "ids": [
+     "$mBar",
+     "$mArms",
+     "$mTorso",
+     "$mHead"
+    ]
+   }
+  },
+  {
+   "id": "object.group",
+   "params": {},
+   "as": "mark"
+  },
+  {
+   "id": "object.setProps",
+   "params": {
+    "id": "$mark",
+    "name": "Mark"
+   }
+  },
+  {
+   "comment": "Wordmark: one compound monoline path, stroke 13, round caps."
+  },
+  {
+   "tool": "draw_path",
+   "args": {
+    "d": "$shapes.word",
+    "fill": "none",
+    "stroke": "#142033",
+    "strokeWidth": 13,
+    "cap": "round",
+    "join": "round"
+   },
+   "as": "word"
+  },
+  {
+   "id": "object.setProps",
+   "params": {
+    "id": "$word",
+    "name": "Wordmark"
+   }
+  },
+  {
+   "comment": "Lockup: mark scaled to the word's ascender-to-baseline band, gap ~0.45 x-height."
+  },
+  {
+   "measure": "$word",
+   "as": "wb"
+  },
+  {
+   "fit": "$mark",
+   "box": [
+    "=$wb.x - 116",
+    "=$wb.y - 2",
+    100,
+    86
+   ],
+   "strokes": true,
+   "as": "mb"
+  },
+  {
+   "measure": [
+    "$mark",
+    "$word"
+   ],
+   "as": "art"
+  },
+  {
+   "id": "artboard.setProps",
+   "params": {
+    "index": 0,
+    "name": "logo",
+    "x": "=$art.x - 8",
+    "y": "=$art.y - 8",
+    "width": "=$art.width + 16",
+    "height": "=$art.height + 16"
+   }
+  },
+  {
+   "comment": "Artboard 1: the mark on a square board (favicon, small uses)."
+  },
+  {
+   "id": "artboard.new",
+   "params": {
+    "x": 0,
+    "y": 400,
+    "width": 128,
+    "height": 128,
+    "name": "mark"
+   }
+  },
+  {
+   "id": "select.set",
+   "params": {
+    "ids": [
+     "$mark"
+    ]
+   }
+  },
+  {
+   "id": "edit.duplicate",
+   "params": {},
+   "as": "markSq"
+  },
+  {
+   "fit": "$markSq",
+   "box": [
+    10,
+    410,
+    108,
+    108
+   ],
+   "strokes": true
+  },
+  {
+   "comment": "Artboard 2: opaque app icon. Ember gradient field, white figure, white bar, ~62% of the tile."
+  },
+  {
+   "id": "artboard.new",
+   "params": {
+    "x": 200,
+    "y": 400,
+    "width": 512,
+    "height": 512,
+    "name": "app-icon"
+   }
+  },
+  {
+   "tool": "draw_shape",
+   "args": {
+    "shape": "rectangle",
+    "x": 200,
+    "y": 400,
+    "width": 512,
+    "height": 512,
+    "fill": "#F2541B",
+    "stroke": "none"
+   },
+   "as": "appBg"
+  },
+  {
+   "id": "paint.setFill",
+   "params": {
+    "ids": [
+     "$appBg"
+    ],
+    "gradient": {
+     "kind": "linear",
+     "angle": -90,
+     "stops": [
+      {
+       "offset": 0,
+       "color": "#FF8A3D"
+      },
+      {
+       "offset": 1,
+       "color": "#EE4A12"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "tool": "draw_path",
+   "args": {
+    "d": "$shapes.bar",
+    "fill": "none",
+    "stroke": "#FFFFFF",
+    "strokeWidth": 6,
+    "cap": "round",
+    "join": "round"
+   },
+   "as": "aBar"
+  },
+  {
+   "tool": "draw_path",
+   "args": {
+    "d": "$shapes.arms",
+    "fill": "none",
+    "stroke": "#FFFFFF",
+    "strokeWidth": 7,
+    "cap": "round",
+    "join": "round"
+   },
+   "as": "aArms"
+  },
+  {
+   "tool": "draw_path",
+   "args": {
+    "d": "$shapes.torso",
+    "fill": "none",
+    "stroke": "#FFFFFF",
+    "strokeWidth": 14,
+    "cap": "round",
+    "join": "round"
+   },
+   "as": "aTorso"
+  },
+  {
+   "tool": "draw_path",
+   "args": {
+    "d": "$shapes.head",
+    "fill": "#FFFFFF",
+    "stroke": "none"
+   },
+   "as": "aHead"
+  },
+  {
+   "id": "select.set",
+   "params": {
+    "ids": [
+     "$aBar",
+     "$aArms",
+     "$aTorso",
+     "$aHead"
+    ]
+   }
+  },
+  {
+   "id": "object.group",
+   "params": {},
+   "as": "appMark"
+  },
+  {
+   "fit": "$appMark",
+   "box": [
+    298,
+    490,
+    316,
+    316
+   ],
+   "strokes": true
+  },
+  {
+   "comment": "Artboard 3: wordmark alone (headers)."
+  },
+  {
+   "id": "artboard.new",
+   "params": {
+    "x": 800,
+    "y": 400,
+    "width": 280,
+    "height": 110,
+    "name": "wordmark"
+   }
+  },
+  {
+   "id": "select.set",
+   "params": {
+    "ids": [
+     "$word"
+    ]
+   }
+  },
+  {
+   "id": "edit.duplicate",
+   "params": {},
+   "as": "wordSolo"
+  },
+  {
+   "fit": "$wordSolo",
+   "box": [
+    812,
+    410,
+    256,
+    90
+   ],
+   "strokes": true
+  },
+  {
+   "id": "select.none",
+   "params": {}
+  }
+ ],
+ "save": [
+  "design/brand.vectorcraft",
+  {
+   "path": "assets/brand/logo.svg",
+   "artboard": 0,
+   "title": "FORGE"
+  },
+  {
+   "path": "assets/brand/mark.svg",
+   "artboard": 1,
+   "title": "FORGE"
+  },
+  {
+   "path": "assets/brand/wordmark.svg",
+   "artboard": 3,
+   "title": "FORGE"
+  },
+  {
+   "path": "design/brand-app-icon-1024.png",
+   "artboard": 2,
+   "pixels": 1024,
+   "options": {
+    "background": "white"
+   }
+  },
+  {
+   "path": "design/brand-mark-512.png",
+   "artboard": 1,
+   "pixels": 512,
+   "options": {
+    "background": "transparent"
+   }
+  }
+ ],
+ "preview": {
+  "path": "design/brand-preview.png",
+  "frames": true,
+  "tile": 360
+ }
+}

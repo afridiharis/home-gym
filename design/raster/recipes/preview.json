@@ -1,0 +1,463 @@
+{
+ "new": {
+  "width": 1296,
+  "height": 1576,
+  "background": "#E8EBF1",
+  "name": "preview"
+ },
+ "steps": [
+  {
+   "id": "type.create",
+   "params": {
+    "x": 48,
+    "y": 62,
+    "text": "FORGE \u00b7 raster assets",
+    "font": "Inter",
+    "fontStyle": "SemiBold",
+    "size": 28,
+    "color": "#142033"
+   }
+  },
+  {
+   "place": "assets/icons/icon-512.png",
+   "width": 256,
+   "center": [
+    176.0,
+    224.0
+   ]
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 48,
+    "y": 378,
+    "text": "icon-512.png",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 48,
+    "y": 398,
+    "text": "512\u00d7512, shown at 50%",
+    "font": "Inter",
+    "fontStyle": "Regular",
+    "size": 15,
+    "color": "#5B667D"
+   }
+  },
+  {
+   "place": "assets/icons/icon-maskable-512.png",
+   "width": 256,
+   "center": [
+    447.0,
+    224.0
+   ]
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "rect",
+    "rect": [
+     318,
+     95,
+     258,
+     258
+    ],
+    "fill": "#E8EBF1",
+    "stroke": null
+   },
+   "as": "mask5"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "ellipse",
+    "rect": [
+     319.0,
+     96.0,
+     256.0,
+     256.0
+    ],
+    "fill": "#E8EBF1",
+    "addTo": "$mask5",
+    "op": "subtract"
+   }
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 319,
+    "y": 378,
+    "text": "icon-maskable-512.png",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 319,
+    "y": 398,
+    "text": "circle mask, at 50%",
+    "font": "Inter",
+    "fontStyle": "Regular",
+    "size": 15,
+    "color": "#5B667D"
+   }
+  },
+  {
+   "place": "assets/icons/icon-maskable-512.png",
+   "width": 256,
+   "center": [
+    718.0,
+    224.0
+   ]
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "rect",
+    "rect": [
+     589,
+     95,
+     258,
+     258
+    ],
+    "fill": "#E8EBF1",
+    "stroke": null
+   },
+   "as": "mask10"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "ellipse",
+    "rect": [
+     615.6,
+     121.6,
+     204.8,
+     204.8
+    ],
+    "fill": "#E8EBF1",
+    "addTo": "$mask10",
+    "op": "subtract"
+   }
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 590,
+    "y": 378,
+    "text": "maskable, cut to the",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 590,
+    "y": 398,
+    "text": "80% safe-zone circle",
+    "font": "Inter",
+    "fontStyle": "Regular",
+    "size": 15,
+    "color": "#5B667D"
+   }
+  },
+  {
+   "place": "assets/icons/apple-touch-icon.png",
+   "width": 180,
+   "center": [
+    951.0,
+    186.0
+   ]
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "rect",
+    "rect": [
+     860,
+     95,
+     182,
+     182
+    ],
+    "fill": "#E8EBF1",
+    "stroke": null
+   },
+   "as": "mask15"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "roundedRect",
+    "rect": [
+     861,
+     96,
+     180,
+     180
+    ],
+    "radii": 40.266000000000005,
+    "fill": "#E8EBF1",
+    "addTo": "$mask15",
+    "op": "subtract"
+   }
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 861,
+    "y": 378,
+    "text": "apple-touch-icon.png",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 861,
+    "y": 398,
+    "text": "180\u00d7180, iOS mask",
+    "font": "Inter",
+    "fontStyle": "Regular",
+    "size": 15,
+    "color": "#5B667D"
+   }
+  },
+  {
+   "place": "assets/icons/icon-192.png",
+   "width": 192,
+   "center": [
+    1152.0,
+    192.0
+   ]
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 1056,
+    "y": 378,
+    "text": "icon-192.png",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 1056,
+    "y": 398,
+    "text": "192\u00d7192",
+    "font": "Inter",
+    "fontStyle": "Regular",
+    "size": 15,
+    "color": "#5B667D"
+   }
+  },
+  {
+   "place": "design/raster/previews/favicon-48@8x.png",
+   "width": 384,
+   "center": [
+    240.0,
+    628.0
+   ]
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 48,
+    "y": 846,
+    "text": "favicon 48 px, 8\u00d7",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  },
+  {
+   "place": "design/raster/previews/favicon-32@8x.png",
+   "width": 256,
+   "center": [
+    580.0,
+    564.0
+   ]
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 452,
+    "y": 846,
+    "text": "favicon-32.png, 8\u00d7",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  },
+  {
+   "place": "design/raster/previews/favicon-16@8x.png",
+   "width": 128,
+   "center": [
+    792.0,
+    500.0
+   ]
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 728,
+    "y": 846,
+    "text": "favicon 16 px, 8\u00d7",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "roundedRect",
+    "rect": [
+     876,
+     436,
+     372,
+     120
+    ],
+    "radii": 14,
+    "fill": "#FFFFFF",
+    "stroke": null
+   }
+  },
+  {
+   "place": "design/raster/build/favicon-16.png",
+   "center": [
+    908.0,
+    496
+   ]
+  },
+  {
+   "place": "assets/icons/favicon-32.png",
+   "center": [
+    952.0,
+    496
+   ]
+  },
+  {
+   "place": "design/raster/build/favicon-48.png",
+   "center": [
+    1012.0,
+    496
+   ]
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 1060,
+    "y": 502,
+    "text": "FORGE",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 17,
+    "color": "#142033"
+   }
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "roundedRect",
+    "rect": [
+     876,
+     572,
+     372,
+     120
+    ],
+    "radii": 14,
+    "fill": "#2A2E37",
+    "stroke": null
+   }
+  },
+  {
+   "place": "design/raster/build/favicon-16.png",
+   "center": [
+    908.0,
+    632
+   ]
+  },
+  {
+   "place": "assets/icons/favicon-32.png",
+   "center": [
+    952.0,
+    632
+   ]
+  },
+  {
+   "place": "design/raster/build/favicon-48.png",
+   "center": [
+    1012.0,
+    632
+   ]
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 1060,
+    "y": 638,
+    "text": "FORGE",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 17,
+    "color": "#F4F6FA"
+   }
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 876,
+    "y": 846,
+    "text": "favicon.ico (16, 32, 48) at 1\u00d7",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  },
+  {
+   "place": "assets/og.png",
+   "center": [
+    648.0,
+    1205
+   ]
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 48,
+    "y": 1546,
+    "text": "og.png  1200\u00d7630, at 100%",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 15,
+    "color": "#142033"
+   }
+  }
+ ],
+ "save": [
+  "design/raster/preview.png"
+ ]
+}

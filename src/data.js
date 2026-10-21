@@ -375,7 +375,7 @@ const BADGES = [
 ];
 
 /* XP: informational, never gates content */
-const XP_RULES = { set: 5, strength: 50, spine: 25, rescue: 15, walk: 10, pr: 20 };
+const XP_RULES = { set: 5, strength: 50, spine: 25, rescue: 15, quick: 30, walk: 10, pr: 20 };
 const LEVELS_XP = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200, 4000, 5000, 6200, 7600, 9200, 11000];
 const LEVEL_NAMES = ["Spark", "Kindling", "Ember", "Flicker", "Flame", "Blaze", "Bonfire", "Forge", "Furnace", "Crucible", "Inferno", "Volcano", "Titan", "Colossus", "Juggernaut", "Legend"];
 
@@ -401,3 +401,60 @@ const RED_FLAGS = [
   "A foot that drags or slaps when you walk (worsening)",
   "Fever, unexplained weight loss, or severe night pain",
 ];
+
+/* ============================================================
+   v2 — tower stations, guardrail patterns, split points
+   ============================================================ */
+
+/* Where on the tower each move happens (drives the station chips + mini-map). */
+const EX_STATION = {
+  deadhang: "bar", scapPull: "bar", negPullup: "bar", asstPullup: "bar", chinup: "bar", pullup: "bar",
+  ctbPullup: "bar", archPullup: "bar", wtdPullup: "bar", hangKnee: "bar", hangLeg: "bar",
+  rowBent: "dips", rowStraight: "dips", rowElev: "dips", rowArcher: "dips",
+  dipSupport: "dips", dipNeg: "dips", dipPartial: "dips", dip: "dips", dipSlow: "dips", wtdDip: "dips",
+  pushIncline: "dips",
+  vkrBent: "knee", vkrChest: "knee", vkrStraight: "knee",
+  pushup: "push", pushDecline: "push", pushPseudo: "push",
+  lsitFoot: "push", lsitTuck: "push", lsitOne: "push", lsitFull: "push",
+};
+/* Guardrail pattern each move loads as a hard set (null = not a hard set:
+   spine work, holds, hangs, calves). Research: docs/redesign/research.md §2. */
+const EX_GP = {
+  scapPull: "vpull", negPullup: "vpull", asstPullup: "vpull", chinup: "vpull", pullup: "vpull",
+  ctbPullup: "vpull", archPullup: "vpull", wtdPullup: "vpull",
+  rowBent: "hpull", rowStraight: "hpull", rowElev: "hpull", rowArcher: "hpull",
+  dipSupport: "push", dipNeg: "push", dipPartial: "push", dip: "push", dipSlow: "push", wtdDip: "push",
+  pushIncline: "push", pushup: "push", pushDecline: "push", pushDiamond: "push", pushArcher: "push", pushPseudo: "push",
+  pikePush: "push", pikeElev: "push", wallHS: "push", hspuNeg: "push", hspu: "push",
+  vkrBent: "trunk", vkrChest: "trunk", vkrStraight: "trunk", hangKnee: "trunk", hangLeg: "trunk",
+  lsitFoot: "trunk", lsitTuck: "trunk", lsitOne: "trunk", lsitFull: "trunk", hollowBent: "trunk", hollow: "trunk",
+  squatAsst: "knee", squat: "knee", splitSquat: "knee", bulgSquat: "knee", stepup: "knee", pistolAsst: "knee",
+  gluteBridge: "hip", slBridge: "hip", hipThrust: "hip", slHipThrust: "hip", slideCurl: "hip", slRDL: "hip",
+};
+const GP_NAMES = { vpull: "pull-up", hpull: "row", push: "push", knee: "leg", hip: "glute & hamstring", trunk: "core" };
+
+/* Tower-specific cues from the YTA03 specs + owner feedback (research §3). */
+const TOWER_CUES = {
+  bar: "Use the angled ends of the bar — friendlier on wrists and elbows. Knees bent, ankles crossed behind you to clear the crossbar.",
+  dips: "Grip the angled handles under the arm pads (the ones curving down and out). Keep your legs still — the tower wobbles if you swing.",
+  knee: "Back flat on the pad, forearms on the foam pads, hands on the upright grips.",
+  push: "Hands on the two angled grips on the front feet of the base — extra depth and neutral wrists.",
+  floor: "On the mat in front of the tower.",
+};
+
+for (const [id, e] of Object.entries(EX)) {
+  e.st = EX_STATION[id] || "floor";
+  e.gp = EX_GP[id] || null;
+}
+
+/* Templates: body region (a 2nd full session must be the other region) and the
+   split point for AM + PM days (blocks before it = part 1). Knee raises / L-sits
+   always land in one part only, so trunk flexion never happens twice in a day. */
+Object.assign(DAY_TEMPLATES.upperA, { region: "upper", split: 3, short: "Pull day" });
+Object.assign(DAY_TEMPLATES.lowerA, { region: "lower", split: 3, short: "Legs + core" });
+Object.assign(DAY_TEMPLATES.upperB, { region: "upper", split: 3, short: "Push day" });
+Object.assign(DAY_TEMPLATES.lowerB, { region: "lower", split: 3, short: "Legs + core" });
+
+/* Badge icons from the sprite (emoji retired in v2). */
+const BADGE_ICONS = { first: "check", spine7: "spine", streak7: "flame", streak30: "flame", streak100: "trophy",
+  w10: "star", w50: "trophy", pullup1: "st-bar", dip1: "st-dips", phase3: "progress", lsit: "st-push", walk20: "walk" };

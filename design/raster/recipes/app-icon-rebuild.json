@@ -1,0 +1,60 @@
+{
+ "new": {
+  "width": 1024,
+  "height": 1024,
+  "background": "#EE4A12",
+  "name": "app-icon-1024"
+ },
+ "steps": [
+  {
+   "id": "gradient.fill.create",
+   "params": {
+    "from": [
+     512,
+     0
+    ],
+    "to": [
+     512,
+     1023
+    ],
+    "style": "linear",
+    "dither": false,
+    "stops": [
+     [
+      0,
+      "#FF8A3D"
+     ],
+     [
+      1,
+      "#EE4A12"
+     ]
+    ],
+    "transparency": [
+     [
+      0,
+      100
+     ],
+     [
+      1,
+      100
+     ]
+    ]
+   },
+   "as": "background"
+  },
+  {
+   "place": "design/raster/src/mark-white.svg",
+   "width": 750.0,
+   "center": [
+    512,
+    496.0
+   ],
+   "as": "figure"
+  }
+ ],
+ "save": [
+  "design/raster/app-icon-1024.pcraft",
+  "design/raster/build/app-icon-rebuild-1024.png"
+ ],
+ "renditions": []
+}

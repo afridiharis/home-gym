@@ -1,0 +1,85 @@
+/* Theme · Light */
+:root {
+  --color-bg: #F4F6FA;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #EDF1F7;
+  --color-line: #DDE3EC;
+  --color-ink: #142033;
+  --color-ink-2: #4A5568;
+  --color-ink-3: #5F697C;
+  --color-brand: #F2541B;
+  --color-on-brand: #FFFFFF;
+  --color-brand-tint: #FFEDE5;
+  --color-brand-ink: #C2410C;
+  --color-bar: #1D5BD6;
+  --color-bar-tint: #E7EEFC;
+  --color-bar-ink: #1747A8;
+  --color-dips: #B8286A;
+  --color-dips-tint: #FBE6EF;
+  --color-dips-ink: #921F55;
+  --color-knee: #45C6A8;
+  --color-knee-tint: #DFF6F0;
+  --color-knee-ink: #0B6E5A;
+  --color-push: #9F80F6;
+  --color-push-tint: #EFEAFE;
+  --color-push-ink: #5636C2;
+  --color-floor: #6B7690;
+  --color-floor-tint: #EEF1F5;
+  --color-floor-ink: #3F4859;
+  --color-good: #1FA463;
+  --color-good-tint: #E3F6EC;
+  --color-good-ink: #0F7442;
+  --color-warn: #F2A71B;
+  --color-warn-tint: #FEF3DC;
+  --color-warn-ink: #8F5B00;
+  --color-bad: #E5484D;
+  --color-bad-tint: #FDE7E7;
+  --color-bad-ink: #B42328;
+  --color-scrim: rgba(20, 32, 51, 0.40);
+}
+/* Theme · Dark */
+[data-theme="Dark"] {
+  --color-bg: #0E1320;
+  --color-surface: #1A2233;
+  --color-surface-2: #232D42;
+  --color-line: #2E3A52;
+  --color-ink: #EEF2F8;
+  --color-ink-2: #B5BFD0;
+  --color-ink-3: #8D99AE;
+  --color-brand: #FF8547;
+  --color-on-brand: #1F0E04;
+  --color-brand-tint: #3A2418;
+  --color-brand-ink: #FFB088;
+  --color-bar: #3D7BFF;
+  --color-bar-tint: #1C2B4D;
+  --color-bar-ink: #9DBBFF;
+  --color-dips: #C93C8C;
+  --color-dips-tint: #3A1B2D;
+  --color-dips-ink: #F49AC8;
+  --color-knee: #63DCC0;
+  --color-knee-tint: #15332E;
+  --color-knee-ink: #8FEBD6;
+  --color-push: #B9A0FF;
+  --color-push-tint: #2A2547;
+  --color-push-ink: #D3C5FF;
+  --color-floor: #8B96AD;
+  --color-floor-tint: #262E3F;
+  --color-floor-ink: #C3CAD8;
+  --color-good: #3CCB7F;
+  --color-good-tint: #163326;
+  --color-good-ink: #8CE5B3;
+  --color-warn: #F5B83D;
+  --color-warn-tint: #3A2E14;
+  --color-warn-ink: #F8CF7A;
+  --color-bad: #FF6B6B;
+  --color-bad-tint: #3A1C1F;
+  --color-bad-ink: #FFA3A3;
+  --color-scrim: rgba(0, 0, 0, 0.60);
+}
+/* Size · Value */
+:root {
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+}

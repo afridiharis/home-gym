@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <g id="Layer_1" data-name="Layer 1">
+    <g id="walk">
+      <path d="M34 18 L30 36 M32 23 L22 31 M33 23 L42 31 M30 36 L22 56 M30 36 L40 46 L44 56" fill="none" stroke="#142033" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M31 10 C31 13.038 33.462 15.5 36.5 15.5 C39.538 15.5 42 13.038 42 10 C42 6.962 39.538 4.5 36.5 4.5 C33.462 4.5 31 6.962 31 10 Z" fill="#142033"/>
+    </g>
+  </g>
+</svg>

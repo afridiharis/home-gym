@@ -1,6 +1,6 @@
 # The FORGE Plan — Haris's L5-Safe Strength & Rehab Program
 
-**Equipment:** Sportsroyals Power Tower (multi-grip pull-up bar, dip handles, vertical knee-raise station with back pad, push-up handles at the base).
+**Equipment:** Sportsroyals Power Tower YTA03 (bar 145–220 cm in 9 holes with angled padded ends, angled dip handles under the arm pads, vertical knee-raise station with back pad, angled push-up grips on the front feet; 150 kg max).
 **Goals, in order:** 1) rehabilitate and protect the L5 back, 2) get very strong, 3) visible abs, 4) stay consistent.
 
 > ⚠️ This is a training plan, not medical advice. The "L5 issue" is self-reported and unconfirmed — this plan assumes the most common pattern (flexion-intolerant discogenic pain). If your symptoms are worse when standing/arching and better sitting, the rules partially invert: get assessed before following this. If symptoms persist beyond 6 weeks of sensible training, see a physio.
@@ -15,6 +15,13 @@ Lumbar discs get injured by **bending the lower spine under load** — especiall
 - Core training is ***anti*-movement**: planks, side planks, bird dogs, dead bugs, carries. This is also exactly how you build a six-pack — no crunches required, ever.
 - **No kipping, no swinging, no dropping off the bar** (also: a freestanding tower can walk/tip under dynamic swings — put it on a rubber mat, and never anchor your feet under the frame).
 - **Never train in the first hour after waking.** Two to three hours after is ideal.
+
+## Setting up your tower (from your photos)
+
+- **Ceiling gap first.** At the top of a pull-up your head rises 25–30 cm above the bar. In your photos the bar sits right up by the ceiling, so measure: if the gap is under 30 cm, drop the bar a hole or two (each hole ≈ 9 cm). Bent knees keep your feet off the floor at the lower setting.
+- **Floor:** your laminate is slippy under rubber feet and dents easily — put a mat under the tower.
+- **Wobble:** keep reps strict (no kipping), tighten the bolts weekly (the app reminds you), and if it still rocks, weigh down the base feet.
+- Keep the bag and case clear of the base so you can step down safely.
 
 ## The traffic-light rules (these override everything)
 
@@ -46,6 +53,20 @@ Days rotate through four sessions; every session starts with the built-in warm-u
 | **Lower B** | Legs + trunk | Squats (lighter), hinges, single-leg RDL patterning, calves, dead bugs, suitcase carries |
 
 Rest 2–3 min after main lifts, 60–90s after accessories. Every pattern lands ~2×/week.
+
+## Two sessions in one day (what's healthy)
+
+Splitting one day's work into a morning half and an evening half is fine — studies even show a small strength edge, as long as the total work is the same. Adding *extra* work is where the risk is, so the app enforces:
+
+- **Max 2 strength sessions a day**, at least **6 hours apart**, and the second must train the *other* body region (upper ↔ lower).
+- **Split halves** (part 1 + part 2) count as one day's work; 4–6 hours between them is ideal, shorter is OK.
+- **Same muscle pattern again within 24 h is blocked**; 24–48 h gets a warning.
+- **Daily cap:** ~20 hard sets is the warning line, 26 is the hard stop; ~8–10 hard sets per pattern per day.
+- **At most 5 hard days a week** (at least one full rest day), and never in the first hour after waking (warning under 2 hours).
+- **Yellow back day:** one strength session only, ~40% fewer sets. **Red:** no strength at all.
+- The Spine Reset can be done up to 3× a day (2 h apart). Walking is unlimited.
+
+Full sources and reasoning: [docs/redesign/research.md](docs/redesign/research.md).
 
 ## Progression: ladders, not luck
 
@@ -82,7 +103,8 @@ Abs become visible around **10–14% body fat** — that part is diet:
 
 ## Consistency system (the actual hard part)
 
-- **The streak counts *any* session** — Spine Reset, a walk, a 5-minute Rescue circuit. Showing up is the metric.
+- **The weekly ring is the main goal**: hit your number of workouts this week (red back days lower the target instead of breaking anything). Week streaks build on that.
+- **The daily streak counts *any* session** — Spine Reset, a walk, a 5-minute Rescue circuit, the 8-minute quick version. Showing up is the metric.
 - **Streak freezes** are earned (1 per 7 days trained, 2 banked max) and applied silently to missed days; a 48h **repair window** lets one slip be bridged by training today.
 - **Implementation intention:** "On [day] at [time], right after [habit], I do [session]" — set in the app, mirrored in your Calendar with real alerts (Setup → Calendar buttons).
 - Bad day? **5-Minute Rescue.** It fully counts. The only failure mode is zero.

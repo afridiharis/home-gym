@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="352" viewBox="0 0 200 352">
+  <title>Power tower</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <g id="frame">
+      <path d="M22 324 L178 324" fill="none" stroke="#c3cad6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M30 324 C30 302 48 296 59.3 290 M170 324 C170 302 152 296 140.7 290" fill="none" stroke="#c3cad6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M59.3 324 L59.3 36 M140.7 324 L140.7 36" fill="none" stroke="#c3cad6" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M59.3 232 L140.7 232" fill="none" stroke="#c3cad6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g id="st-floor">
+      <path d="M32 334 L168 334 C171.314 334 174 336.686 174 340 L174 340 C174 343.314 171.314 346 168 346 L32 346 C28.686 346 26 343.314 26 340 L26 340 C26 336.686 28.686 334 32 334 Z" fill="#6b7690"/>
+    </g>
+    <g id="st-push">
+      <path d="M41 302 L20 302 M159 302 L180 302" fill="none" stroke="#9f80f6" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g id="st-knee">
+      <path d="M88 140 L112 140 C117.523 140 122 144.477 122 150 L122 204 C122 209.523 117.523 214 112 214 L88 214 C82.477 214 78 209.523 78 204 L78 150 C78 144.477 82.477 140 88 140 Z" fill="#45c6a8"/>
+      <path d="M33.5 134 L58.5 134 C61.538 134 64 136.462 64 139.5 L64 139.5 C64 142.538 61.538 145 58.5 145 L33.5 145 C30.462 145 28 142.538 28 139.5 L28 139.5 C28 136.462 30.462 134 33.5 134 Z" fill="#45c6a8"/>
+      <path d="M141.5 134 L166.5 134 C169.538 134 172 136.462 172 139.5 L172 139.5 C172 142.538 169.538 145 166.5 145 L141.5 145 C138.462 145 136 142.538 136 139.5 L136 139.5 C136 136.462 138.462 134 141.5 134 Z" fill="#45c6a8"/>
+      <path d="M31 150 L31 124 M169 150 L169 124" fill="none" stroke="#45c6a8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g id="st-dips">
+      <path d="M59.3 166 L33 166 M140.7 166 L167 166" fill="none" stroke="#b8286a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g id="st-bar">
+      <path d="M28 30 L46 42 L154 42 L172 30" fill="none" stroke="#1d5bd6" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+</svg>

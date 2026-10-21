@@ -1,0 +1,15 @@
+{
+  "comment": "The user's own tower (media/IMG_0494.HEIC, raw photo kept out of git: the site is public). Correction only: white balance picked on the white wardrobe (tungsten cast), cropped to the tower with the bar's ends in. Exported for the in-app 'Your tower' sheet with station pins. Run: python3 ~/.claude/skills/lightcraft/scripts/lcraft.py design/photos.json --root .",
+  "import": ["media/IMG_0494.HEIC"],
+  "steps": [
+    {"photos": "all"},
+    {"wb": {"pick": [0.93, 0.55]}},
+    {"crop": [0.03, 0.03, 0.87, 1.0]},
+    {"measure": [0.4, 0.25, 0.55, 0.35]}
+  ],
+  "exports": [
+    {"dir": "assets/photos", "size": 900, "edge": "width", "formats": ["avif", "jpg"], "name": "tower",
+     "quality": 72, "colorSpace": "srgb", "metadata": "none", "removeLocation": true}
+  ],
+  "beforeAfter": {"path": "design/photos/ba-{stem}.png", "tile": 600, "title": "Your tower: white balance + crop"}
+}

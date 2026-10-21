@@ -206,14 +206,14 @@ function mountDemo(container, exId, size) {
   const w = size || 168;
   container.innerHTML = `
     <svg viewBox="0 0 120 100" width="${w}" height="${Math.round(w * 100 / 120)}" style="display:block">
-      <g stroke="var(--ink-3)" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.55">${demo.props.join("")}</g>
-      <g id="d-far" stroke="var(--ink-3)" stroke-width="3" stroke-linecap="round" fill="none">
+      <g stroke="var(--ink-3)" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.45">${demo.props.join("")}</g>
+      <g id="d-far" stroke="var(--st, var(--ink-3))" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.55">
         <path id="d-armB" /><path id="d-legB" />
       </g>
-      <g stroke="var(--ink)" stroke-width="3.2" stroke-linecap="round" fill="none">
+      <g stroke="var(--st-ink, var(--ink))" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
         <path id="d-torso" /><path id="d-armA" /><path id="d-legA" />
       </g>
-      <circle id="d-head" r="5.6" fill="var(--ink)" />
+      <circle id="d-head" r="5.8" fill="var(--st-ink, var(--ink))" />
     </svg>`;
   const el = (i) => container.querySelector("#" + i);
   const parts = { head: el("d-head"), torso: el("d-torso"), armA: el("d-armA"), armB: el("d-armB"), legA: el("d-legA"), legB: el("d-legB") };

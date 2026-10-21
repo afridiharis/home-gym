@@ -1,0 +1,4 @@
+# raw photos/clips dropped in for processing: the repo is public (GitHub Pages), only developed, cropped exports ship
+media/
+.DS_Store
+__pycache__/

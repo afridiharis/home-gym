@@ -1,0 +1,54 @@
+{
+  "comment": "Front elevation of the Sportsroyals Power Tower YTA03, ~7 mm per unit (bar at ~2000 mm setting). Stations are named groups (st-bar, st-dips, st-knee, st-push, st-floor) so the app can highlight them. Run: python3 ~/.claude/skills/vectorcraft/scripts/vcraft.py design/tower.json --root .",
+  "new": {"width": 200, "height": 352, "units": "Pixels", "name": "FORGE tower"},
+  "paint": {"fill": "none", "stroke": "none"},
+  "steps": [
+    {"comment": "Frame (neutral): feet, curved side braces, uprights, rear crossbar."},
+    {"tool": "draw_path", "args": {"d": "M22 324 H178", "fill": "none", "stroke": "#C3CAD6", "strokeWidth": 8, "cap": "round", "join": "round"}, "as": "f1"},
+    {"tool": "draw_path", "args": {"d": "M30 324 C30 302 48 296 59.3 290 M170 324 C170 302 152 296 140.7 290", "fill": "none", "stroke": "#C3CAD6", "strokeWidth": 7, "cap": "round", "join": "round"}, "as": "f2"},
+    {"tool": "draw_path", "args": {"d": "M59.3 324 V36 M140.7 324 V36", "fill": "none", "stroke": "#C3CAD6", "strokeWidth": 9, "cap": "round", "join": "round"}, "as": "f3"},
+    {"tool": "draw_path", "args": {"d": "M59.3 232 H140.7", "fill": "none", "stroke": "#C3CAD6", "strokeWidth": 6, "cap": "round", "join": "round"}, "as": "f4"},
+    {"id": "select.set", "params": {"ids": ["$f1", "$f2", "$f3", "$f4"]}},
+    {"id": "object.group", "params": {}, "as": "frame"},
+    {"id": "object.setProps", "params": {"id": "$frame", "name": "frame"}},
+
+    {"comment": "Floor station: the mat in front of the tower."},
+    {"tool": "draw_shape", "args": {"shape": "rectangle", "x": 26, "y": 334, "width": 148, "height": 12, "radius": 6, "fill": "#6B7690", "stroke": "none"}, "as": "mat"},
+    {"id": "select.set", "params": {"ids": ["$mat"]}},
+    {"id": "object.group", "params": {}, "as": "floor"},
+    {"id": "object.setProps", "params": {"id": "$floor", "name": "st-floor"}},
+
+    {"comment": "Push-up handles: pegs on the curved base braces."},
+    {"tool": "draw_path", "args": {"d": "M41 302 H20 M159 302 H180", "fill": "none", "stroke": "#9F80F6", "strokeWidth": 9, "cap": "round", "join": "round"}, "as": "push1"},
+    {"id": "select.set", "params": {"ids": ["$push1"]}},
+    {"id": "object.group", "params": {}, "as": "push"},
+    {"id": "object.setProps", "params": {"id": "$push", "name": "st-push"}},
+
+    {"comment": "Knee-raise station: backrest, arm pads, vertical grips."},
+    {"tool": "draw_shape", "args": {"shape": "rectangle", "x": 78, "y": 140, "width": 44, "height": 74, "radius": 10, "fill": "#45C6A8", "stroke": "none"}, "as": "back"},
+    {"tool": "draw_shape", "args": {"shape": "rectangle", "x": 28, "y": 134, "width": 36, "height": 11, "radius": 5.5, "fill": "#45C6A8", "stroke": "none"}, "as": "padL"},
+    {"tool": "draw_shape", "args": {"shape": "rectangle", "x": 136, "y": 134, "width": 36, "height": 11, "radius": 5.5, "fill": "#45C6A8", "stroke": "none"}, "as": "padR"},
+    {"tool": "draw_path", "args": {"d": "M31 150 V124 M169 150 V124", "fill": "none", "stroke": "#45C6A8", "strokeWidth": 7, "cap": "round", "join": "round"}, "as": "grips"},
+    {"id": "select.set", "params": {"ids": ["$back", "$padL", "$padR", "$grips"]}},
+    {"id": "object.group", "params": {}, "as": "knee"},
+    {"id": "object.setProps", "params": {"id": "$knee", "name": "st-knee"}},
+
+    {"comment": "Dip handles: the horizontal ends of the J-handles, flaring outward."},
+    {"tool": "draw_path", "args": {"d": "M59.3 166 H33 M140.7 166 H167", "fill": "none", "stroke": "#B8286A", "strokeWidth": 9, "cap": "round", "join": "round"}, "as": "dip1"},
+    {"id": "select.set", "params": {"ids": ["$dip1"]}},
+    {"id": "object.group", "params": {}, "as": "dips"},
+    {"id": "object.setProps", "params": {"id": "$dips", "name": "st-dips"}},
+
+    {"comment": "Pull-up bar: straight centre, angled ends."},
+    {"tool": "draw_path", "args": {"d": "M28 30 L46 42 H154 L172 30", "fill": "none", "stroke": "#1D5BD6", "strokeWidth": 9, "cap": "round", "join": "round"}, "as": "bar1"},
+    {"id": "select.set", "params": {"ids": ["$bar1"]}},
+    {"id": "object.group", "params": {}, "as": "bar"},
+    {"id": "object.setProps", "params": {"id": "$bar", "name": "st-bar"}},
+    {"id": "select.none", "params": {}}
+  ],
+  "save": [
+    "design/tower.vectorcraft",
+    {"path": "assets/tower.svg", "artboard": 0, "title": "Power tower"},
+    {"path": "design/tower-preview.png", "artboard": 0, "pixels": 600, "options": {"background": "white"}}
+  ]
+}

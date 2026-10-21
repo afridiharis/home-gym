@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Celebrate preview</title>
+<style>
+  /* Check page for assets/motion/celebrate.webp: the FORGE light and dark screens, at the 160 px
+     CSS size it ships at. Not part of the app; serve the repo root over http and open
+     /design/motion/preview.html. Replay reloads the image with a cache-busting query. */
+  body { margin: 0; font: 15px/1.4 -apple-system, system-ui, sans-serif; background: #888; }
+  .row { display: flex; flex-wrap: wrap; }
+  .screen { flex: 1 1 280px; display: flex; flex-direction: column; align-items: center; padding: 32px 16px; gap: 8px; }
+  .light { background: #F4F6FA; color: #142033; }
+  .dark { background: #0E1320; color: #F4F6FA; }
+  img { width: 160px; height: 160px; display: block; }
+  h1 { margin: 0; font-size: 28px; }
+  button { margin: 16px; font: inherit; padding: 8px 16px; }
+  code { font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="screen light"><img class="anim" alt="" src="../../assets/motion/celebrate.webp"><h1>Forged.</h1><code>celebrate.webp</code></div>
+  <div class="screen dark"><img class="anim" alt="" src="../../assets/motion/celebrate.webp"><h1>Forged.</h1><code>celebrate.webp</code></div>
+  <div class="screen light"><img alt="" src="../../assets/motion/celebrate-still.png"><h1>Forged.</h1><code>celebrate-still.png</code></div>
+  <div class="screen dark"><img alt="" src="../../assets/motion/celebrate-still.png"><h1>Forged.</h1><code>celebrate-still.png</code></div>
+</div>
+<button id="replay">Replay</button>
+<script>
+  document.getElementById("replay").onclick = function () {
+    var n = Date.now();
+    document.querySelectorAll("img.anim").forEach(function (i) { i.src = "../../assets/motion/celebrate.webp?r=" + n; });
+  };
+</script>
+</body>
+</html>

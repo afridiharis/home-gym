@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <g id="Layer_1" data-name="Layer 1">
+    <g id="sound">
+      <path d="M9 25 L19 25 L33 13 L33 51 L19 39 L9 39 Z M42 25 C45.811 28.888 45.811 35.112 42 39 M48 17 C52.031 20.95 54.303 26.356 54.303 32 C54.303 37.644 52.031 43.05 48 47" fill="none" stroke="#142033" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+</svg>

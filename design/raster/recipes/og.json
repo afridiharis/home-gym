@@ -1,0 +1,324 @@
+{
+ "new": {
+  "width": 1200,
+  "height": 630,
+  "background": "#F4F6FA",
+  "name": "og"
+ },
+ "steps": [
+  {
+   "id": "gradient.fill.create",
+   "params": {
+    "from": [
+     0,
+     0
+    ],
+    "to": [
+     1200,
+     630
+    ],
+    "style": "linear",
+    "dither": false,
+    "stops": [
+     [
+      0,
+      "#FFFFFF"
+     ],
+     [
+      1,
+      "#F4F6FA"
+     ]
+    ],
+    "transparency": [
+     [
+      0,
+      100
+     ],
+     [
+      1,
+      100
+     ]
+    ]
+   },
+   "as": "background"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "ellipse",
+    "rect": [
+     760,
+     -25,
+     680,
+     680
+    ],
+    "stroke": null,
+    "fill": {
+     "gradient": {
+      "stops": [
+       [
+        0,
+        "#FFE9DF"
+       ],
+       [
+        1,
+        "#FFD2BC"
+       ]
+      ],
+      "angle": 90
+     }
+    }
+   },
+   "as": "sun"
+  },
+  {
+   "place": "design/raster/src/tower-og.svg",
+   "height": 500,
+   "center": [
+    985,
+    318
+   ],
+   "as": "tower"
+  },
+  {
+   "place": "assets/brand/logo.svg",
+   "width": 290,
+   "center": [
+    217.0,
+    110.99815094973945
+   ],
+   "as": "lockup"
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 72,
+    "y": 309,
+    "text": "Back-safe strength\nfor your power tower",
+    "font": "Inter",
+    "fontStyle": "SemiBold",
+    "size": 68,
+    "leading": 78,
+    "tracking": -25,
+    "color": "#142033"
+   },
+   "as": "headline"
+  },
+  {
+   "id": "type.setStyle",
+   "params": {
+    "layer": "$headline",
+    "range": [
+     0,
+     9
+    ],
+    "color": "#F2541B"
+   }
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "roundedRect",
+    "rect": [
+     72,
+     512,
+     152,
+     46
+    ],
+    "radii": 23.0,
+    "fill": "#FFFFFF",
+    "stroke": {
+     "width": 1.5,
+     "color": "#DCE1EA",
+     "align": "inside"
+    }
+   },
+   "as": "chip0"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "ellipse",
+    "rect": [
+     90,
+     529.0,
+     12,
+     12
+    ],
+    "fill": "#1D5BD6",
+    "stroke": null
+   },
+   "as": "dot0"
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 111,
+    "y": 543.5,
+    "text": "Pull-ups",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 24,
+    "color": "#142033"
+   },
+   "as": "label0"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "roundedRect",
+    "rect": [
+     236,
+     512,
+     108,
+     46
+    ],
+    "radii": 23.0,
+    "fill": "#FFFFFF",
+    "stroke": {
+     "width": 1.5,
+     "color": "#DCE1EA",
+     "align": "inside"
+    }
+   },
+   "as": "chip1"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "ellipse",
+    "rect": [
+     254,
+     529.0,
+     12,
+     12
+    ],
+    "fill": "#B8286A",
+    "stroke": null
+   },
+   "as": "dot1"
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 275,
+    "y": 543.5,
+    "text": "Dips",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 24,
+    "color": "#142033"
+   },
+   "as": "label1"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "roundedRect",
+    "rect": [
+     356,
+     512,
+     191,
+     46
+    ],
+    "radii": 23.0,
+    "fill": "#FFFFFF",
+    "stroke": {
+     "width": 1.5,
+     "color": "#DCE1EA",
+     "align": "inside"
+    }
+   },
+   "as": "chip2"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "ellipse",
+    "rect": [
+     374,
+     529.0,
+     12,
+     12
+    ],
+    "fill": "#45C6A8",
+    "stroke": null
+   },
+   "as": "dot2"
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 395,
+    "y": 543.5,
+    "text": "Knee raises",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 24,
+    "color": "#142033"
+   },
+   "as": "label2"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "roundedRect",
+    "rect": [
+     559,
+     512,
+     167,
+     46
+    ],
+    "radii": 23.0,
+    "fill": "#FFFFFF",
+    "stroke": {
+     "width": 1.5,
+     "color": "#DCE1EA",
+     "align": "inside"
+    }
+   },
+   "as": "chip3"
+  },
+  {
+   "id": "shape.create",
+   "params": {
+    "kind": "ellipse",
+    "rect": [
+     577,
+     529.0,
+     12,
+     12
+    ],
+    "fill": "#9F80F6",
+    "stroke": null
+   },
+   "as": "dot3"
+  },
+  {
+   "id": "type.create",
+   "params": {
+    "x": 598,
+    "y": 543.5,
+    "text": "Push-ups",
+    "font": "Inter",
+    "fontStyle": "Medium",
+    "size": 24,
+    "color": "#142033"
+   },
+   "as": "label3"
+  }
+ ],
+ "save": [
+  "design/raster/og.pcraft",
+  "assets/og.png"
+ ],
+ "renditions": [
+  {
+   "width": 500,
+   "save": [
+    "design/raster/previews/og-thumb-500.png"
+   ]
+  }
+ ],
+ "preview": "design/raster/previews/og-preview.png"
+}

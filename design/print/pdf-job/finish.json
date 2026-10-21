@@ -1,0 +1,284 @@
+{
+ "vars": {
+  "tower_in": "in/tower-drawing.pdf",
+  "tower_out": "out/tower-drawing.pdf",
+  "chart_in": "in/forge-wall-chart.pdf",
+  "chart_out": "out/forge-wall-chart.pdf",
+  "author": "FORGE",
+  "tower_title": "FORGE · Your tower: Sportsroyals Power Tower YTA03",
+  "tower_subject": "Technical drawing of the Sportsroyals Power Tower YTA03: front elevation (bar at 2200 and 1450) and plan with the clear training zone, 1:25 on A4. Dimensions in mm, approx. where marked.",
+  "tower_keywords": "FORGE, power tower, Sportsroyals YTA03, technical drawing, front elevation, plan, clear training zone, ceiling height, home gym",
+  "chart_title": "FORGE · Your tower plan",
+  "chart_subject": "A3 wall chart for the Sportsroyals Power Tower YTA03: daily Spine Reset, four rotating training days, the stations, the back check, two-session rules, when to see a doctor and the tower checklist.",
+  "chart_keywords": "FORGE, wall chart, power tower, Sportsroyals YTA03, Spine Reset, training days, back check, tower checklist, home gym"
+ },
+ "steps": [
+  {
+   "note": "Tower drawing (CADCraft, no print standard): strip every hidden-data category (its metadata is only CADCraft's Title/Creator/Producer), then set the four fields and write a compressed copy."
+  },
+  {
+   "tool": "doc_open",
+   "args": {
+    "path": "$tower_in"
+   },
+   "as": "t"
+  },
+  {
+   "tool": "doc_hidden_info",
+   "args": {
+    "doc": "$t.doc"
+   },
+   "as": "t_hidden"
+  },
+  {
+   "tool": "doc_remove_hidden",
+   "args": {
+    "doc": "$t.doc"
+   },
+   "as": "t_removed"
+  },
+  {
+   "tool": "doc_set_info",
+   "args": {
+    "doc": "$t.doc",
+    "key": "Title",
+    "value": "$tower_title"
+   }
+  },
+  {
+   "tool": "doc_set_info",
+   "args": {
+    "doc": "$t.doc",
+    "key": "Author",
+    "value": "$author"
+   }
+  },
+  {
+   "tool": "doc_set_info",
+   "args": {
+    "doc": "$t.doc",
+    "key": "Subject",
+    "value": "$tower_subject"
+   }
+  },
+  {
+   "tool": "doc_set_info",
+   "args": {
+    "doc": "$t.doc",
+    "key": "Keywords",
+    "value": "$tower_keywords"
+   }
+  },
+  {
+   "tool": "doc_optimize",
+   "args": {
+    "doc": "$t.doc",
+    "path": "$tower_out",
+    "color": {
+     "downsample": false,
+     "compression": "retain"
+    },
+    "gray": {
+     "downsample": false,
+     "compression": "retain"
+    }
+   },
+   "as": "t_written"
+  },
+  {
+   "expect": "$t_written.images_recompressed",
+   "equals": 0,
+   "why": "nothing lossy"
+  },
+  {
+   "note": "Wall chart (DesignCraft PDF/X-4): remove every hidden-data category EXCEPT metadata. Its metadata is what makes it PDF/X-4 (GTS_PDFXVersion, the XMP with pdfxid, Trapped, dates), so a metadata strip would break the standard. Set the four fields (PdfCraft mirrors them into the XMP) and write a compressed copy: the output intent's FOGRA39 profile is stored uncompressed."
+  },
+  {
+   "tool": "doc_open",
+   "args": {
+    "path": "$chart_in"
+   },
+   "as": "c"
+  },
+  {
+   "tool": "doc_hidden_info",
+   "args": {
+    "doc": "$c.doc"
+   },
+   "as": "c_hidden"
+  },
+  {
+   "expect": "$c_hidden.categories.1.count",
+   "equals": 0,
+   "why": "nothing hidden besides the PDF/X-4 metadata (attachments, comments, fields, hidden text and layers, bookmarks, links/scripts, private data)"
+  },
+  {
+   "expect": "$c_hidden.categories.2.count",
+   "equals": 0,
+   "why": "nothing hidden besides the PDF/X-4 metadata (attachments, comments, fields, hidden text and layers, bookmarks, links/scripts, private data)"
+  },
+  {
+   "expect": "$c_hidden.categories.3.count",
+   "equals": 0,
+   "why": "nothing hidden besides the PDF/X-4 metadata (attachments, comments, fields, hidden text and layers, bookmarks, links/scripts, private data)"
+  },
+  {
+   "expect": "$c_hidden.categories.4.count",
+   "equals": 0,
+   "why": "nothing hidden besides the PDF/X-4 metadata (attachments, comments, fields, hidden text and layers, bookmarks, links/scripts, private data)"
+  },
+  {
+   "expect": "$c_hidden.categories.5.count",
+   "equals": 0,
+   "why": "nothing hidden besides the PDF/X-4 metadata (attachments, comments, fields, hidden text and layers, bookmarks, links/scripts, private data)"
+  },
+  {
+   "expect": "$c_hidden.categories.6.count",
+   "equals": 0,
+   "why": "nothing hidden besides the PDF/X-4 metadata (attachments, comments, fields, hidden text and layers, bookmarks, links/scripts, private data)"
+  },
+  {
+   "expect": "$c_hidden.categories.7.count",
+   "equals": 0,
+   "why": "nothing hidden besides the PDF/X-4 metadata (attachments, comments, fields, hidden text and layers, bookmarks, links/scripts, private data)"
+  },
+  {
+   "expect": "$c_hidden.categories.8.count",
+   "equals": 0,
+   "why": "nothing hidden besides the PDF/X-4 metadata (attachments, comments, fields, hidden text and layers, bookmarks, links/scripts, private data)"
+  },
+  {
+   "tool": "doc_set_info",
+   "args": {
+    "doc": "$c.doc",
+    "key": "Title",
+    "value": "$chart_title"
+   }
+  },
+  {
+   "tool": "doc_set_info",
+   "args": {
+    "doc": "$c.doc",
+    "key": "Author",
+    "value": "$author"
+   }
+  },
+  {
+   "tool": "doc_set_info",
+   "args": {
+    "doc": "$c.doc",
+    "key": "Subject",
+    "value": "$chart_subject"
+   }
+  },
+  {
+   "tool": "doc_set_info",
+   "args": {
+    "doc": "$c.doc",
+    "key": "Keywords",
+    "value": "$chart_keywords"
+   }
+  },
+  {
+   "tool": "doc_optimize",
+   "args": {
+    "doc": "$c.doc",
+    "path": "$chart_out",
+    "color": {
+     "downsample": false,
+     "compression": "retain"
+    },
+    "gray": {
+     "downsample": false,
+     "compression": "retain"
+    }
+   },
+   "as": "c_written"
+  },
+  {
+   "expect": "$c_written.images_recompressed",
+   "equals": 0,
+   "why": "nothing lossy"
+  },
+  {
+   "note": "Re-open both written files and check what a reader sees."
+  },
+  {
+   "tool": "doc_open",
+   "args": {
+    "path": "$tower_out"
+   },
+   "as": "t2"
+  },
+  {
+   "tool": "doc_info",
+   "args": {
+    "doc": "$t2.doc"
+   },
+   "as": "t2_info"
+  },
+  {
+   "expect": "$t2_info.title",
+   "equals": "$tower_title"
+  },
+  {
+   "expect": "$t2_info.author",
+   "equals": "$author"
+  },
+  {
+   "expect": "$t2_info.keywords",
+   "equals": "$tower_keywords"
+  },
+  {
+   "tool": "doc_hidden_info",
+   "args": {
+    "doc": "$t2.doc"
+   },
+   "as": "t2_hidden",
+   "show": true
+  },
+  {
+   "tool": "print_readiness",
+   "args": {
+    "doc": "$t2.doc"
+   },
+   "as": "t2_ready"
+  },
+  {
+   "tool": "doc_open",
+   "args": {
+    "path": "$chart_out"
+   },
+   "as": "c2"
+  },
+  {
+   "tool": "doc_info",
+   "args": {
+    "doc": "$c2.doc"
+   },
+   "as": "c2_info"
+  },
+  {
+   "expect": "$c2_info.title",
+   "equals": "$chart_title"
+  },
+  {
+   "expect": "$c2_info.subject",
+   "equals": "$chart_subject"
+  },
+  {
+   "tool": "print_readiness",
+   "args": {
+    "doc": "$c2.doc"
+   },
+   "as": "c2_ready",
+   "show": true
+  },
+  {
+   "verify": "$tower_out"
+  },
+  {
+   "verify": "$chart_out"
+  }
+ ]
+}

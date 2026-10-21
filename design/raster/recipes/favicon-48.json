@@ -1,0 +1,17 @@
+{
+ "open": "design/raster/src/favicon-48.svg",
+ "save": [
+  "design/raster/favicon-48.pcraft"
+ ],
+ "renditions": [
+  {
+   "width": 48,
+   "height": 48,
+   "save": [
+    "design/raster/build/favicon-48.ico",
+    "design/raster/build/favicon-48.png"
+   ],
+   "zoom": "design/raster/previews/favicon-48@8x.png"
+  }
+ ]
+}

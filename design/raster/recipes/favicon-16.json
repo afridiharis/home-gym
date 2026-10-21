@@ -1,0 +1,17 @@
+{
+ "open": "design/raster/src/favicon-16.svg",
+ "save": [
+  "design/raster/favicon-16.pcraft"
+ ],
+ "renditions": [
+  {
+   "width": 16,
+   "height": 16,
+   "save": [
+    "design/raster/build/favicon-16.ico",
+    "design/raster/build/favicon-16.png"
+   ],
+   "zoom": "design/raster/previews/favicon-16@8x.png"
+  }
+ ]
+}

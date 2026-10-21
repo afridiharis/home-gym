@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 32 32">
+  <defs><linearGradient id="tileFill" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F86A2C"/><stop offset="1" stop-color="#EC4A14"/></linearGradient></defs>
+  <rect id="tile" x="0" y="0" width="32" height="32" rx="7.0" ry="7.0" fill="url(#tileFill)"/>
+  <g id="figure" fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round">
+    <path id="bar" d="M4.559 9.5 L27.441 9.5" stroke-width="2.9"/>
+    <path id="arms" d="M10.508 9.5 L7.992 15.907 L12.797 19.339 M21.491 9.5 L24.009 15.907 L19.203 19.339" stroke-width="3.3"/>
+    <path id="torso" d="M16 19.568 L16 26.432" stroke-width="6.5"/>
+  </g>
+  <circle id="head" cx="16" cy="5.61" r="3.1" fill="#FFFFFF"/>
+</svg>

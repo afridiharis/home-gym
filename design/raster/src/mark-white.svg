@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="128" height="128" viewBox="0 0 128 128">
+  <title>FORGE</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <g id="Mark">
+      <path d="M18.238 37.458 L109.763 37.458" fill="none" stroke="#FFFFFF" stroke-width="10.983" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M42.034 37.458 L31.966 63.085 L51.187 76.814 M85.966 37.458 L96.034 63.085 L76.814 76.814" fill="none" stroke="#FFFFFF" stroke-width="12.814" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M64 77.729 L64 105.186" fill="none" stroke="#FFFFFF" stroke-width="25.627" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M52.102 21.898 C52.102 15.327 57.429 10 64 10 C70.572 10 75.899 15.327 75.899 21.898 C75.899 28.47 70.572 33.797 64 33.797 C57.429 33.797 52.102 28.47 52.102 21.898 Z" fill="#FFFFFF"/>
+    </g>
+  </g>
+</svg>
