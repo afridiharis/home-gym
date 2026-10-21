@@ -229,6 +229,7 @@ const ACTIONS = {
 document.addEventListener("click", (e) => {
   const el = e.target.closest("[data-a]");
   if (!el || el.disabled) return;
+  if (UI.swipedAt && Date.now() - UI.swipedAt < 350 && el.closest("#player")) return;
   const fn = ACTIONS[el.dataset.a];
   if (!fn) return;
   e.preventDefault();

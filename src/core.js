@@ -50,6 +50,7 @@ const defaultState = () => ({
   deload: null,      // start date of a lighter week
   deloadDismissed: null,
   seenV2: false,
+  seenSwipe: false,  // one-time "swipe between moves" tip
 });
 
 let S = defaultState();
@@ -138,6 +139,7 @@ function sanitizeState(p) {
   s.deload = isDateKey(p.deload) ? p.deload : null;
   s.deloadDismissed = isDateKey(p.deloadDismissed) ? p.deloadDismissed : null;
   s.seenV2 = !!p.seenV2;
+  s.seenSwipe = !!p.seenSwipe;
   s.active = sanitizeActive(p.active);
   return s;
 }

@@ -276,14 +276,19 @@ input:focus, select:focus, textarea:focus { outline: none; box-shadow: inset 0 0
 .toggle input:checked ~ .th { transform: translateX(20px); }
 
 /* ---------- player ---------- */
-#player { position: fixed; inset: 0; z-index: 50; background: var(--surface); overflow-y: auto; }
+#player { position: fixed; inset: 0; z-index: 50; background: var(--surface); overflow-y: auto; overflow-x: hidden; touch-action: pan-y; }
 #player .inner { max-width: 560px; margin: 0 auto; min-height: 100%; display: flex; flex-direction: column; gap: 14px;
   padding: calc(12px + var(--safe-t)) 20px calc(20px + var(--safe-b)); }
 .p-top { display: flex; align-items: center; gap: 10px; }
 .segments { flex: 1; display: flex; gap: 4px; }
 .segments i { flex: 1; height: 6px; border-radius: 3px; background: var(--line); }
 .segments i.done { background: var(--brand); }
-.segments i.now { background: color-mix(in srgb, var(--brand) 45%, var(--line)); }
+.segments i.part { background: color-mix(in srgb, var(--brand) 55%, var(--line)); }
+.segments i.now { transform: scaleY(1.7); box-shadow: inset 0 0 0 1.5px var(--brand); }
+#player .inner.in-next { animation: in-next .2s ease-out; }
+#player .inner.in-prev { animation: in-prev .2s ease-out; }
+@keyframes in-next { from { transform: translateX(36%); opacity: 0; } }
+@keyframes in-prev { from { transform: translateX(-36%); opacity: 0; } }
 .hurt-btn { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 12px 0 10px; border-radius: var(--r-pill);
   background: var(--bad-tint); color: var(--bad-ink); font-family: var(--font-round); font-weight: 700; font-size: 13px; }
 .station-line { display: flex; align-items: center; gap: 12px; }
@@ -417,7 +422,7 @@ svg.tower .dim { --sc: var(--frame-dim); }
 <main id="app" aria-live="polite"></main>
 <script>
 "use strict";
-const FORGE_VERSION = "da868d1d53";
+const FORGE_VERSION = "204e50fe2e";
 /* ============================================================
    FORGE — program data
    Evidence notes: McGill Big 3 protocol, traffic-light pain rules,
@@ -1433,6 +1438,7 @@ const defaultState = () => ({
   deload: null,      // start date of a lighter week
   deloadDismissed: null,
   seenV2: false,
+  seenSwipe: false,  // one-time "swipe between moves" tip
 });
 
 let S = defaultState();
@@ -1521,6 +1527,7 @@ function sanitizeState(p) {
   s.deload = isDateKey(p.deload) ? p.deload : null;
   s.deloadDismissed = isDateKey(p.deloadDismissed) ? p.deloadDismissed : null;
   s.seenV2 = !!p.seenV2;
+  s.seenSwipe = !!p.seenSwipe;
   s.active = sanitizeActive(p.active);
   return s;
 }
@@ -2423,6 +2430,7 @@ function startSession(kind, opts = {}) {
   acquireWake();
   renderPlayer();
   countdown();
+  if (!S.seenSwipe) { S.seenSwipe = true; save(); setTimeout(() => UI.session && showToast("Tip: swipe left or right to move between moves"), 3900); }
 }
 // 3-2-1-Go over the first move: time to get to the station; tap to skip
 function countdown() {
@@ -2458,7 +2466,7 @@ function resumeSession() {
 const curItem = () => UI.session.items[UI.session.idx];
 const setTarget = (it, i) => (it.pyramid ? it.pyramid[Math.min(i, it.pyramid.length - 1)] : it.target);
 
-function renderPlayer() {
+function renderPlayer(dir = 0) {
   const s = UI.session;
   if (!s) return;
   const it = curItem();
@@ -2466,7 +2474,9 @@ function renderPlayer() {
   const tgt = it._adj ?? setTarget(it, s.setIdx);
   const mains = s.items.filter((x) => !x.warmup);
   const pos = mains.indexOf(it);
-  const segs = s.items.map((x, i) => `<i class="${i < s.idx ? "done" : i === s.idx ? "now" : ""}"></i>`).join("");
+  const segs = s.items.map((x, i) => { const n = loggedSets(x);
+    return `<i class="${n >= x.sets ? "done" : n ? "part" : ""} ${i === s.idx ? "now" : ""}"></i>`; }).join("");
+  const setLabel = loggedSets(it) >= it.sets ? `All ${it.sets} sets done` : `Set ${Math.min(s.setIdx + 1, it.sets)} of ${it.sets}`;
   const unit = kindUnit(ex, tgt) + sideNote(ex);
   const head = it.warmup ? `Warm-up${it.label ? " · " + esc(it.label) : ""}` : `Move ${pos + 1} of ${mains.length}${it.note ? " · " + esc(it.note) : ""}`;
   const clip = ASSETS.clips[it.exId];
@@ -2474,7 +2484,7 @@ function renderPlayer() {
   const el = document.createElement("div");
   el.id = "player";
   el.setAttribute("role", "dialog"); el.setAttribute("aria-label", `${s.name}: ${ex.name}`);
-  el.innerHTML = `<div class="inner" data-st="${ex.st}">
+  el.innerHTML = `<div class="inner ${dir > 0 ? "in-next" : dir < 0 ? "in-prev" : ""}" data-st="${ex.st}">
     <div class="p-top">
       <button class="btn-icon" data-a="quit" aria-label="End session">${I("close")}</button>
       <div class="segments" aria-hidden="true">${segs}</div>
@@ -2493,7 +2503,7 @@ function renderPlayer() {
     </div>
     ${it.timed ? holdBlock(it, tgt, unit) : `<div class="target">
       <span class="t-num">${tgt}</span>
-      <div class="col"><span class="t-head">${unit}</span><span class="t-cap">Set ${Math.min(s.setIdx + 1, it.sets)} of ${it.sets}</span>
+      <div class="col"><span class="t-head">${unit}</span><span class="t-cap">${setLabel}</span>
       <div class="set-dots">${Array.from({ length: it.sets }, (_, i) => `<i class="${it.setLog[i] != null ? "done" : i === s.setIdx ? "now" : ""}"></i>`).join("")}</div></div>
     </div>`}
     <div class="p-actions">
@@ -2517,7 +2527,7 @@ function holdBlock(it, tgt, unit) {
       <circle id="hold-arc" cx="110" cy="110" r="96" fill="none" stroke="var(--st)" stroke-width="14" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="0"/></svg>
       <span class="t-num val" id="hold-val">${fmtClock(tgt)}</span>
     </div>
-    <div class="col" style="align-items:center"><span class="t-cap">Hold${sideNote(it.ex)} · set ${Math.min(UI.session.setIdx + 1, it.sets)} of ${it.sets}</span></div>
+    <div class="col" style="align-items:center"><span class="t-cap">Hold${sideNote(it.ex)} · ${loggedSets(it) >= it.sets ? `all ${it.sets} sets done` : `set ${Math.min(UI.session.setIdx + 1, it.sets)} of ${it.sets}`}</span></div>
     <button class="btn btn-primary block" id="hold-btn" data-a="hold-start">${I("play")}${it.exId === "walk" ? "Start" : "Start hold"}</button>`;
 }
 
@@ -2556,9 +2566,9 @@ function logSet(val) {
   delete it._adj;
   sfx("set-done");
   const lastSet = s.setIdx >= it.sets - 1;
-  const lastItem = s.idx >= s.items.length - 1;
-  if (lastSet && lastItem) { finishSession(); return; }
-  if (lastSet) { s.idx++; s.setIdx = 0; } else s.setIdx++;
+  const nextOpen = s.items.findIndex((x, i) => i > s.idx && loggedSets(x) < x.sets);
+  if (lastSet && nextOpen < 0) { finishSession(); return; }
+  if (lastSet) { s.idx = nextOpen; s.setIdx = openSet(s.items[nextOpen]); } else s.setIdx++;
   snapshotActive(s);
   const restSec = it.warmup ? 0 : s.type === "strength" || s.type === "quick" ? (it.ladder && !it.volume ? S.settings.restMain : S.settings.restAcc) : S.settings.restSpine;
   renderPlayer();
@@ -2600,14 +2610,75 @@ function startRest(sec) {
 function endRest() { clearInterval(UI.restTimer); UI.rest = null; document.querySelectorAll("#rest").forEach((n) => n.remove()); }
 
 function skipExercise() {
-  clearInterval(UI.timer);
   const s = UI.session;
-  delete curItem()._adj;
-  if (s.idx >= s.items.length - 1) { finishSession(); return; }
-  s.idx++; s.setIdx = 0;
-  snapshotActive(s);
-  renderPlayer();
+  if (s.idx >= s.items.length - 1) { clearInterval(UI.timer); finishSession(); return; }
+  goToItem(s.idx + 1, 1);
 }
+
+/* ---------- moving between moves: swipe, arrow keys, Skip ---------- */
+const loggedSets = (it) => it.setLog.filter((v) => v != null).length;
+// the set to pick up on: the first one not logged yet (a move you come back to keeps what you logged)
+const openSet = (it) => Math.min(loggedSets(it), it.sets - 1);
+
+function goToItem(i, dir) {
+  const s = UI.session;
+  if (!s || i < 0 || i >= s.items.length || i === s.idx) return;
+  clearInterval(UI.timer); endRest();
+  delete curItem()._adj;
+  s.idx = i; s.setIdx = openSet(s.items[i]);
+  snapshotActive(s);
+  renderPlayer(dir);
+}
+
+// the card follows the finger; touch-action: pan-y on #player keeps vertical scrolling native
+let swipe = null;
+document.addEventListener("pointerdown", (e) => {
+  const inner = e.target.closest?.("#player .inner");
+  if (!inner || !UI.session || e.pointerType === "mouse") return;
+  if (e.clientX < 20 || e.clientX > innerWidth - 20) return; // leave the screen edges to the system
+  swipe = { x: e.clientX, y: e.clientY, t: performance.now(), id: e.pointerId, dx: 0, on: false, inner };
+});
+document.addEventListener("pointermove", (e) => {
+  if (!swipe || e.pointerId !== swipe.id) return;
+  const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+  if (!swipe.on) {
+    if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { swipe = null; return; } // a scroll, not a swipe
+    if (Math.abs(dx) < 12) return;
+    swipe.on = true;
+    swipe.inner.style.transition = "none";
+  }
+  const s = UI.session;
+  const atEnd = (dx > 0 && s.idx === 0) || (dx < 0 && s.idx === s.items.length - 1);
+  swipe.dx = atEnd ? dx / 3 : dx; // rubber-band past the first and last move
+  swipe.inner.style.transform = `translateX(${swipe.dx}px)`;
+});
+function endSwipe(e) {
+  if (!swipe || e.pointerId !== swipe.id) return;
+  const sw = swipe;
+  swipe = null;
+  if (!sw.on) return;
+  UI.swipedAt = Date.now();
+  const s = UI.session;
+  const fast = Math.abs(sw.dx) > 50 && Math.abs(sw.dx) / (performance.now() - sw.t) > 0.45;
+  const far = Math.abs(sw.dx) > innerWidth * 0.22;
+  const to = sw.dx < 0 ? s.idx + 1 : s.idx - 1;
+  if (e.type === "pointerup" && (far || fast) && to >= 0 && to < s.items.length) {
+    sw.inner.style.transition = "transform .15s ease-in";
+    sw.inner.style.transform = `translateX(${sw.dx < 0 ? -110 : 110}%)`;
+    setTimeout(() => goToItem(to, sw.dx < 0 ? 1 : -1), 140);
+    return;
+  }
+  if (e.type === "pointerup" && (far || fast)) showToast(sw.dx < 0 ? "That's the last move — log it or tap ✕ to finish" : "This is the first move");
+  sw.inner.style.transition = "transform .2s ease-out";
+  sw.inner.style.transform = "";
+}
+document.addEventListener("pointerup", endSwipe);
+document.addEventListener("pointercancel", endSwipe);
+document.addEventListener("keydown", (e) => {
+  if (!UI.session || UI.sheet || UI.rest || document.getElementById("countdown")) return;
+  if (e.key === "ArrowRight") goToItem(UI.session.idx + 1, 1);
+  if (e.key === "ArrowLeft") goToItem(UI.session.idx - 1, -1);
+});
 function swapEasier() {
   clearInterval(UI.timer);
   const it = curItem();
@@ -3513,6 +3584,7 @@ const ACTIONS = {
 document.addEventListener("click", (e) => {
   const el = e.target.closest("[data-a]");
   if (!el || el.disabled) return;
+  if (UI.swipedAt && Date.now() - UI.swipedAt < 350 && el.closest("#player")) return;
   const fn = ACTIONS[el.dataset.a];
   if (!fn) return;
   e.preventDefault();
