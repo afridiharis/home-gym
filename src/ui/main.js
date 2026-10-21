@@ -80,8 +80,15 @@ const ACTIONS = {
   "deload-start": () => { S.deload = todayKey(); save(); render(); showToast("Lighter week on — sets trimmed for 7 days"); },
   "deload-dismiss": () => { S.deloadDismissed = todayKey(); save(); render(); },
   "tower-checked": () => { S.towerCheck = todayKey(); save(); render(); showToast("Tower checked — nice."); },
+  "pick-day": (el) => {
+    const t = todayKey(), d = el.dataset.v;
+    S.plans[t] = { mode: S.plans[t]?.mode || "one", dayType: d };
+    UI.override = false;
+    save(); closeSheet(); render();
+    showToast(`Today: ${DAY_TEMPLATES[d].name} · ${DAY_TEMPLATES[d].short.toLowerCase()}`);
+  },
   "plan-pick": (el) => { UI.planPick = el.dataset.v; rerenderSheet(); },
-  "plan-use": () => { S.plans[todayKey()] = { mode: UI.planPick || S.plans[todayKey()]?.mode || "one" }; save(); closeSheet(); render(); showToast(S.plans[todayKey()].mode === "split" ? "Split day — part 1 first" : "One go it is"); },
+  "plan-use": () => { S.plans[todayKey()] = { ...S.plans[todayKey()], mode: UI.planPick || S.plans[todayKey()]?.mode || "one" }; save(); closeSheet(); render(); showToast(S.plans[todayKey()].mode === "split" ? "Split day — part 1 first" : "One go it is"); },
 
   /* player */
   "log-set": () => logSet(),

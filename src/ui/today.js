@@ -175,7 +175,8 @@ function heroCard(st) {
 
   return `<section class="card hero">
     <div class="chips">${sts.map(stationChip).join("")}</div>
-    <div class="col"><h2 class="t-display">${title}</h2>
+    <div class="col"><div class="row between" style="align-items:flex-start"><h2 class="t-display">${title}</h2>
+      ${st.p1 ? "" : `<button class="btn btn-tinted btn-sm" data-tone="brand" data-a="sheet" data-v="pickday" style="flex-shrink:0;margin-top:4px">${I("sliders", "sm")}Change</button>`}</div>
       <p class="t-body">${tpl.short} · ${plural(moves.length, "move")} · about ${w.est} min${st.pain === "yellow" ? " · eased for a niggly back" : ""}${w.deload ? " · lighter week" : ""}</p>
       ${part ? `<p class="t-small">${moves.join(" · ")}</p>` : ""}
       ${S.profile.anchor ? `<p class="t-cap">After ${esc(S.profile.anchor.replace(/^(right )?after /i, ""))}</p>` : ""}

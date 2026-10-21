@@ -422,7 +422,7 @@ svg.tower .dim { --sc: var(--frame-dim); }
 <main id="app" aria-live="polite"></main>
 <script>
 "use strict";
-const FORGE_VERSION = "204e50fe2e";
+const FORGE_VERSION = "37c6234ab9";
 /* ============================================================
    FORGE — program data
    Evidence notes: McGill Big 3 protocol, traffic-light pain rules,
@@ -1432,7 +1432,7 @@ const defaultState = () => ({
   settings: { sound: true, restMain: 120, restAcc: 75, restSpine: 25, alertMin: 15, theme: "auto" },
   seenGuide: false,
   createdAt: todayKey(),
-  plans: {},         // date -> {mode: "one"|"split"}
+  plans: {},         // date -> {mode: "one"|"split", dayType?: a session swapped in for today}
   active: null,      // in-progress session (resume after interruption)
   towerCheck: null,  // date of last bolt check
   deload: null,      // start date of a lighter week
@@ -1490,7 +1490,8 @@ function sanitizeState(p) {
         ex: strOr(x.ex, "", 30), val: numOr(x.val, 0, 0, 6000), target: numOr(x.target, 0, 0, 6000), kind: strOr(x.kind, "reps", 10),
       })) : [],
       xp: Math.round(numOr(l.xp, 0, 0, 10000)), main: l.main !== false,
-      dayType: DAY_TEMPLATES[l.dayType] ? l.dayType : undefined,
+      dayType: DAY_TEMPLATES[l.dayType] ? l.dayType
+        : l.type === "strength" ? Object.keys(DAY_TEMPLATES).find((d) => String(l.name).startsWith(DAY_TEMPLATES[d].name)) : undefined,
       part: l.part === 1 || l.part === 2 ? l.part : undefined,
       rpe: ["easy", "right", "hard"].includes(l.rpe) ? l.rpe : undefined,
       back: ["ok", "worse"].includes(l.back) ? l.back : undefined,
@@ -1521,7 +1522,12 @@ function sanitizeState(p) {
   s.seenGuide = !!p.seenGuide;
   s.createdAt = isDateKey(p.createdAt) ? p.createdAt : todayKey();
   if (p.plans && typeof p.plans === "object") {
-    for (const [k, v] of Object.entries(p.plans)) if (isDateKey(k) && v && ["one", "split"].includes(v.mode)) s.plans[k] = { mode: v.mode };
+    for (const [k, v] of Object.entries(p.plans)) {
+      if (!isDateKey(k) || !v || typeof v !== "object") continue;
+      const plan = { mode: ["one", "split"].includes(v.mode) ? v.mode : "one" };
+      if (DAY_TEMPLATES[v.dayType]) plan.dayType = v.dayType;
+      s.plans[k] = plan;
+    }
   }
   s.towerCheck = isDateKey(p.towerCheck) ? p.towerCheck : null;
   s.deload = isDateKey(p.deload) ? p.deload : null;
@@ -1630,14 +1636,26 @@ function ladderTarget(ladderKey) {
   return { idx, rung, target: Math.min(S.targets[tkey], win[1]), win, tkey, timed: !!rung.scheme.secs };
 }
 /* Rotation advances once per completed template: a split day (part 1 + part 2) counts once. */
+/* Next in the rotation: the other body region from last time, and of those the session done longest
+   ago (never done counts as oldest), ties going in order after the last one done. Without swaps this
+   is plain A→B→C→D; after a swap, whatever was skipped comes up next instead of being lost. */
 function nextDayType() {
-  const n = S.log.filter((l) => l.type === "strength" && l.main !== false && l.part !== 1).length;
-  return DAY_ORDER[n % DAY_ORDER.length];
+  const done = S.log.filter((l) => l.type === "strength" && l.main !== false && l.part !== 1 && DAY_TEMPLATES[l.dayType]);
+  if (!done.length) return DAY_ORDER[0];
+  const lastAt = {};
+  done.forEach((l, i) => { lastAt[l.dayType] = i; });
+  const prev = done[done.length - 1].dayType;
+  const after = DAY_ORDER.indexOf(prev);
+  const order = DAY_ORDER.map((_, i) => DAY_ORDER[(after + 1 + i) % DAY_ORDER.length])
+    .filter((d) => DAY_TEMPLATES[d].region !== DAY_TEMPLATES[prev].region);
+  return order.reduce((best, d) => ((lastAt[d] ?? -1) < (lastAt[best] ?? -1) ? d : best), order[0]);
 }
 /* Today's template: if a split day is underway, stay on it for part 2. */
 function todaysDayType() {
   const p1 = sessionsOn(todayKey()).find((l) => l.type === "strength" && l.part === 1);
   if (p1 && !sessionsOn(todayKey()).some((l) => l.dayType === p1.dayType && l.part === 2)) return p1.dayType;
+  const pick = S.plans[todayKey()]?.dayType; // swapped in from Today → Change, until it's done
+  if (pick && !sessionsOn(todayKey()).some((l) => l.type === "strength" && l.dayType === pick && l.part !== 1)) return pick;
   return nextDayType();
 }
 function warmupBlocks(firstMain, dayType, short) {
@@ -2349,7 +2367,8 @@ function heroCard(st) {
 
   return `<section class="card hero">
     <div class="chips">${sts.map(stationChip).join("")}</div>
-    <div class="col"><h2 class="t-display">${title}</h2>
+    <div class="col"><div class="row between" style="align-items:flex-start"><h2 class="t-display">${title}</h2>
+      ${st.p1 ? "" : `<button class="btn btn-tinted btn-sm" data-tone="brand" data-a="sheet" data-v="pickday" style="flex-shrink:0;margin-top:4px">${I("sliders", "sm")}Change</button>`}</div>
       <p class="t-body">${tpl.short} · ${plural(moves.length, "move")} · about ${w.est} min${st.pain === "yellow" ? " · eased for a niggly back" : ""}${w.deload ? " · lighter week" : ""}</p>
       ${part ? `<p class="t-small">${moves.join(" · ")}</p>` : ""}
       ${S.profile.anchor ? `<p class="t-cap">After ${esc(S.profile.anchor.replace(/^(right )?after /i, ""))}</p>` : ""}
@@ -3137,6 +3156,28 @@ const SHEETS = {
       <button class="btn btn-primary block" data-a="plan-use">${I("check")}Use this plan</button>`;
   },
 
+  pickday() {
+    const st = todayState();
+    const up = nextDayType();
+    const ago = (d) => { const n = Math.round((new Date(todayKey()) - new Date(d)) / 864e5); return n === 0 ? "today" : n === 1 ? "yesterday" : `${n} days ago`; };
+    const rows = DAY_ORDER.map((d) => {
+      const tpl = DAY_TEMPLATES[d];
+      const w = buildWorkout(d, st.pain || "green");
+      const block = checkStrength({ items: w.items, dayType: d, part: null }).notes.find((n) => n.level === "block");
+      const last = [...S.log].reverse().find((l) => l.type === "strength" && l.dayType === d && l.part !== 1);
+      const moves = w.items.filter((i) => !i.warmup).slice(0, 3).map((i) => i.ex.name).join(" · ");
+      return `<button class="option ${st.dayType === d ? "sel" : ""}" data-a="pick-day" data-v="${d}">
+        <span class="radio"></span><span class="col grow" style="gap:3px">
+          <span class="row" style="gap:8px;flex-wrap:wrap"><span class="t-strong">${tpl.name} · ${tpl.short}</span>${d === up ? `<span class="pill-note">Up next</span>` : ""}</span>
+          <span class="t-small">${esc(moves)} · about ${w.est} min</span>
+          <span class="t-cap">${last ? `Last done ${ago(last.date)}` : "Not done yet"}</span>
+          ${block ? `<span class="t-small" style="color:var(--warn-ink)">${esc(block.text)}</span>` : ""}</span></button>`;
+    }).join("");
+    return `${sheetTop("Change today's workout", "Tap one to swap it in")}
+      <div class="stack">${rows}</div>
+      ${notice("brand", "info", "Your rotation adjusts: whatever you skip comes up next. FORGE still checks recovery for whichever you pick.")}`;
+  },
+
   /* ---- exercise detail ---- */
   ex(id) {
     const e = EX[id];
@@ -3435,8 +3476,15 @@ const ACTIONS = {
   "deload-start": () => { S.deload = todayKey(); save(); render(); showToast("Lighter week on — sets trimmed for 7 days"); },
   "deload-dismiss": () => { S.deloadDismissed = todayKey(); save(); render(); },
   "tower-checked": () => { S.towerCheck = todayKey(); save(); render(); showToast("Tower checked — nice."); },
+  "pick-day": (el) => {
+    const t = todayKey(), d = el.dataset.v;
+    S.plans[t] = { mode: S.plans[t]?.mode || "one", dayType: d };
+    UI.override = false;
+    save(); closeSheet(); render();
+    showToast(`Today: ${DAY_TEMPLATES[d].name} · ${DAY_TEMPLATES[d].short.toLowerCase()}`);
+  },
   "plan-pick": (el) => { UI.planPick = el.dataset.v; rerenderSheet(); },
-  "plan-use": () => { S.plans[todayKey()] = { mode: UI.planPick || S.plans[todayKey()]?.mode || "one" }; save(); closeSheet(); render(); showToast(S.plans[todayKey()].mode === "split" ? "Split day — part 1 first" : "One go it is"); },
+  "plan-use": () => { S.plans[todayKey()] = { ...S.plans[todayKey()], mode: UI.planPick || S.plans[todayKey()]?.mode || "one" }; save(); closeSheet(); render(); showToast(S.plans[todayKey()].mode === "split" ? "Split day — part 1 first" : "One go it is"); },
 
   /* player */
   "log-set": () => logSet(),

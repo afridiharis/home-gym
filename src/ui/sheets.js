@@ -41,6 +41,28 @@ const SHEETS = {
       <button class="btn btn-primary block" data-a="plan-use">${I("check")}Use this plan</button>`;
   },
 
+  pickday() {
+    const st = todayState();
+    const up = nextDayType();
+    const ago = (d) => { const n = Math.round((new Date(todayKey()) - new Date(d)) / 864e5); return n === 0 ? "today" : n === 1 ? "yesterday" : `${n} days ago`; };
+    const rows = DAY_ORDER.map((d) => {
+      const tpl = DAY_TEMPLATES[d];
+      const w = buildWorkout(d, st.pain || "green");
+      const block = checkStrength({ items: w.items, dayType: d, part: null }).notes.find((n) => n.level === "block");
+      const last = [...S.log].reverse().find((l) => l.type === "strength" && l.dayType === d && l.part !== 1);
+      const moves = w.items.filter((i) => !i.warmup).slice(0, 3).map((i) => i.ex.name).join(" · ");
+      return `<button class="option ${st.dayType === d ? "sel" : ""}" data-a="pick-day" data-v="${d}">
+        <span class="radio"></span><span class="col grow" style="gap:3px">
+          <span class="row" style="gap:8px;flex-wrap:wrap"><span class="t-strong">${tpl.name} · ${tpl.short}</span>${d === up ? `<span class="pill-note">Up next</span>` : ""}</span>
+          <span class="t-small">${esc(moves)} · about ${w.est} min</span>
+          <span class="t-cap">${last ? `Last done ${ago(last.date)}` : "Not done yet"}</span>
+          ${block ? `<span class="t-small" style="color:var(--warn-ink)">${esc(block.text)}</span>` : ""}</span></button>`;
+    }).join("");
+    return `${sheetTop("Change today's workout", "Tap one to swap it in")}
+      <div class="stack">${rows}</div>
+      ${notice("brand", "info", "Your rotation adjusts: whatever you skip comes up next. FORGE still checks recovery for whichever you pick.")}`;
+  },
+
   /* ---- exercise detail ---- */
   ex(id) {
     const e = EX[id];

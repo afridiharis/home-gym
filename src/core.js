@@ -44,7 +44,7 @@ const defaultState = () => ({
   settings: { sound: true, restMain: 120, restAcc: 75, restSpine: 25, alertMin: 15, theme: "auto" },
   seenGuide: false,
   createdAt: todayKey(),
-  plans: {},         // date -> {mode: "one"|"split"}
+  plans: {},         // date -> {mode: "one"|"split", dayType?: a session swapped in for today}
   active: null,      // in-progress session (resume after interruption)
   towerCheck: null,  // date of last bolt check
   deload: null,      // start date of a lighter week
@@ -102,7 +102,8 @@ function sanitizeState(p) {
         ex: strOr(x.ex, "", 30), val: numOr(x.val, 0, 0, 6000), target: numOr(x.target, 0, 0, 6000), kind: strOr(x.kind, "reps", 10),
       })) : [],
       xp: Math.round(numOr(l.xp, 0, 0, 10000)), main: l.main !== false,
-      dayType: DAY_TEMPLATES[l.dayType] ? l.dayType : undefined,
+      dayType: DAY_TEMPLATES[l.dayType] ? l.dayType
+        : l.type === "strength" ? Object.keys(DAY_TEMPLATES).find((d) => String(l.name).startsWith(DAY_TEMPLATES[d].name)) : undefined,
       part: l.part === 1 || l.part === 2 ? l.part : undefined,
       rpe: ["easy", "right", "hard"].includes(l.rpe) ? l.rpe : undefined,
       back: ["ok", "worse"].includes(l.back) ? l.back : undefined,
@@ -133,7 +134,12 @@ function sanitizeState(p) {
   s.seenGuide = !!p.seenGuide;
   s.createdAt = isDateKey(p.createdAt) ? p.createdAt : todayKey();
   if (p.plans && typeof p.plans === "object") {
-    for (const [k, v] of Object.entries(p.plans)) if (isDateKey(k) && v && ["one", "split"].includes(v.mode)) s.plans[k] = { mode: v.mode };
+    for (const [k, v] of Object.entries(p.plans)) {
+      if (!isDateKey(k) || !v || typeof v !== "object") continue;
+      const plan = { mode: ["one", "split"].includes(v.mode) ? v.mode : "one" };
+      if (DAY_TEMPLATES[v.dayType]) plan.dayType = v.dayType;
+      s.plans[k] = plan;
+    }
   }
   s.towerCheck = isDateKey(p.towerCheck) ? p.towerCheck : null;
   s.deload = isDateKey(p.deload) ? p.deload : null;
@@ -242,14 +248,26 @@ function ladderTarget(ladderKey) {
   return { idx, rung, target: Math.min(S.targets[tkey], win[1]), win, tkey, timed: !!rung.scheme.secs };
 }
 /* Rotation advances once per completed template: a split day (part 1 + part 2) counts once. */
+/* Next in the rotation: the other body region from last time, and of those the session done longest
+   ago (never done counts as oldest), ties going in order after the last one done. Without swaps this
+   is plain A→B→C→D; after a swap, whatever was skipped comes up next instead of being lost. */
 function nextDayType() {
-  const n = S.log.filter((l) => l.type === "strength" && l.main !== false && l.part !== 1).length;
-  return DAY_ORDER[n % DAY_ORDER.length];
+  const done = S.log.filter((l) => l.type === "strength" && l.main !== false && l.part !== 1 && DAY_TEMPLATES[l.dayType]);
+  if (!done.length) return DAY_ORDER[0];
+  const lastAt = {};
+  done.forEach((l, i) => { lastAt[l.dayType] = i; });
+  const prev = done[done.length - 1].dayType;
+  const after = DAY_ORDER.indexOf(prev);
+  const order = DAY_ORDER.map((_, i) => DAY_ORDER[(after + 1 + i) % DAY_ORDER.length])
+    .filter((d) => DAY_TEMPLATES[d].region !== DAY_TEMPLATES[prev].region);
+  return order.reduce((best, d) => ((lastAt[d] ?? -1) < (lastAt[best] ?? -1) ? d : best), order[0]);
 }
 /* Today's template: if a split day is underway, stay on it for part 2. */
 function todaysDayType() {
   const p1 = sessionsOn(todayKey()).find((l) => l.type === "strength" && l.part === 1);
   if (p1 && !sessionsOn(todayKey()).some((l) => l.dayType === p1.dayType && l.part === 2)) return p1.dayType;
+  const pick = S.plans[todayKey()]?.dayType; // swapped in from Today → Change, until it's done
+  if (pick && !sessionsOn(todayKey()).some((l) => l.type === "strength" && l.dayType === pick && l.part !== 1)) return pick;
   return nextDayType();
 }
 function warmupBlocks(firstMain, dayType, short) {
