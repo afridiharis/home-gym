@@ -19,7 +19,7 @@ Lumbar discs get injured by **bending the lower spine under load** — especiall
 ## Setting up your tower (from your photos)
 
 - **Ceiling gap first.** At the top of a pull-up your head rises 25–30 cm above the bar. In your photos the bar sits right up by the ceiling, so measure: if the gap is under 30 cm, drop the bar a hole or two (each hole ≈ 9 cm). Bent knees keep your feet off the floor at the lower setting.
-- **Floor:** your laminate is slippy under rubber feet and dents easily — put a mat under the tower.
+- **Floor:** your laminate is smooth, so the tower's feet can creep and scuff it, and your whole bodyweight presses through four small foot caps — put a mat under the tower for grip and to protect the floor.
 - **Wobble:** keep reps strict (no kipping), tighten the bolts weekly (the app reminds you), and if it still rocks, weigh down the base feet.
 - Keep the bag and case clear of the base so you can step down safely.
 
