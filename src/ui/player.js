@@ -113,7 +113,7 @@ function renderPlayer(dir = 0) {
   </div>`;
   const old = document.getElementById("player");
   old ? old.replaceWith(el) : document.body.appendChild(el);
-  if (!clip) mountDemo(document.getElementById("demo-box"), it.exId, 200);
+  if (!clip) mountDemo(document.getElementById("demo-box"), it.exId, 320, { fit: it.timed ? "21vh" : "28vh", timed: !!it.timed });
 }
 
 function holdBlock(it, tgt, unit) {

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FORGE demo sheet</title>
+<!-- Dev tool: every rigged demo at its two end poses plus the live animation.
+     Serve the repo root (python3 -m http.server 8741) and open /design/demo-sheet.html -->
+<link rel="stylesheet" href="../src/styles/tokens.css">
+<link rel="stylesheet" href="../src/styles/app.css">
+<style>
+  body { background: var(--bg); padding: 16px; font-family: var(--font-text); color: var(--ink); }
+  #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(520px, 1fr)); gap: 14px; }
+  .cell { background: var(--surface); border-radius: 16px; padding: 10px; }
+  .cell h3 { font: 700 14px var(--font-round); margin: 0 0 6px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 8px; align-items: stretch; }
+  .still { background: var(--st-tint); border-radius: 12px; }
+  .still svg { width: 100%; height: auto; display: block; }
+  .row .demo { min-height: 0; }
+  .row .demo .dm-svg { margin: 30px auto 44px; }
+  /* ?stills: three demos a row, end poses only */
+  body.stills #grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  body.stills .row { grid-template-columns: 1fr 1fr; }
+  body.stills .row .demo { display: none; }
+  body.stills .cell { padding: 4px; }
+  body.stills .cell h3 { font-size: 11px; margin: 0; }
+</style>
+</head>
+<body>
+<div id="grid"></div>
+<script>document.write('<script src="../src/demos.js?' + Date.now() + '"><\/script>')</script>
+<script>
+  const ST = { deadhang: "bar", scapPull: "bar", pullup: "bar", hangKnee: "bar", hangLeg: "bar", dipSupport: "dips", dip: "dips", row: "dips",
+    rowStraight: "dips", pushIncline: "dips", pushup: "push", lsit: "push", lsitTuck: "push", lsitFoot: "push", vkr: "knee" };
+  const qs = new URLSearchParams(location.search), only = qs.get("only");
+  if (qs.has("stills")) document.body.classList.add("stills");
+  const ids = only ? only.split(",") : Object.keys(DEMOS);
+  const still = (demo, pose) => {
+    const j = rig(pose), b = bodyParts(j), h = hotParts(j, demo.muscles || []);
+    return `<svg viewBox="${(demo.vb || [0, 0, 120, 100]).join(" ")}"><g class="dm-props">${propSVG(demo)}</g>
+      <g class="dm-far"><path d="${b.far}"/><path class="dm-hot" d="${h.far}"/></g>
+      <g class="dm-near"><path d="${b.torso}"/><path class="dm-hot" d="${h.torso}"/><path d="${b.legA}"/><path class="dm-hot" d="${h.legA}"/>
+      <path d="${b.armA}"/><path class="dm-hot" d="${h.armA}"/></g></svg>`;
+  };
+  const grid = document.getElementById("grid");
+  for (const id of ids) {
+    const d = DEMOS[id];
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.st = ST[id] || "floor";
+    cell.innerHTML = `<h3>${id}</h3><div class="row"><div class="still">${still(d, d.poses[0])}</div><div class="still">${still(d, d.poses[1])}</div><div class="demo"></div></div>`;
+    grid.appendChild(cell);
+    mountDemo(cell.querySelector(".demo"), id, 300, { keep: true });
+  }
+</script>
+</body>
+</html>

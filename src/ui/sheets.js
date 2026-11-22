@@ -13,7 +13,7 @@ function renderSheet() {
   bd.innerHTML = `<div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${body}</div>`;
   bd.addEventListener("click", (e) => { if (e.target === bd) closeSheet(); });
   document.body.appendChild(bd);
-  if (kind === "ex") mountDemo(document.getElementById("demo-sheet"), arg, 220);
+  if (kind === "ex") mountDemo(document.getElementById("demo-sheet"), arg, 320);
   bd.querySelector("button, input, a")?.focus({ preventScroll: true });
 }
 const sheetTop = (title, sub = "") => `<div class="sheet-top"><div class="col"><h2 class="t-head">${title}</h2>${sub ? `<span class="t-small">${sub}</span>` : ""}</div>

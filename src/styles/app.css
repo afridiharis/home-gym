@@ -194,6 +194,28 @@ input:focus, select:focus, textarea:focus { outline: none; box-shadow: inset 0 0
   min-height: 230px; overflow: hidden; }
 .demo video, .demo img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
 .demo .warm-tag { position: absolute; left: 12px; top: 12px; }
+/* rigged demo figure (src/demos.js) */
+.dm-svg { display: block; width: min(100%, var(--dm-w, 300px), calc(var(--dm-fit, 40vh) * var(--dm-ar, 1.2))); height: auto; margin: 30px auto 42px; overflow: visible; cursor: pointer; }
+.dm-props rect { fill: var(--frame); }
+.dm-props .ln { stroke: var(--frame); stroke-width: 2.4; stroke-linecap: round; fill: none; }
+.dm-ghost { fill: var(--st, var(--ink-3)); opacity: 0.13; }
+.dm-far { fill: var(--st, var(--ink-3)); opacity: 0.5; }
+.dm-near { fill: var(--st-ink, var(--ink)); }
+.dm-hot { fill: var(--brand); transition: opacity 0.35s; }
+.dm-far .dm-hot { opacity: 1; }
+.dm-track { fill: none; stroke: var(--st, var(--ink-3)); stroke-width: 1.2; stroke-dasharray: 1.6 2.4; stroke-linecap: round; opacity: 0.6; }
+.dm-arrow { fill: var(--st, var(--ink-3)); transition: opacity 0.2s; }
+.dm-band { stroke: var(--warn); stroke-width: 1.6; stroke-linecap: round; fill: none; }
+.dm-weight { fill: var(--ink-2); }
+.dm-cap { position: absolute; left: 12px; right: 12px; bottom: 10px; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+.dm-say { position: relative; overflow: hidden; min-width: 0; padding: 7px 14px 9px; border-radius: var(--r-pill); background: var(--surface);
+  color: var(--st-ink, var(--ink)); font-family: var(--font-round); font-weight: 700; font-size: 15px; line-height: 1.25; box-shadow: var(--shadow-1); }
+.dm-say .dm-prog { position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--st, var(--brand)); }
+.dm-rep { margin-left: auto; flex-shrink: 0; font-family: var(--font-round); font-weight: 700; font-size: 13px; color: var(--st-ink, var(--ink-2)); }
+.dm-mus { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px;
+  border-radius: var(--r-pill); background: var(--surface); color: var(--st-ink, var(--ink)); font-family: var(--font-round); font-weight: 700; font-size: 12px; }
+.dm-mus i { width: 10px; height: 10px; border-radius: 50%; background: var(--brand); }
+.dm-paused .dm-say::after { content: " · paused"; font-weight: 600; opacity: 0.7; }
 .target { display: flex; align-items: center; gap: 14px; }
 .target .t-num { font-size: 96px; letter-spacing: -0.03em; }
 .set-dots { display: flex; gap: 6px; }
@@ -208,8 +230,8 @@ input:focus, select:focus, textarea:focus { outline: none; box-shadow: inset 0 0
 .stepper button { width: 64px; height: 64px; border-radius: 50%; background: var(--surface-2); display: grid; place-items: center; }
 .stepper .t-num { font-size: 64px; min-width: 100px; text-align: center; }
 .hold { display: grid; place-items: center; position: relative; }
-.hold svg { width: 220px; height: 220px; transform: rotate(-90deg); }
-.hold .val { position: absolute; font-size: 64px; }
+.hold svg { width: clamp(150px, 17vh, 220px); height: clamp(150px, 17vh, 220px); transform: rotate(-90deg); }
+.hold .val { position: absolute; font-size: clamp(44px, 5.4vh, 64px); }
 
 /* rest */
 #rest { position: fixed; inset: 0; z-index: 60; background: var(--st-tint, var(--bg)); display: flex; flex-direction: column;
