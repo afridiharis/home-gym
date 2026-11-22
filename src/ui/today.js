@@ -38,6 +38,7 @@ function renderToday() {
   let html = `<div class="screen">
     <header class="today-head">
       <div class="col"><span class="t-cap">${date}</span><h1 class="t-title">${greeting()}${name}</h1></div>
+      ${isNative() ? `<button class="btn-icon bell-btn ${S.reminders.on && !reminderDay().quiet ? "on" : ""}" data-a="sheet" data-v="reminders" aria-label="Alerts">${I("bell")}</button>` : ""}
       <button class="ring-wrap" data-a="nav" data-v="progress" aria-label="${wk.done} of ${wk.target} workouts this week. Open progress.">
         ${ringSVG(wk.done, wk.target)}
         <span class="col" style="gap:0;white-space:nowrap"><span class="t-strong">${wk.done} of ${wk.target}</span><span class="t-cap">this week</span></span>
@@ -67,6 +68,7 @@ function renderToday() {
 
   html += checkinCard(st);
   if (!resume) html += heroCard(st);
+  html += installCard();
   html += alsoToday(st);
   html += weekStrip();
   html += `<p class="t-small" style="text-align:center;padding:4px 12px">${NUDGES[Math.floor(Date.now() / 864e5) % NUDGES.length]}</p>`;
@@ -74,21 +76,30 @@ function renderToday() {
   $app().innerHTML = html;
 }
 
+/* Safari on iPhone (not the Home Screen app): show how to install. The Home Screen app keeps its own
+   storage, separate from Safari's, so this says so before any workouts get logged in the wrong place. */
+function installCard() {
+  let hidden = false;
+  try { hidden = localStorage.getItem("forge.installHint") === "hidden"; } catch (_) {}
+  const iosSafari = navigator.standalone === false && window.self === window.top && !isNative();
+  if (!iosSafari || hidden) return "";
+  return `<section class="card" data-tone="brand" aria-labelledby="inst-h"><div class="stack">
+    <div class="row">${I("phone")}<h2 class="t-head" id="inst-h">Make FORGE an app</h2></div>
+    <p class="t-body">Tap <b>Share</b>, then <b>Add to Home Screen</b>. FORGE then opens full screen from its own icon, works offline, and iOS won't clear your data.</p>
+    <p class="t-small">The Home Screen app keeps its own data, separate from Safari. Already logged workouts here? Me → Back up my data, then Restore it inside the app.</p>
+    <div class="grid-2"><button class="btn btn-tinted" data-a="sheet" data-v="guide">Show me how</button><button class="btn btn-secondary" data-a="install-hide">Not now</button></div>
+  </div></section>`;
+}
+
 function checkinCard(st) {
-  if (st.pain) {
+  if (st.pain && st.pain !== "green") {
     const auto = st.pain === "yellow" && S.log.some((l) => l.date === dayShift(st.t, -1) && l.back === "worse") && !S.painConfirmed?.[st.t];
     return `<div class="row between card" style="padding:12px 16px" data-tone="${toneOf[st.pain]}">
       <span class="row" style="gap:10px"><span class="choice compact" style="min-height:0;padding:0;background:none"><span class="dot"></span></span>
       <span class="col" style="gap:0"><span class="t-strong">Back today: ${painLabel[st.pain]}</span>${auto ? `<span class="t-cap">Set because yesterday's session bothered your back</span>` : ""}</span></span>
-      <button class="btn btn-secondary btn-sm" data-a="pain-reset">Change</button></div>`;
+      <button class="btn btn-secondary btn-sm" data-a="pain-reset">Clear</button></div>`;
   }
-  return `<section class="card" aria-labelledby="ci-h"><div class="stack">
-    <div class="col"><h2 class="t-head" id="ci-h">How's your back today?</h2><p class="t-small">Your answer shapes today's workout.</p></div>
-    <div class="grid-3">
-      ${["green", "yellow", "red"].map((k) => `<button class="choice" data-tone="${toneOf[k]}" data-a="pain" data-v="${k}"><span class="dot"></span>${painLabel[k]}</button>`).join("")}
-    </div>
-    <p class="t-cap">Anything going down a leg? Choose <b>Rough</b>.</p>
-  </div></section>`;
+  return ""; // no daily question: the back is assumed fine unless "Back hurts" is tapped in a session
 }
 
 function blockedPanel(check, override = true) {

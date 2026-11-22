@@ -7,7 +7,8 @@ A back-safe strength and rehab app for a Sportsroyals power tower, built around 
 - **Today** always shows one big next step: the workout, the 10-minute Spine Reset, or a quick 8-minute version when you're short on time.
 - **Built around your tower:** every move shows which station (bar, dips, knee raise, front-foot handles, floor) and how to set it up, with a photo of your actual tower.
 - **Split days and two-a-days** with research-backed limits (see [PLAN.md](PLAN.md)).
-- Traffic-light back check before strength work; leg symptoms always stop the session.
+- "Back hurts" button in every session adapts the day; leg symptoms always stop the session.
+- Install it from Safari (Share → Add to Home Screen): full screen, offline, its own launch screen.
 - Weekly ring + forgiving streaks, XP, badges, demos for every move, sound cues, resumable sessions.
 - iPhone Calendar reminders via `.ics` files with alerts.
 

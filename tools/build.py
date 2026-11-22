@@ -7,13 +7,13 @@
 - Concatenates CSS + JS in dependency order (no bundler, no dependencies)
 Run:  python3 tools/build.py
 """
-import hashlib, json, os, re
+import hashlib, json, os, re, shutil, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
 
 CSS = ["src/styles/tokens.css", "src/styles/app.css"]
-JS = ["src/data.js", "src/tower.js", "src/demos.js", "src/guard.js", "src/core.js", "@generated",
+JS = ["src/data.js", "src/tower.js", "src/demos.js", "src/guard.js", "src/core.js", "src/notify.js", "@generated",
       "src/ui/kit.js", "src/ui/today.js", "src/ui/player.js", "src/ui/progress.js", "src/ui/moves.js",
       "src/ui/me.js", "src/ui/onboard.js", "src/ui/sheets.js", "src/ui/main.js"]
 
@@ -114,6 +114,16 @@ def main():
     head_icons = []
     if os.path.exists("assets/icons/apple-touch-icon.png"):
         head_icons.append('<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">')
+    # iOS launch screens for the Home Screen app (design/raster/make_raster.py splash): splash-WxH-mode.png
+    if os.path.isdir("assets/splash"):
+        for fn in sorted(os.listdir("assets/splash")):
+            m = re.match(r"splash-(\d+)x(\d+)-(light|dark)\.png$", fn)
+            if not m:
+                continue
+            w, h, mode = int(m[1]) // 3, int(m[2]) // 3, m[3]
+            head_icons.append(f'<link rel="apple-touch-startup-image" media="screen and (device-width: {w}px) and (device-height: {h}px) '
+                              f'and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: {mode})" '
+                              f'href="assets/splash/{fn}">')
     if os.path.exists("assets/icons/favicon.ico"):
         head_icons.append('<link rel="icon" href="assets/icons/favicon.ico" sizes="16x16 32x32 48x48">')
     if os.path.exists("assets/icons/favicon-32.png"):
@@ -205,5 +215,20 @@ self.addEventListener("fetch", (e) => {{
     print("assets:", json.dumps({k: (v if not isinstance(v, dict) else len(v)) for k, v in ast.items()}))
 
 
+def native_bundle():
+    """Copy the built app into www/ for the Capacitor iPhone shell (no service worker: the files ship inside the app)."""
+    shutil.rmtree("www", ignore_errors=True)
+    os.makedirs("www")
+    shutil.copy("index.html", "www/index.html")
+    shutil.copytree("assets", "www/assets", ignore=shutil.ignore_patterns(".DS_Store"))
+    if os.path.exists("print/forge-wall-chart.pdf"):
+        os.makedirs("www/print")
+        shutil.copy("print/forge-wall-chart.pdf", "www/print/forge-wall-chart.pdf")
+    n = sum(len(fs) for _, _, fs in os.walk("www"))
+    print(f"native bundle: www/ ({n} files) — next: npx cap sync ios")
+
+
 if __name__ == "__main__":
     main()
+    if "--native" in sys.argv:
+        native_bundle()

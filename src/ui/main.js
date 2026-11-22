@@ -24,12 +24,9 @@ function render() {
 }
 const rerenderSheet = () => renderSheet();
 
-/* Start a strength-type session after the back check and guardrails. */
-function requireCheckin(then) {
-  if (painToday()) return then();
-  UI.afterCheckin = then;
-  openSheet("paincheck");
-}
+/* Start a strength-type session. There is no daily back question any more: the day counts as
+   "green" unless "Back hurts" was tapped in a session (or yesterday's session was marked worse). */
+function requireCheckin(then) { return then(); }
 function startMain() {
   const st = todayState();
   const { part, check } = mainPlan(st);
@@ -46,7 +43,7 @@ function startQuick() {
 }
 
 const ACTIONS = {
-  nav: (el) => { UI.screen = el.dataset.v; UI.trainAnyway = false; closeSheet(); render(); window.scrollTo(0, 0); },
+  nav: (el) => { UI.screen = el.dataset.v; UI.remNew = null; UI.trainAnyway = false; closeSheet(); render(); window.scrollTo(0, 0); },
   sheet: (el) => { UI.planPick = null; UI.countVal = null; openSheet(el.dataset.v); },
   "sheet-close": () => closeSheet(),
   "confirm-yes": () => { const fn = UI.pendingConfirm; closeSheet(); fn && fn(); },
@@ -95,7 +92,7 @@ const ACTIONS = {
   "hold-start": () => startHold(),
   "hold-stop": () => stopHoldEarly(),
   "time-adj": (el) => { const it = curItem(); it._adj = Math.max(5, (it._adj ?? setTarget(it, UI.session.setIdx)) + Number(el.dataset.v)); renderPlayer(); },
-  "rest-add": () => { if (UI.rest) UI.rest.endTs += 15000; },
+  "rest-add": () => { if (UI.rest) { UI.rest.endTs += 15000; restAlert(); } },
   "rest-skip": () => endRest(),
   "skip-ex": () => skipExercise(),
   "swap-easier": () => swapEasier(),
@@ -177,6 +174,7 @@ const ACTIONS = {
     else if (r === "shared") showToast("Open it in Calendar → Add All");
   },
   "guide-done": () => { S.seenGuide = true; save(); closeSheet(); },
+  "install-hide": () => { try { localStorage.setItem("forge.installHint", "hidden"); } catch (_) {} render(); },
   "export-data": async () => {
     const r = await exportData();
     if (r === "downloaded") showToast("Backup saved");
@@ -201,6 +199,29 @@ const ACTIONS = {
       onYes: () => { localStorage.removeItem(STORE_KEY); S = defaultState(); UI.screen = "today"; UI.ob = { step: 0 }; render(); } }) }),
   "whatsnew-done": () => { S.seenV2 = true; save(); closeSheet(); render(); },
 
+  /* alerts (iPhone app) */
+  "alerts-on": async () => {
+    const ok = await enableAlerts();
+    if (UI.sheet === "reminders") rerenderSheet();
+    showToast(ok ? "Alerts on" : "iPhone hasn't allowed alerts — Settings → Notifications → FORGE");
+    if (!UI.session) render();
+  },
+  "alerts-off": () => askConfirm({ title: "Turn off all alerts?", body: "No reminders and no timer alerts until you turn them back on.", danger: true, yes: "Turn off",
+    onYes: () => { disableAlerts(); render(); showToast("Alerts off"); } }),
+  "rem-skip": (el) => { const d = reminderDay(), k = el.dataset.v; if (d.off[k]) delete d.off[k]; else d.off[k] = true; save(); rerenderSheet(); },
+  "rem-del": (el) => { const d = reminderDay(); d.extra = d.extra.filter((x) => x.id !== el.dataset.v); save(); rerenderSheet(); },
+  "rem-add": () => {
+    const d = reminderDay();
+    const time = document.getElementById("rem-new-time")?.value, label = (document.getElementById("rem-new-label")?.value || "").trim().slice(0, 60) || "Reminder";
+    if (!/^\d{2}:\d{2}$/.test(time || "")) { showToast("Pick a time"); return; }
+    if (atOn(todayKey(), time) <= new Date()) { showToast("That time has already passed today"); return; }
+    if (d.extra.length >= 8) { showToast("Eight extra reminders is the limit for one day"); return; }
+    d.extra.push({ id: uid(), time, label });
+    UI.remNew = null; save(); rerenderSheet(); showToast(`Reminder set for ${fmtHm(time)}`);
+  },
+  "rem-repeat": (el) => { S.reminders.repeat[el.dataset.k] = Number(el.dataset.v); save(); rerenderSheet(); },
+  "rem-lead": (el) => { S.settings.alertMin = Number(el.dataset.v); delete reminderDay().at.workout; save(); rerenderSheet(); },
+
   /* onboarding */
   "ob-next": () => { UI.ob.step++; renderOnboard(); window.scrollTo(0, 0); },
   "ob-prev": () => { UI.ob.step = Math.max(0, UI.ob.step - 1); renderOnboard(); },
@@ -223,10 +244,9 @@ const ACTIONS = {
     if (!days.length) { showToast("Pick at least one training day"); return; }
     const map = { vpull: [0, 3, 5, 6], dip: [0, 2, 3, 4], push: [0, 1, 2, 3] };
     S.levels.vpull = map.vpull[o.vpull || 0]; S.levels.dip = map.dip[o.dip || 0]; S.levels.push = map.push[o.push || 0];
-    S.phase = o.back === "1" ? 1 : 2;
-    if (S.phase === 1) { S.levels.vpull = 0; S.levels.dip = 0; }
+    S.phase = 2; // setup no longer asks about the back; Me → Phase can drop to Phase 1 during a flare
     S.profile = { trainDays: days, time: document.getElementById("ob-time")?.value || "18:00", wake: document.getElementById("ob-wake")?.value || "07:00",
-      anchor: "", legs: !!o.legs, created: todayKey(), weeklyTarget: Math.min(5, days.length), barSetting: null,
+      anchor: "", legs: false, created: todayKey(), weeklyTarget: Math.min(5, days.length), barSetting: null,
       name: (document.getElementById("ob-name")?.value || "").trim().slice(0, 30) };
     S.seenV2 = true;
     save(); UI.screen = "today"; render(); window.scrollTo(0, 0);
@@ -246,12 +266,21 @@ document.addEventListener("input", (e) => {
   const id = e.target.id, v = e.target.value;
   if (id === "lib-q") { UI.libQ = v; const l = document.getElementById("lib-list"); if (l) l.innerHTML = movesList(); }
   if (!S.profile) return;
-  if (id === "set-time" && /^\d{2}:\d{2}$/.test(v)) { S.profile.time = v; save(); }
+  // alerts sheet: time fields save as they change (no re-render, so the iPhone time wheel stays open)
+  const hm = /^\d{2}:\d{2}$/.test(v);
+  if (e.target.dataset.rem && hm) { const d = reminderDay(), k = e.target.dataset.rem, x = d.extra.find((y) => y.id === k); if (x) x.time = v; else d.at[k] = v; save(); }
+  if (id === "rem-until" && hm) { S.reminders.until = v; save(); }
+  if (id === "rem-spine-time" && hm) { S.reminders.spineTime = v; delete reminderDay().at.spine; save(); }
+  if (id === "rem-new-time" || id === "rem-new-label") UI.remNew = { time: document.getElementById("rem-new-time")?.value, label: document.getElementById("rem-new-label")?.value };
+  if (id === "set-time" && /^\d{2}:\d{2}$/.test(v)) { S.profile.time = v; delete reminderDay().at.workout; save(); }
   if (id === "set-wake" && /^\d{2}:\d{2}$/.test(v)) { S.profile.wake = v; save(); }
   if (id === "set-anchor") { S.profile.anchor = v.slice(0, 60); save(); }
   if (id === "set-name") { S.profile.name = v.trim().slice(0, 30); save(); }
 });
 document.addEventListener("change", (e) => {
+  const remToggle = { "rem-quiet": () => { reminderDay().quiet = e.target.checked; }, "rem-workout": () => { S.reminders.workout = e.target.checked; },
+    "rem-spine": () => { S.reminders.spine = e.target.checked; }, "rem-timers": () => { S.reminders.timers = e.target.checked; if (!e.target.checked) cancelTimerAlerts(); } }[e.target.id];
+  if (remToggle) { remToggle(); save(); rerenderSheet(); }
   if (e.target.id === "set-sound") { S.settings.sound = e.target.checked; save(); if (S.settings.sound) { unlockAudio(); sfx("set-done"); } render(); }
   if (e.target.id === "import-file" && e.target.files?.[0]) {
     e.target.files[0].text().then((t) => { const ta = document.getElementById("import-text"); if (ta) ta.value = t; });
@@ -259,6 +288,7 @@ document.addEventListener("change", (e) => {
 });
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible" && !UI.session && !UI.done && !UI.sheet && S.profile) render();
+  if (document.visibilityState === "visible") { LN("removeAllDeliveredNotifications"); syncReminders(); }
 });
 matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", applyTheme);
 
@@ -268,6 +298,7 @@ try {
   if (S.active && S.active.date !== todayKey()) { S.active = null; save(); }
   render();
   if (S.profile && !S.seenV2) openSheet("whatsnew");
+  initAlerts();
 } catch (e) {
   console.error(e);
   const app = document.getElementById("app");

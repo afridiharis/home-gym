@@ -1,0 +1,23 @@
+{
+ "new": {
+  "width": 1179,
+  "height": 2556,
+  "background": "#0E1320",
+  "name": "splash-1179x2556-dark"
+ },
+ "steps": [
+  {
+   "place": "design/raster/src/logo-dark.svg",
+   "width": 590,
+   "center": [
+    589.5,
+    1176
+   ],
+   "as": "lockup"
+  }
+ ],
+ "save": [
+  "assets/splash/splash-1179x2556-dark.png"
+ ],
+ "preview": null
+}

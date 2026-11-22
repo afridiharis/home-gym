@@ -1,10 +1,10 @@
 /* ============================================================
-   ONBOARDING — four short steps, then straight to Today
+   ONBOARDING — three short steps, then straight to Today
    ============================================================ */
 
 function renderOnboard() {
   const o = UI.ob;
-  const steps = [obWelcome, obBack, obStart, obWeek];
+  const steps = [obWelcome, obStart, obWeek];
   document.getElementById("nav")?.remove();
   $app().innerHTML = `<div class="ob screen">
     <div class="row between">
@@ -35,26 +35,6 @@ function obWelcome() {
     </div>`;
 }
 
-function obBack() {
-  const o = UI.ob;
-  const opt = (v, tone, title, sub) => `<button class="option ${o.back === v ? "sel" : ""}" data-a="ob-set" data-k="back" data-v="${v}" data-tone="${tone}">
-    <span class="radio"></span><span class="col"><span class="t-strong">${title}</span><span class="t-small">${sub}</span></span></button>`;
-  return `
-    <h1 class="t-title">How's your back lately?</h1>
-    <div class="stack">
-      ${opt("1", "bad", "Flared up right now", "We'll start with calming it down")}
-      ${opt("2", "warn", "Niggly, but manageable", "We'll train, conservatively")}
-      ${opt("3", "good", "Mostly fine", "Occasional twinges at most")}
-    </div>
-    <h2 class="t-head">Any pain, tingling or numbness down a leg?</h2>
-    <div class="grid-2">
-      <button class="choice compact ${o.legs === true ? "sel" : ""}" data-tone="warn" data-a="ob-set" data-k="legs" data-v="yes">Yes / sometimes</button>
-      <button class="choice compact ${o.legs === false ? "sel" : ""}" data-tone="good" data-a="ob-set" data-k="legs" data-v="no">No</button>
-    </div>
-    ${o.legs ? notice("warn", "info", "<b>One golden rule for you:</b> symptoms moving down the leg mean stop that move, even if your back feels fine. Symptoms shrinking toward the spine as you move are usually a good sign.") : ""}
-    <div class="foot"><button class="btn btn-primary block" data-a="ob-next" ${o.back && o.legs !== undefined ? "" : "disabled"}>Next</button></div>`;
-}
-
 function obStart() {
   const o = UI.ob;
   const seg = (k, opts) => `<div class="seg">${opts.map((t, i) => `<button data-a="ob-set" data-k="${k}" data-v="${i}" class="${(o[k] ?? 0) == i ? "on" : ""}">${t}</button>`).join("")}</div>`;
@@ -79,6 +59,7 @@ function obWeek() {
       <label class="field"><span class="t-cap">Usual wake time</span><input type="time" id="ob-wake" value="${o.wake || "07:00"}"></label>
     </div>
     ${notice("brand", "today", "FORGE keeps strength work out of the first hour after you wake — discs are most vulnerable then.")}
+    <p class="t-cap">Nothing here is fixed — change days and times whenever you like${isNative() ? ", and set repeat nudges under Alerts" : " in Me"}.</p>
     <label class="field"><span class="t-cap">Your name (optional)</span><input type="text" id="ob-name" maxlength="30" placeholder="So Today can say hi" value="${esc(o.name || "")}"></label>
     <div class="foot"><button class="btn btn-primary block" data-a="ob-finish">${I("check")}Start training</button></div>`;
 }

@@ -1,0 +1,23 @@
+{
+ "new": {
+  "width": 1206,
+  "height": 2622,
+  "background": "#F4F6FA",
+  "name": "splash-1206x2622-light"
+ },
+ "steps": [
+  {
+   "place": "assets/brand/logo.svg",
+   "width": 603,
+   "center": [
+    603.0,
+    1206
+   ],
+   "as": "lockup"
+  }
+ ],
+ "save": [
+  "assets/splash/splash-1206x2622-light.png"
+ ],
+ "preview": null
+}

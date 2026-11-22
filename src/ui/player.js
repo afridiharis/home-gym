@@ -128,28 +128,30 @@ function holdBlock(it, tgt, unit) {
 }
 
 /* ---------- holds ---------- */
+function stopHoldTimer() { clearInterval(UI.timer); cancelAlert(NOTIFY.ID.hold); }
 function startHold() {
   const it = curItem();
   const tgt = it._adj ?? setTarget(it, UI.session.setIdx);
   const endTs = Date.now() + tgt * 1000;
   const c = 2 * Math.PI * 96;
-  clearInterval(UI.timer);
+  stopHoldTimer();
   sfx("go");
   const btn = document.getElementById("hold-btn");
   if (btn) { btn.innerHTML = `${I("check")}Done early`; btn.dataset.a = "hold-stop"; btn.classList.replace("btn-primary", "btn-secondary"); }
   let lastTick = null;
   UI.holdEnd = endTs; UI.holdTgt = tgt;
+  alertHold(endTs, `${it.ex.name} — ${tgt} seconds done. Open FORGE for what's next.`);
   UI.timer = setInterval(() => {
     const left = Math.max(0, Math.ceil((endTs - Date.now()) / 1000));
     const v = document.getElementById("hold-val"), arc = document.getElementById("hold-arc");
     if (v) v.textContent = fmtClock(left);
     if (arc) arc.style.strokeDashoffset = String(c * (1 - left / tgt));
     if (left <= 3 && left > 0 && left !== lastTick) { lastTick = left; sfx("tick"); }
-    if (left === 0) { clearInterval(UI.timer); logSet(tgt); }
+    if (left === 0) { stopHoldTimer(); logSet(tgt); }
   }, 200);
 }
 function stopHoldEarly() {
-  clearInterval(UI.timer);
+  stopHoldTimer();
   const left = Math.max(0, Math.ceil(((UI.holdEnd || Date.now()) - Date.now()) / 1000));
   logSet(Math.max(1, (UI.holdTgt || 0) - left));
 }
@@ -192,6 +194,7 @@ function startRest(sec) {
     </div>
     <button class="btn btn-text" data-a="quit">End session</button>`;
   document.body.appendChild(div);
+  restAlert();
   clearInterval(UI.restTimer);
   let warned = false, lastTick = null;
   UI.restTimer = setInterval(() => {
@@ -203,11 +206,17 @@ function startRest(sec) {
     if (left === 0) { endRest(); sfx("rest-end"); }
   }, 200);
 }
-function endRest() { clearInterval(UI.restTimer); UI.rest = null; document.querySelectorAll("#rest").forEach((n) => n.remove()); }
+// iPhone app: a notification when the rest ends while FORGE is off screen (re-set whenever the end time moves)
+function restAlert() {
+  if (!UI.rest || !UI.session) return;
+  const nx = curItem(), t = setTarget(nx, UI.session.setIdx);
+  alertRest(UI.rest.endTs, `Next: ${nx.ex.name} · set ${UI.session.setIdx + 1} of ${nx.sets} · ${t} ${kindUnit(nx.ex, t)}${sideNote(nx.ex)}`);
+}
+function endRest() { clearInterval(UI.restTimer); cancelAlert(NOTIFY.ID.rest); UI.rest = null; document.querySelectorAll("#rest").forEach((n) => n.remove()); }
 
 function skipExercise() {
   const s = UI.session;
-  if (s.idx >= s.items.length - 1) { clearInterval(UI.timer); finishSession(); return; }
+  if (s.idx >= s.items.length - 1) { stopHoldTimer(); finishSession(); return; }
   goToItem(s.idx + 1, 1);
 }
 
@@ -219,7 +228,7 @@ const openSet = (it) => Math.min(loggedSets(it), it.sets - 1);
 function goToItem(i, dir) {
   const s = UI.session;
   if (!s || i < 0 || i >= s.items.length || i === s.idx) return;
-  clearInterval(UI.timer); endRest();
+  stopHoldTimer(); endRest();
   delete curItem()._adj;
   s.idx = i; s.setIdx = openSet(s.items[i]);
   snapshotActive(s);
@@ -276,7 +285,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") goToItem(UI.session.idx - 1, -1);
 });
 function swapEasier() {
-  clearInterval(UI.timer);
+  stopHoldTimer();
   const it = curItem();
   delete it._adj;
   if (it.ladder) {
@@ -297,7 +306,7 @@ function swapEasier() {
   renderPlayer();
 }
 function quitSession() {
-  clearInterval(UI.timer); endRest(); stopDemo(); releaseWake();
+  stopHoldTimer(); endRest(); stopDemo(); releaseWake();
   UI.session = null; S.active = null; save();
   document.getElementById("player")?.remove();
   render();
@@ -306,7 +315,7 @@ function quitSession() {
 /* ---------- finish: celebrate → one-tap feedback → unlocks ---------- */
 function finishSession() {
   const s = UI.session;
-  clearInterval(UI.timer); endRest(); stopDemo();
+  stopHoldTimer(); endRest(); stopDemo();
   const mins = Math.max(1, Math.round((Date.now() - s.startTs) / 60000));
   const res = completeSession(s, mins);
   releaseWake();

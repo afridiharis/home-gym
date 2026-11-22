@@ -261,6 +261,64 @@ const SHEETS = {
       </div>
       <button class="btn btn-primary block" data-a="whatsnew-done">Let's go</button>`;
   },
+  /* ---- alerts: today's reminders first, the everyday ones below (iPhone app) ---- */
+  reminders() {
+    if (!isNative()) return `${sheetTop("Alerts")}
+      ${notice("brand", "phone", "<b>Real alerts need the FORGE iPhone app.</b> A web page can't ring a timer or send a reminder once the screen is off. Until then, the Calendar reminders in Me do the job.")}
+      <button class="btn btn-primary block" data-a="sheet-close">OK</button>`;
+    const R = S.reminders;
+    if (!R.on) return `${sheetTop("Alerts", "Reminders and timers that reach you when FORGE is closed")}
+      <div class="list">
+        <div class="list-row" data-tone="brand"><span class="tile">${I("bell")}</span><div class="col"><span class="t-strong">Reminders you control</span><span class="t-small">Move, skip or add alerts for today without touching the rest of the week.</span></div></div>
+        <div class="list-row" data-tone="good"><span class="tile">${I("timer")}</span><div class="col"><span class="t-strong">Timers that still ring</span><span class="t-small">Rest over or hold done, even with the phone locked — with Continue and Stop buttons.</span></div></div>
+      </div>
+      <button class="btn btn-primary block" data-a="alerts-on">${I("bell")}Turn on alerts</button>
+      <p class="t-cap" style="text-align:center">iPhone will ask once. You can change it later in Settings.</p>`;
+    const day = reminderDay(), rows = todaysReminders();
+    const live = { workout: "Workout", part2: "Second half", spine: "Daily", extra: "Just today" };
+    const state = (r) => r.done ? "Done — no alert" : r.off ? "Off for today" : r.past ? "Time passed" : r.repeats ? (r.next === r.time ? `Then every ${S.reminders.repeat[r.kind] / 60} h until done` : `Next nudge ${fmtHm(r.next)}`) : live[r.kind];
+    const rowHtml = (r) => { const k = REMIND_KINDS[r.kind]; const live = !r.done && !r.off && !day.quiet;
+      return `<div class="list-row rem-row ${live ? "" : "muted"}" ${k.tone}><span class="tile">${I(k.icon)}</span>
+        <div class="col grow"><span class="t-strong">${esc(r.label)}</span><span class="t-small">${day.quiet && !r.done ? "Quiet today" : state(r)}</span></div>
+        ${r.done ? "" : `<input type="time" class="rem-time" data-rem="${esc(r.key)}" value="${r.time}" aria-label="Time for ${esc(r.label)}" ${r.off ? "disabled" : ""}>
+        <button class="btn-icon sm" data-a="${r.kind === "extra" ? "rem-del" : "rem-skip"}" data-v="${esc(r.key)}" aria-label="${r.kind === "extra" ? "Remove" : r.off ? "Turn back on for today" : "Skip for today"}">${I(r.kind === "extra" ? "close" : r.off ? "undo" : "skip", "sm")}</button>`}</div>`; };
+    const seg = (action, vals, cur, label, k = "") => `<div class="seg">${vals.map((v) => `<button data-a="${action}" data-v="${v}" data-k="${k}" class="${cur === v ? "on" : ""}">${label(v)}</button>`).join("")}</div>`;
+    const repLabel = (v) => (v ? `${v / 60} h` : "Once");
+    const soon = new Date(Date.now() + 3600e3);
+    const newTime = UI.remNew?.time || minToHm(Math.min(23 * 60 + 55, soon.getHours() * 60 + Math.ceil(soon.getMinutes() / 15) * 15));
+    return `${sheetTop("Alerts")}
+      <div class="row"><div class="col grow"><h3 class="t-head">Today</h3><span class="t-small">Changes last until midnight</span></div>
+        <span class="t-small">Quiet</span><label class="toggle"><input type="checkbox" id="rem-quiet" ${day.quiet ? "checked" : ""} aria-label="Quiet today"><span class="tr"></span><span class="th"></span></label></div>
+      <div class="list">${rows.map(rowHtml).join("") || `<div class="list-row"><span class="tile">${I("moon-z")}</span><div class="col"><span class="t-strong">Nothing planned today</span><span class="t-small">Add one below if you want a nudge.</span></div></div>`}</div>
+      <div class="card"><div class="stack"><span class="t-strong">Add a reminder for today</span>
+        <div class="rem-add"><input type="time" id="rem-new-time" value="${newTime}" aria-label="Time">
+          <input type="text" id="rem-new-label" maxlength="60" placeholder="Evening walk" value="${esc(UI.remNew?.label || "")}" aria-label="What to remind you about"></div>
+        <button class="btn btn-tinted block" data-tone="good" data-a="rem-add">${I("plus")}Add reminder</button></div></div>
+
+      <h3 class="t-head">Every day</h3>
+      <div class="list">
+        <div class="list-row" data-tone="brand"><span class="tile">${I("flame")}</span><div class="col grow"><span class="t-strong">Workout reminders</span>
+          <span class="t-small">On your training days</span></div>
+          <label class="toggle"><input type="checkbox" id="rem-workout" ${R.workout ? "checked" : ""} aria-label="Workout reminders"><span class="tr"></span><span class="th"></span></label></div>
+        ${R.workout ? `<div class="rem-sub stack">
+          <div class="days">${[1, 2, 3, 4, 5, 6, 0].map((i) => `<button data-a="set-day" data-v="${i}" class="${S.profile.trainDays.includes(i) ? "on" : ""}" aria-pressed="${S.profile.trainDays.includes(i)}">${DAYS[i]}</button>`).join("")}</div>
+          <div class="row"><span class="t-small grow">Training time</span><input type="time" class="rem-time" id="set-time" value="${S.profile.time}" aria-label="Training time"></div>
+          <div class="field"><span class="t-cap">First alert, before training time</span>${seg("rem-lead", [0, 15, 30, 60], S.settings.alertMin, (v) => v ? v + " min" : "On time")}</div>
+          <div class="field"><span class="t-cap">Keep nudging until it's done</span>${seg("rem-repeat", NOTIFY.REPEATS, R.repeat.workout, repLabel, "workout")}</div></div>` : ""}
+        <div class="list-row" data-st="floor"><span class="tile">${I("spine")}</span><div class="col grow"><span class="t-strong">Spine Reset</span><span class="t-small">Every day</span></div>
+          <label class="toggle"><input type="checkbox" id="rem-spine" ${R.spine ? "checked" : ""} aria-label="Spine Reset reminder"><span class="tr"></span><span class="th"></span></label></div>
+        ${R.spine ? `<div class="rem-sub stack">
+          <div class="row"><span class="t-small grow">First alert</span><input type="time" class="rem-time" id="rem-spine-time" value="${spineAlertTime()}" aria-label="Spine Reset time"></div>
+          <div class="field"><span class="t-cap">Keep nudging until it's done</span>${seg("rem-repeat", NOTIFY.REPEATS, R.repeat.spine, repLabel, "spine")}</div></div>` : ""}
+        ${R.repeat.workout || R.repeat.spine ? `<div class="list-row"><span class="tile">${I("moon-z")}</span><div class="col grow"><span class="t-strong">Stop nudging after</span><span class="t-small">Nothing repeats later than this</span></div>
+          <input type="time" class="rem-time" id="rem-until" value="${R.until}" aria-label="Stop nudging after"></div>` : ""}
+        <div class="list-row" data-tone="good"><span class="tile">${I("timer")}</span><div class="col grow"><span class="t-strong">Timer alerts</span><span class="t-small">Rest over and hold done, when FORGE is off screen</span></div>
+          <label class="toggle"><input type="checkbox" id="rem-timers" ${R.timers ? "checked" : ""} aria-label="Timer alerts"><span class="tr"></span><span class="th"></span></label></div>
+      </div>
+      <p class="t-cap">Nudges stop by themselves once the session is logged. FORGE plans two weeks of alerts each time you open it. Buttons on an alert: Start now, Snooze ${NOTIFY.SNOOZE_MIN} min, Not today.</p>
+      <button class="btn btn-primary block" data-a="sheet-close">Done</button>
+      <button class="btn btn-text" data-a="alerts-off" style="color:var(--bad-ink)">Turn off all alerts</button>`;
+  },
   import() {
     return `${sheetTop("Restore a backup", "This replaces what's on this device.")}
       <textarea id="import-text" rows="6" placeholder="Paste the contents of a forge-backup file"></textarea>

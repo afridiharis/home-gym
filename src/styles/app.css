@@ -159,10 +159,10 @@ input[type="text"], input[type="number"], input[type="time"], select, textarea {
 }
 input:focus, select:focus, textarea:focus { outline: none; box-shadow: inset 0 0 0 2px var(--brand); }
 .seg { display: flex; padding: 4px; gap: 4px; border-radius: var(--r-pill); background: var(--surface-2); }
-.seg button { flex: 1; min-height: 40px; border-radius: var(--r-pill); font-family: var(--font-round); font-weight: 700; font-size: 15px; color: var(--ink-2); }
+.seg button { flex: 1; text-align: center; min-height: 40px; border-radius: var(--r-pill); font-family: var(--font-round); font-weight: 700; font-size: 15px; color: var(--ink-2); }
 .seg button.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-1); }
 .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-.days button { min-height: 46px; border-radius: 14px; background: var(--surface-2); color: var(--ink-2);
+.days button { text-align: center; min-height: 46px; border-radius: 14px; background: var(--surface-2); color: var(--ink-2);
   font-family: var(--font-round); font-weight: 800; font-size: 14px; }
 .days button.on { background: var(--brand); color: var(--on-brand); }
 .toggle { position: relative; width: 52px; height: 32px; flex-shrink: 0; }
@@ -316,7 +316,7 @@ svg.tower .dim { --sc: var(--frame-dim); }
 .rung:not(:last-child)::before { content: ""; position: absolute; left: 10px; top: 30px; bottom: -8px; width: 2px; background: var(--line); }
 
 /* ---------- onboarding ---------- */
-.ob { display: flex; flex-direction: column; gap: 18px; min-height: calc(100dvh - 60px); }
+.ob { display: flex; flex-direction: column; gap: 18px; min-height: calc(100dvh - 60px - var(--safe-t) - var(--safe-b)); }
 .ob .foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
 .ob-progress { display: flex; gap: 6px; }
 .ob-progress i { flex: 1; height: 5px; border-radius: 3px; background: var(--line); }
@@ -333,3 +333,25 @@ svg.tower .dim { --sc: var(--frame-dim); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- alerts sheet (iPhone app) ---------- */
+.btn-icon.sm { width: 40px; height: 40px; min-height: 40px; flex-shrink: 0; }
+.bell-btn { flex-shrink: 0; margin-left: auto; color: var(--ink-3); }
+.bell-btn.on { background: var(--brand-tint); color: var(--brand-ink); }
+.sheet > * { flex-shrink: 0; }
+.rem-row { gap: 10px; }
+.rem-sub { padding: 0 0 14px; margin-top: -4px; }
+.rem-sub .seg button { font-size: 13px; white-space: nowrap; padding: 0 2px; }
+.rem-sub .days button { min-height: 40px; font-size: 14px; }
+.rem-sub + .list-row { border-top: 1px solid var(--line); }
+.rem-row .tile { width: 40px; height: 40px; }
+input.rem-time { flex: 0 0 auto; width: auto; min-height: 40px; padding: 6px 10px; border-radius: var(--r-pill); border: 0; background: var(--surface-2); color: var(--ink);
+  font-family: var(--font-round); font-weight: 700; font-size: 16px; }
+.rem-time:disabled { opacity: .45; }
+.rem-row.muted .t-strong { color: var(--ink-3); }
+.rem-row.muted .tile { opacity: .5; }
+.rem-add { display: grid; grid-template-columns: auto 1fr; gap: 10px; }
+.rem-add input { min-height: 48px; padding: 10px 14px; border-radius: var(--r-md); border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 16px; min-width: 0; }
+/* the native shell draws under the status bar */
+html.native body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+html.native input, html.native textarea { -webkit-user-select: text; user-select: text; }

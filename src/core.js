@@ -51,6 +51,8 @@ const defaultState = () => ({
   deloadDismissed: null,
   seenV2: false,
   seenSwipe: false,  // one-time "swipe between moves" tip
+  // iPhone-app alerts (src/notify.js). `day` holds today's overrides only and resets at midnight.
+  reminders: { on: false, workout: true, spine: true, spineTime: null, timers: true, repeat: { workout: 0, spine: 0 }, until: "21:30", day: null },
 });
 
 let S = defaultState();
@@ -147,12 +149,28 @@ function sanitizeState(p) {
   s.seenV2 = !!p.seenV2;
   s.seenSwipe = !!p.seenSwipe;
   s.active = sanitizeActive(p.active);
+  const rm = p.reminders && typeof p.reminders === "object" ? p.reminders : {};
+  const isHm = (x) => typeof x === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(x);
+  const rep = (x) => ([0, 60, 120, 180, 240].includes(x) ? x : 0);
+  s.reminders = { on: !!rm.on, workout: rm.workout !== false, spine: rm.spine !== false, spineTime: isHm(rm.spineTime) ? rm.spineTime : null, timers: rm.timers !== false,
+    repeat: { workout: rep(rm.repeat?.workout), spine: rep(rm.repeat?.spine) }, until: isHm(rm.until) ? rm.until : "21:30", day: null };
+  const rd = rm.day;
+  if (rd && typeof rd === "object" && isDateKey(rd.date)) {
+    const day = { date: rd.date, quiet: !!rd.quiet, off: {}, at: {}, extra: [] };
+    for (const k of ["workout", "spine", "part2"]) {
+      if (rd.off && rd.off[k]) day.off[k] = true;
+      if (rd.at && isHm(rd.at[k])) day.at[k] = rd.at[k];
+    }
+    if (Array.isArray(rd.extra)) day.extra = rd.extra.filter((x) => x && isHm(x.time)).slice(0, 8).map((x) => ({ id: strOr(x.id, uid(), 40), time: x.time, label: strOr(x.label, "Reminder", 60) || "Reminder" }));
+    s.reminders.day = day;
+  }
   return s;
 }
 
 function save() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
   catch (e) { storageOK = false; }
+  queueReminderSync(); // iPhone app: keep the planned alerts in step with the data (no-op in a browser)
 }
 function load() {
   let raw = null;
@@ -685,6 +703,7 @@ function unlockAudio() { // call from a user gesture (Start button)
   } catch (_) {}
 }
 function sfx(name) {
+  haptic(name);
   if (!S.settings.sound || !audioEl) return;
   try { playSrc(name).catch(() => {}); } catch (_) {}
 }

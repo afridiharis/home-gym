@@ -342,7 +342,32 @@ def preview():
                              "steps": steps, "save": [f"{HERE}/preview.png"]}))
 
 
-PARTS = {"icons": icons, "maskable": maskable, "favicon": favicon, "og": og, "preview": preview}
+# ---------------------------------------------------------------- iOS launch screens
+
+# Home-screen web app launch images, one per iPhone screen (points x 3 = pixels), light and dark.
+# Same look as a native launch screen: the app background with the FORGE lockup, nothing else.
+SPLASH_SIZES = [(440, 956), (430, 932), (402, 874), (393, 852)]   # 17/16 Pro Max, 15/16 Plus, 17/16 Pro, 15/16
+INK_DARK = "#EEF2F8"
+
+
+def splash():
+    logo = open(p("assets/brand/logo.svg")).read()
+    dark = logo.replace("#142033", INK_DARK).replace("#f2541b", ORANGE_DARK.lower()).replace("#F2541B", ORANGE_DARK)
+    write(f"{HERE}/src/logo-dark.svg", dark)
+    for wpt, hpt in SPLASH_SIZES:
+        W, H = wpt * 3, hpt * 3
+        lock_w = round(W * 0.5)
+        for mode, bg, src in (("light", BG, "assets/brand/logo.svg"), ("dark", BG_DARK, f"{HERE}/src/logo-dark.svg")):
+            name = f"splash-{W}x{H}-{mode}"
+            build(recipe(name, {
+                "new": {"width": W, "height": H, "background": bg, "name": name},
+                "steps": [{"place": src, "width": lock_w, "center": [W / 2, round(H * 0.46)], "as": "lockup"}],
+                "save": [f"assets/splash/{name}.png"],
+                "preview": f"{HERE}/previews/{name}.png" if (wpt, mode) == (440, "light") or (wpt, mode) == (440, "dark") else None,
+            }))
+
+
+PARTS = {"icons": icons, "maskable": maskable, "favicon": favicon, "og": og, "preview": preview, "splash": splash}
 
 if __name__ == "__main__":
     os.chdir(ROOT)

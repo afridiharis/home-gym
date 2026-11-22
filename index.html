@@ -13,6 +13,14 @@
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0E1320">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="assets/splash/splash-1179x2556-dark.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="assets/splash/splash-1179x2556-light.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="assets/splash/splash-1206x2622-dark.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="assets/splash/splash-1206x2622-light.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="assets/splash/splash-1290x2796-dark.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="assets/splash/splash-1290x2796-light.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="assets/splash/splash-1320x2868-dark.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="assets/splash/splash-1320x2868-light.png">
 <link rel="icon" href="assets/icons/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
 <link rel="icon" type="image/svg+xml" href="assets/brand/mark.svg">
@@ -262,10 +270,10 @@ input[type="text"], input[type="number"], input[type="time"], select, textarea {
 }
 input:focus, select:focus, textarea:focus { outline: none; box-shadow: inset 0 0 0 2px var(--brand); }
 .seg { display: flex; padding: 4px; gap: 4px; border-radius: var(--r-pill); background: var(--surface-2); }
-.seg button { flex: 1; min-height: 40px; border-radius: var(--r-pill); font-family: var(--font-round); font-weight: 700; font-size: 15px; color: var(--ink-2); }
+.seg button { flex: 1; text-align: center; min-height: 40px; border-radius: var(--r-pill); font-family: var(--font-round); font-weight: 700; font-size: 15px; color: var(--ink-2); }
 .seg button.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-1); }
 .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-.days button { min-height: 46px; border-radius: 14px; background: var(--surface-2); color: var(--ink-2);
+.days button { text-align: center; min-height: 46px; border-radius: 14px; background: var(--surface-2); color: var(--ink-2);
   font-family: var(--font-round); font-weight: 800; font-size: 14px; }
 .days button.on { background: var(--brand); color: var(--on-brand); }
 .toggle { position: relative; width: 52px; height: 32px; flex-shrink: 0; }
@@ -419,7 +427,7 @@ svg.tower .dim { --sc: var(--frame-dim); }
 .rung:not(:last-child)::before { content: ""; position: absolute; left: 10px; top: 30px; bottom: -8px; width: 2px; background: var(--line); }
 
 /* ---------- onboarding ---------- */
-.ob { display: flex; flex-direction: column; gap: 18px; min-height: calc(100dvh - 60px); }
+.ob { display: flex; flex-direction: column; gap: 18px; min-height: calc(100dvh - 60px - var(--safe-t) - var(--safe-b)); }
 .ob .foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
 .ob-progress { display: flex; gap: 6px; }
 .ob-progress i { flex: 1; height: 5px; border-radius: 3px; background: var(--line); }
@@ -437,6 +445,28 @@ svg.tower .dim { --sc: var(--frame-dim); }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 
+/* ---------- alerts sheet (iPhone app) ---------- */
+.btn-icon.sm { width: 40px; height: 40px; min-height: 40px; flex-shrink: 0; }
+.bell-btn { flex-shrink: 0; margin-left: auto; color: var(--ink-3); }
+.bell-btn.on { background: var(--brand-tint); color: var(--brand-ink); }
+.sheet > * { flex-shrink: 0; }
+.rem-row { gap: 10px; }
+.rem-sub { padding: 0 0 14px; margin-top: -4px; }
+.rem-sub .seg button { font-size: 13px; white-space: nowrap; padding: 0 2px; }
+.rem-sub .days button { min-height: 40px; font-size: 14px; }
+.rem-sub + .list-row { border-top: 1px solid var(--line); }
+.rem-row .tile { width: 40px; height: 40px; }
+input.rem-time { flex: 0 0 auto; width: auto; min-height: 40px; padding: 6px 10px; border-radius: var(--r-pill); border: 0; background: var(--surface-2); color: var(--ink);
+  font-family: var(--font-round); font-weight: 700; font-size: 16px; }
+.rem-time:disabled { opacity: .45; }
+.rem-row.muted .t-strong { color: var(--ink-3); }
+.rem-row.muted .tile { opacity: .5; }
+.rem-add { display: grid; grid-template-columns: auto 1fr; gap: 10px; }
+.rem-add input { min-height: 48px; padding: 10px 14px; border-radius: var(--r-md); border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 16px; min-width: 0; }
+/* the native shell draws under the status bar */
+html.native body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+html.native input, html.native textarea { -webkit-user-select: text; user-select: text; }
+
 </style>
 </head>
 <body>
@@ -444,7 +474,7 @@ svg.tower .dim { --sc: var(--frame-dim); }
 <main id="app" aria-live="polite"></main>
 <script>
 "use strict";
-const FORGE_VERSION = "4d91476d8d";
+const FORGE_VERSION = "25b1fe351f";
 /* ============================================================
    FORGE — program data
    Evidence notes: McGill Big 3 protocol, traffic-light pain rules,
@@ -1755,6 +1785,8 @@ const defaultState = () => ({
   deloadDismissed: null,
   seenV2: false,
   seenSwipe: false,  // one-time "swipe between moves" tip
+  // iPhone-app alerts (src/notify.js). `day` holds today's overrides only and resets at midnight.
+  reminders: { on: false, workout: true, spine: true, spineTime: null, timers: true, repeat: { workout: 0, spine: 0 }, until: "21:30", day: null },
 });
 
 let S = defaultState();
@@ -1851,12 +1883,28 @@ function sanitizeState(p) {
   s.seenV2 = !!p.seenV2;
   s.seenSwipe = !!p.seenSwipe;
   s.active = sanitizeActive(p.active);
+  const rm = p.reminders && typeof p.reminders === "object" ? p.reminders : {};
+  const isHm = (x) => typeof x === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(x);
+  const rep = (x) => ([0, 60, 120, 180, 240].includes(x) ? x : 0);
+  s.reminders = { on: !!rm.on, workout: rm.workout !== false, spine: rm.spine !== false, spineTime: isHm(rm.spineTime) ? rm.spineTime : null, timers: rm.timers !== false,
+    repeat: { workout: rep(rm.repeat?.workout), spine: rep(rm.repeat?.spine) }, until: isHm(rm.until) ? rm.until : "21:30", day: null };
+  const rd = rm.day;
+  if (rd && typeof rd === "object" && isDateKey(rd.date)) {
+    const day = { date: rd.date, quiet: !!rd.quiet, off: {}, at: {}, extra: [] };
+    for (const k of ["workout", "spine", "part2"]) {
+      if (rd.off && rd.off[k]) day.off[k] = true;
+      if (rd.at && isHm(rd.at[k])) day.at[k] = rd.at[k];
+    }
+    if (Array.isArray(rd.extra)) day.extra = rd.extra.filter((x) => x && isHm(x.time)).slice(0, 8).map((x) => ({ id: strOr(x.id, uid(), 40), time: x.time, label: strOr(x.label, "Reminder", 60) || "Reminder" }));
+    s.reminders.day = day;
+  }
   return s;
 }
 
 function save() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
   catch (e) { storageOK = false; }
+  queueReminderSync(); // iPhone app: keep the planned alerts in step with the data (no-op in a browser)
 }
 function load() {
   let raw = null;
@@ -2389,6 +2437,7 @@ function unlockAudio() { // call from a user gesture (Start button)
   } catch (_) {}
 }
 function sfx(name) {
+  haptic(name);
   if (!S.settings.sound || !audioEl) return;
   try { playSrc(name).catch(() => {}); } catch (_) {}
 }
@@ -2407,6 +2456,245 @@ function releaseWake() {
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible" && wantWake) acquireWake();
 });
+
+/* ============================================================
+   FORGE — alerts (the iPhone app only)
+   Real notifications through the Capacitor shell: reminders you
+   control day by day, and timer alerts with Continue / Stop.
+   In a browser every call here is a harmless no-op.
+
+   Reminders are never "repeating" notifications: each time the app
+   opens (and after every change) the next two weeks are cancelled
+   and planned again as one-offs. That is what lets a single day be
+   skipped, moved or silenced without touching the rest.
+   ============================================================ */
+
+const NOTIFY = {
+  DAYS: 14,                 // how far ahead reminders are planned
+  SNOOZE_MIN: 30,
+  MORE_REST_S: 30,
+  ID: { day: 1000, part2: 7001, extra: 7100, snooze: 7501, lapse: 7601, rest: 9001, hold: 9002 }, // day: 1000 + day*100 + kind*20 + nudge
+  REPEATS: [0, 60, 120, 180, 240], // minutes between nudges; 0 = one alert
+  MAX_NUDGES: 8, REPEAT_DAYS: 2,    // repeats are planned for today and tomorrow only (iOS keeps 64 pending at most)
+  CAT: { remind: "FORGE_REMIND", rest: "FORGE_REST" },
+};
+const REMIND_KINDS = {
+  workout: { icon: "flame", tone: 'data-tone="brand"', name: "Workout" },
+  spine: { icon: "spine", tone: 'data-st="floor"', name: "Spine Reset" },
+  part2: { icon: "pm", tone: 'data-tone="brand"', name: "Part 2" },
+  extra: { icon: "bell", tone: 'data-tone="good"', name: "Reminder" },
+};
+
+const capBridge = () => (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() ? window.Capacitor : null);
+const isNative = () => !!capBridge();
+function nativeCall(plugin, method, opts = {}) {
+  const cap = capBridge();
+  if (!cap) return Promise.resolve(null);
+  return cap.nativePromise(plugin, method, opts).catch((e) => { console.warn(`${plugin}.${method}`, e); return null; });
+}
+const LN = (method, opts) => nativeCall("LocalNotifications", method, opts);
+const alertsOn = () => isNative() && !!S.reminders.on;
+
+/* ---------- times ---------- */
+const hmToMin = (hm) => { const [h, m] = hm.split(":").map(Number); return h * 60 + m; };
+const minToHm = (n) => { const v = ((Math.round(n) % 1440) + 1440) % 1440; return `${String(Math.floor(v / 60)).padStart(2, "0")}:${String(v % 60).padStart(2, "0")}`; };
+const atOn = (dateKey, hm) => { const [y, mo, d] = dateKey.split("-").map(Number); const [h, m] = hm.split(":").map(Number); return new Date(y, mo - 1, d, h, m, 0, 0); };
+const fmtHm = (hm) => atOn(todayKey(), hm).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+
+// the usual alert times (a single day can override them)
+const workoutAlertTime = () => minToHm(Math.max(0, hmToMin(S.profile.time) - S.settings.alertMin));
+// Spine Reset: never inside the first hour after waking, so default to two hours after
+const spineAlertTime = () => S.reminders.spineTime || minToHm(Math.min(hmToMin(S.profile.wake) + 120, 23 * 60));
+
+/* ---------- today's overrides ---------- */
+const freshDay = () => ({ date: todayKey(), quiet: false, off: {}, at: {}, extra: [] });
+function reminderDay() {
+  if (!S.reminders.day || S.reminders.day.date !== todayKey()) S.reminders.day = freshDay();
+  return S.reminders.day;
+}
+
+/* ---------- repeat nudges ----------
+   A reminder can keep nudging every N hours until it's done or the day's cut-off time.
+   The first one is the usual alert time; done, skipped or quiet stops the rest. */
+function nudgeTimes(startHm, kind, repeat = true) {
+  const every = repeat ? S.reminders.repeat[kind] || 0 : 0;
+  const out = [startHm], end = hmToMin(S.reminders.until);
+  if (!every) return out;
+  for (let t = hmToMin(startHm) + every; t <= end && out.length < NOTIFY.MAX_NUDGES; t += every) out.push(minToHm(t));
+  return out;
+}
+const NUDGE_COPY = {
+  workout: [["ready when you are", "Even five minutes counts."], ["still on for today?", "Start small — the first set is the hardest one."], ["there's still time", "A quick 8-minute version counts too."], ["last call for today", "Do one move and call it a win."]],
+  spine: [["10-minute Spine Reset", "Cat-camel, curl-up, side plank, bird dog. Daily back armour."], ["Spine Reset still waiting", "Ten minutes on the mat. Your back will thank you tonight."], ["Last call: Spine Reset", "Even half of it keeps the streak alive."]],
+};
+// first nudge gets the first line, the final one the "last call", anything between the middle lines
+const nudgeCopy = (kind, i, n) => { const c = NUDGE_COPY[kind]; return i === 0 ? c[0] : i === n - 1 ? c[c.length - 1] : c[1 + ((i - 1) % (c.length - 2))]; };
+
+/* ---------- the plan: every reminder for the next two weeks ----------
+   Pure (reads state, returns a list) so it can be checked without a phone. */
+function planReminders(now = new Date()) {
+  const out = [];
+  if (!S.profile) return out;
+  const R = S.reminders, day = reminderDay(), today = todayKey();
+  const logs = sessionsOn(today);
+  const mainDone = logs.some((l) => l.type === "strength" && (!l.part || l.part === 2));
+  const spineDone = logs.some((l) => l.type === "spine");
+  const add = (id, at, kind, title, body, extra = {}) => { if (at.getTime() > now.getTime() + 5000) out.push({ id, at, kind, title, body, extra: { kind, ...extra } }); };
+
+  for (let d = 0; d < NOTIFY.DAYS; d++) {
+    const key = dayShift(today, d), isToday = d === 0;
+    if (isToday && day.quiet) continue;
+    const dow = atOn(key, "12:00").getDay();
+    const rep = d < NOTIFY.REPEAT_DAYS;
+    if (R.workout && S.profile.trainDays.includes(dow) && !(isToday && (day.off.workout || mainDone))) {
+      const tpl = isToday ? DAY_TEMPLATES[todaysDayType()] : null;
+      const times = nudgeTimes((isToday && day.at.workout) || workoutAlertTime(), "workout", rep);
+      times.forEach((hm, i) => { const [t, b] = nudgeCopy("workout", i, times.length);
+        add(NOTIFY.ID.day + d * 100 + i, atOn(key, hm), "workout", `${tpl ? tpl.name + " day" : "Training day"} — ${t}`, `${tpl && i === 0 ? tpl.short + ". " : ""}${b}`); });
+    }
+    if (R.spine && !(isToday && (day.off.spine || spineDone))) {
+      const times = nudgeTimes((isToday && day.at.spine) || spineAlertTime(), "spine", rep);
+      times.forEach((hm, i) => { const [t, b] = nudgeCopy("spine", i, times.length); add(NOTIFY.ID.day + d * 100 + 20 + i, atOn(key, hm), "spine", t, b); });
+    }
+  }
+  if (!day.quiet) {
+    // split day: part 1 is logged, part 2 is not — nudge once the gap has passed
+    const p1 = logs.find((l) => l.type === "strength" && l.part === 1);
+    if (R.workout && p1 && !mainDone && !day.off.part2) {
+      const hm = day.at.part2;
+      const at = hm ? atOn(today, hm) : new Date(p1.ts + GUARD.SPLIT_GAP_H * H);
+      if (hm || !tooLate(at.getTime())) add(NOTIFY.ID.part2, at, "part2", "Part 2 is ready", "Your muscles have had their break. Finish today's workout.");
+    }
+    day.extra.forEach((x, i) => add(NOTIFY.ID.extra + i, atOn(today, x.time), "extra", x.label, "Your reminder for today.", { xid: x.id }));
+  }
+  // if FORGE isn't opened for two weeks the plan runs out — say so once rather than going silent
+  add(NOTIFY.ID.lapse, atOn(dayShift(today, NOTIFY.DAYS), S.profile.time), "lapse", "Your reminders have run out", "Open FORGE to plan the next two weeks. Starting again is always allowed.");
+  return out.sort((a, b) => a.at - b.at);
+}
+// what the Reminders sheet lists for today (including ones switched off or already past)
+function todaysReminders(now = new Date()) {
+  const R = S.reminders, day = reminderDay(), today = todayKey();
+  const logs = sessionsOn(today);
+  const mainDone = logs.some((l) => l.type === "strength" && (!l.part || l.part === 2));
+  const spineDone = logs.some((l) => l.type === "spine");
+  const rows = [];
+  const row = (kind, time, label, done, key = kind) => {
+    const times = kind === "part2" ? [time] : nudgeTimes(time, kind), next = times.find((hm) => atOn(today, hm) > now);
+    rows.push({ kind, key, time, label, done, off: !!day.off[key], past: !next, next, repeats: times.length > 1 });
+  };
+  if (R.workout && S.profile.trainDays.includes(now.getDay())) row("workout", day.at.workout || workoutAlertTime(), DAY_TEMPLATES[todaysDayType()].name, mainDone);
+  const p1 = logs.find((l) => l.type === "strength" && l.part === 1);
+  if (R.workout && p1 && !mainDone) {
+    const due = new Date(p1.ts + GUARD.SPLIT_GAP_H * H);
+    row("part2", day.at.part2 || minToHm(due.getHours() * 60 + due.getMinutes()), "Part 2", false);
+  }
+  if (R.spine) row("spine", day.at.spine || spineAlertTime(), "Spine Reset", spineDone);
+  day.extra.forEach((x) => rows.push({ kind: "extra", key: x.id, time: x.time, label: x.label, done: false, off: false, past: atOn(today, x.time) <= now }));
+  return rows.sort((a, b) => hmToMin(a.time) - hmToMin(b.time));
+}
+
+/* ---------- putting the plan on the phone ---------- */
+const toNote = (p) => ({ id: p.id, title: p.title, body: p.body, schedule: { at: p.at, allowWhileIdle: true }, actionTypeId: NOTIFY.CAT.remind, extra: p.extra });
+let syncChain = Promise.resolve(), syncTimer = null;
+function syncReminders() {
+  if (!isNative()) return Promise.resolve();
+  syncChain = syncChain.then(async () => {
+    const pending = (await LN("getPending"))?.notifications || [];
+    const old = pending.filter((n) => n.id < NOTIFY.ID.rest && n.id !== NOTIFY.ID.snooze).map((n) => ({ id: n.id }));
+    if (old.length) await LN("cancel", { notifications: old });
+    if (!S.reminders.on || !S.profile) return;
+    const plan = planReminders().slice(0, 56); // iOS keeps at most 64 pending
+    if (plan.length) await LN("schedule", { notifications: plan.map(toNote) });
+  }).catch((e) => console.warn("syncReminders", e));
+  return syncChain;
+}
+// called from save(): anything that changes the day (a logged session, new times) re-plans shortly after
+function queueReminderSync() {
+  if (!isNative()) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(syncReminders, 600);
+}
+
+/* ---------- permission ---------- */
+async function enableAlerts() {
+  if (!isNative()) return false;
+  let p = await LN("checkPermissions");
+  if (p?.display !== "granted") p = await LN("requestPermissions");
+  S.reminders.on = p?.display === "granted";
+  save();
+  await syncReminders();
+  return S.reminders.on;
+}
+function disableAlerts() { S.reminders.on = false; cancelTimerAlerts(); save(); return syncReminders(); }
+
+/* ---------- timer alerts: only shown when FORGE is not on screen (silent in the app) ---------- */
+function timerAlert(id, endTs, title, body, extra, withActions) {
+  if (!alertsOn() || !S.reminders.timers || endTs <= Date.now() + 1500) return;
+  LN("schedule", { notifications: [{ id, title, body, schedule: { at: new Date(endTs), allowWhileIdle: true }, silent: true,
+    actionTypeId: withActions ? NOTIFY.CAT.rest : undefined, extra }] });
+}
+function cancelAlert(id) { if (isNative()) LN("cancel", { notifications: [{ id }] }); }
+function cancelTimerAlerts() { cancelAlert(NOTIFY.ID.rest); cancelAlert(NOTIFY.ID.hold); }
+const alertRest = (endTs, body) => timerAlert(NOTIFY.ID.rest, endTs, "Rest over — back to it", body, { kind: "rest" }, true);
+const alertHold = (endTs, body) => timerAlert(NOTIFY.ID.hold, endTs, "Hold done", body, { kind: "hold" }, false);
+
+/* ---------- haptics ---------- */
+const HAPTIC = { "set-done": ["impact", { style: "MEDIUM" }], "rest-end": ["notification", { type: "SUCCESS" }], go: ["impact", { style: "HEAVY" }],
+  complete: ["notification", { type: "SUCCESS" }], pr: ["notification", { type: "SUCCESS" }], levelup: ["notification", { type: "SUCCESS" }], warn10: ["impact", { style: "LIGHT" }] };
+function haptic(name) { const h = HAPTIC[name]; if (h && isNative()) nativeCall("Haptics", h[0], h[1]); }
+
+/* ---------- the buttons on a notification ---------- */
+function onAlertAction(ev) {
+  const id = ev?.actionId, n = ev?.notification || {}, kind = n.extra?.kind;
+  if (!S.profile || id === "dismiss") return;
+  if (kind === "rest" || kind === "hold") {
+    if (!UI.session && S.active) resumeSession();
+    if (!UI.session) return;
+    if (id === "continue") endRest();
+    else if (id === "more") {
+      if (UI.rest) { UI.rest.endTs = Math.max(UI.rest.endTs, Date.now()) + NOTIFY.MORE_REST_S * 1000; restAlert(); }
+      else startRest(NOTIFY.MORE_REST_S);
+    } else if (id === "stop") { endRest(); ACTIONS.quit(); }
+    return;
+  }
+  if (id === "snooze") {
+    LN("schedule", { notifications: [{ id: NOTIFY.ID.snooze, title: n.title, body: n.body, actionTypeId: NOTIFY.CAT.remind, extra: n.extra,
+      schedule: { at: new Date(Date.now() + NOTIFY.SNOOZE_MIN * 60000), allowWhileIdle: true } }] });
+    return;
+  }
+  if (id === "skip") {
+    const day = reminderDay();
+    if (kind === "extra") day.extra = day.extra.filter((x) => x.id !== n.extra?.xid);
+    else if (kind) day.off[kind] = true;
+    cancelAlert(NOTIFY.ID.snooze);
+    save(); syncReminders();
+    if (!UI.session && !UI.done) render();
+    return;
+  }
+  // "start" or a plain tap: land on Today; Start goes straight into the session
+  if (UI.session || UI.done) return;
+  closeSheet(); UI.screen = "today"; render();
+  if (id === "start") {
+    if (kind === "spine") ACTIONS["start-spine"]();
+    else if (kind === "workout" || kind === "part2") ACTIONS[restoreActive() ? "resume" : "start-main"]();
+  }
+}
+
+async function initAlerts() {
+  if (!isNative()) return;
+  document.documentElement.classList.add("native");
+  await LN("registerActionTypes", { types: [
+    { id: NOTIFY.CAT.remind, actions: [{ id: "start", title: "Start now", foreground: true }, { id: "snooze", title: `Snooze ${NOTIFY.SNOOZE_MIN} min` }, { id: "skip", title: "Not today", destructive: true }] },
+    { id: NOTIFY.CAT.rest, actions: [{ id: "continue", title: "Continue", foreground: true }, { id: "more", title: `+${NOTIFY.MORE_REST_S} s rest` }, { id: "stop", title: "Stop session", foreground: true, destructive: true }] },
+  ] });
+  capBridge().addListener("LocalNotifications", "localNotificationActionPerformed", (ev) => {
+    try { onAlertAction(ev); } catch (e) { console.error(e); }
+  });
+  // permission can be withdrawn in iOS Settings at any time
+  if (S.reminders.on) { const p = await LN("checkPermissions"); if (p && p.display !== "granted") { S.reminders.on = false; save(); } }
+  LN("removeAllDeliveredNotifications");
+  syncReminders();
+}
 
 /* generated by tools/build.py */
 const TOWER_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 200 352\"> <g data-name=\"Layer 1\"> <g class=\"tw-frame\"> <path d=\"M22 324 L178 324\" fill=\"none\" class=\"s\" stroke-width=\"8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M30 324 C30 302 48 296 59.3 290 M170 324 C170 302 152 296 140.7 290\" fill=\"none\" class=\"s\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M59.3 324 L59.3 36 M140.7 324 L140.7 36\" fill=\"none\" class=\"s\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M59.3 232 L140.7 232\" fill=\"none\" class=\"s\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g> <g class=\"tw-floor\"> <path d=\"M32 334 L168 334 C171.314 334 174 336.686 174 340 L174 340 C174 343.314 171.314 346 168 346 L32 346 C28.686 346 26 343.314 26 340 L26 340 C26 336.686 28.686 334 32 334 Z\" class=\"f\"/> </g> <g class=\"tw-push\"> <path d=\"M41 302 L20 302 M159 302 L180 302\" fill=\"none\" class=\"s\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g> <g class=\"tw-knee\"> <path d=\"M88 140 L112 140 C117.523 140 122 144.477 122 150 L122 204 C122 209.523 117.523 214 112 214 L88 214 C82.477 214 78 209.523 78 204 L78 150 C78 144.477 82.477 140 88 140 Z\" class=\"f\"/> <path d=\"M33.5 134 L58.5 134 C61.538 134 64 136.462 64 139.5 L64 139.5 C64 142.538 61.538 145 58.5 145 L33.5 145 C30.462 145 28 142.538 28 139.5 L28 139.5 C28 136.462 30.462 134 33.5 134 Z\" class=\"f\"/> <path d=\"M141.5 134 L166.5 134 C169.538 134 172 136.462 172 139.5 L172 139.5 C172 142.538 169.538 145 166.5 145 L141.5 145 C138.462 145 136 142.538 136 139.5 L136 139.5 C136 136.462 138.462 134 141.5 134 Z\" class=\"f\"/> <path d=\"M31 150 L31 124 M169 150 L169 124\" fill=\"none\" class=\"s\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g> <g class=\"tw-dips\"> <path d=\"M59.3 166 L33 166 M140.7 166 L167 166\" fill=\"none\" class=\"s\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g> <g class=\"tw-bar\"> <path d=\"M28 30 L46 42 L154 42 L172 30\" fill=\"none\" class=\"s\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g> </g> </svg>";
@@ -2546,6 +2834,7 @@ function renderToday() {
   let html = `<div class="screen">
     <header class="today-head">
       <div class="col"><span class="t-cap">${date}</span><h1 class="t-title">${greeting()}${name}</h1></div>
+      ${isNative() ? `<button class="btn-icon bell-btn ${S.reminders.on && !reminderDay().quiet ? "on" : ""}" data-a="sheet" data-v="reminders" aria-label="Alerts">${I("bell")}</button>` : ""}
       <button class="ring-wrap" data-a="nav" data-v="progress" aria-label="${wk.done} of ${wk.target} workouts this week. Open progress.">
         ${ringSVG(wk.done, wk.target)}
         <span class="col" style="gap:0;white-space:nowrap"><span class="t-strong">${wk.done} of ${wk.target}</span><span class="t-cap">this week</span></span>
@@ -2575,6 +2864,7 @@ function renderToday() {
 
   html += checkinCard(st);
   if (!resume) html += heroCard(st);
+  html += installCard();
   html += alsoToday(st);
   html += weekStrip();
   html += `<p class="t-small" style="text-align:center;padding:4px 12px">${NUDGES[Math.floor(Date.now() / 864e5) % NUDGES.length]}</p>`;
@@ -2582,21 +2872,30 @@ function renderToday() {
   $app().innerHTML = html;
 }
 
+/* Safari on iPhone (not the Home Screen app): show how to install. The Home Screen app keeps its own
+   storage, separate from Safari's, so this says so before any workouts get logged in the wrong place. */
+function installCard() {
+  let hidden = false;
+  try { hidden = localStorage.getItem("forge.installHint") === "hidden"; } catch (_) {}
+  const iosSafari = navigator.standalone === false && window.self === window.top && !isNative();
+  if (!iosSafari || hidden) return "";
+  return `<section class="card" data-tone="brand" aria-labelledby="inst-h"><div class="stack">
+    <div class="row">${I("phone")}<h2 class="t-head" id="inst-h">Make FORGE an app</h2></div>
+    <p class="t-body">Tap <b>Share</b>, then <b>Add to Home Screen</b>. FORGE then opens full screen from its own icon, works offline, and iOS won't clear your data.</p>
+    <p class="t-small">The Home Screen app keeps its own data, separate from Safari. Already logged workouts here? Me → Back up my data, then Restore it inside the app.</p>
+    <div class="grid-2"><button class="btn btn-tinted" data-a="sheet" data-v="guide">Show me how</button><button class="btn btn-secondary" data-a="install-hide">Not now</button></div>
+  </div></section>`;
+}
+
 function checkinCard(st) {
-  if (st.pain) {
+  if (st.pain && st.pain !== "green") {
     const auto = st.pain === "yellow" && S.log.some((l) => l.date === dayShift(st.t, -1) && l.back === "worse") && !S.painConfirmed?.[st.t];
     return `<div class="row between card" style="padding:12px 16px" data-tone="${toneOf[st.pain]}">
       <span class="row" style="gap:10px"><span class="choice compact" style="min-height:0;padding:0;background:none"><span class="dot"></span></span>
       <span class="col" style="gap:0"><span class="t-strong">Back today: ${painLabel[st.pain]}</span>${auto ? `<span class="t-cap">Set because yesterday's session bothered your back</span>` : ""}</span></span>
-      <button class="btn btn-secondary btn-sm" data-a="pain-reset">Change</button></div>`;
+      <button class="btn btn-secondary btn-sm" data-a="pain-reset">Clear</button></div>`;
   }
-  return `<section class="card" aria-labelledby="ci-h"><div class="stack">
-    <div class="col"><h2 class="t-head" id="ci-h">How's your back today?</h2><p class="t-small">Your answer shapes today's workout.</p></div>
-    <div class="grid-3">
-      ${["green", "yellow", "red"].map((k) => `<button class="choice" data-tone="${toneOf[k]}" data-a="pain" data-v="${k}"><span class="dot"></span>${painLabel[k]}</button>`).join("")}
-    </div>
-    <p class="t-cap">Anything going down a leg? Choose <b>Rough</b>.</p>
-  </div></section>`;
+  return ""; // no daily question: the back is assumed fine unless "Back hurts" is tapped in a session
 }
 
 function blockedPanel(check, override = true) {
@@ -2867,28 +3166,30 @@ function holdBlock(it, tgt, unit) {
 }
 
 /* ---------- holds ---------- */
+function stopHoldTimer() { clearInterval(UI.timer); cancelAlert(NOTIFY.ID.hold); }
 function startHold() {
   const it = curItem();
   const tgt = it._adj ?? setTarget(it, UI.session.setIdx);
   const endTs = Date.now() + tgt * 1000;
   const c = 2 * Math.PI * 96;
-  clearInterval(UI.timer);
+  stopHoldTimer();
   sfx("go");
   const btn = document.getElementById("hold-btn");
   if (btn) { btn.innerHTML = `${I("check")}Done early`; btn.dataset.a = "hold-stop"; btn.classList.replace("btn-primary", "btn-secondary"); }
   let lastTick = null;
   UI.holdEnd = endTs; UI.holdTgt = tgt;
+  alertHold(endTs, `${it.ex.name} — ${tgt} seconds done. Open FORGE for what's next.`);
   UI.timer = setInterval(() => {
     const left = Math.max(0, Math.ceil((endTs - Date.now()) / 1000));
     const v = document.getElementById("hold-val"), arc = document.getElementById("hold-arc");
     if (v) v.textContent = fmtClock(left);
     if (arc) arc.style.strokeDashoffset = String(c * (1 - left / tgt));
     if (left <= 3 && left > 0 && left !== lastTick) { lastTick = left; sfx("tick"); }
-    if (left === 0) { clearInterval(UI.timer); logSet(tgt); }
+    if (left === 0) { stopHoldTimer(); logSet(tgt); }
   }, 200);
 }
 function stopHoldEarly() {
-  clearInterval(UI.timer);
+  stopHoldTimer();
   const left = Math.max(0, Math.ceil(((UI.holdEnd || Date.now()) - Date.now()) / 1000));
   logSet(Math.max(1, (UI.holdTgt || 0) - left));
 }
@@ -2931,6 +3232,7 @@ function startRest(sec) {
     </div>
     <button class="btn btn-text" data-a="quit">End session</button>`;
   document.body.appendChild(div);
+  restAlert();
   clearInterval(UI.restTimer);
   let warned = false, lastTick = null;
   UI.restTimer = setInterval(() => {
@@ -2942,11 +3244,17 @@ function startRest(sec) {
     if (left === 0) { endRest(); sfx("rest-end"); }
   }, 200);
 }
-function endRest() { clearInterval(UI.restTimer); UI.rest = null; document.querySelectorAll("#rest").forEach((n) => n.remove()); }
+// iPhone app: a notification when the rest ends while FORGE is off screen (re-set whenever the end time moves)
+function restAlert() {
+  if (!UI.rest || !UI.session) return;
+  const nx = curItem(), t = setTarget(nx, UI.session.setIdx);
+  alertRest(UI.rest.endTs, `Next: ${nx.ex.name} · set ${UI.session.setIdx + 1} of ${nx.sets} · ${t} ${kindUnit(nx.ex, t)}${sideNote(nx.ex)}`);
+}
+function endRest() { clearInterval(UI.restTimer); cancelAlert(NOTIFY.ID.rest); UI.rest = null; document.querySelectorAll("#rest").forEach((n) => n.remove()); }
 
 function skipExercise() {
   const s = UI.session;
-  if (s.idx >= s.items.length - 1) { clearInterval(UI.timer); finishSession(); return; }
+  if (s.idx >= s.items.length - 1) { stopHoldTimer(); finishSession(); return; }
   goToItem(s.idx + 1, 1);
 }
 
@@ -2958,7 +3266,7 @@ const openSet = (it) => Math.min(loggedSets(it), it.sets - 1);
 function goToItem(i, dir) {
   const s = UI.session;
   if (!s || i < 0 || i >= s.items.length || i === s.idx) return;
-  clearInterval(UI.timer); endRest();
+  stopHoldTimer(); endRest();
   delete curItem()._adj;
   s.idx = i; s.setIdx = openSet(s.items[i]);
   snapshotActive(s);
@@ -3015,7 +3323,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") goToItem(UI.session.idx - 1, -1);
 });
 function swapEasier() {
-  clearInterval(UI.timer);
+  stopHoldTimer();
   const it = curItem();
   delete it._adj;
   if (it.ladder) {
@@ -3036,7 +3344,7 @@ function swapEasier() {
   renderPlayer();
 }
 function quitSession() {
-  clearInterval(UI.timer); endRest(); stopDemo(); releaseWake();
+  stopHoldTimer(); endRest(); stopDemo(); releaseWake();
   UI.session = null; S.active = null; save();
   document.getElementById("player")?.remove();
   render();
@@ -3045,7 +3353,7 @@ function quitSession() {
 /* ---------- finish: celebrate → one-tap feedback → unlocks ---------- */
 function finishSession() {
   const s = UI.session;
-  clearInterval(UI.timer); endRest(); stopDemo();
+  stopHoldTimer(); endRest(); stopDemo();
   const mins = Math.max(1, Math.round((Date.now() - s.startTs) / 60000));
   const res = completeSession(s, mins);
   releaseWake();
@@ -3287,6 +3595,13 @@ function rowBtn(icon, tone, title, sub, action, v = "") {
     <div class="col grow"><span class="t-strong">${title}</span>${sub ? `<span class="t-small">${sub}</span>` : ""}</div>${I("chev-right", "chev")}</button>`;
 }
 
+function alertsSummary() {
+  const day = reminderDay();
+  if (day.quiet) return "Quiet today · back on tomorrow";
+  const left = todaysReminders().filter((r) => !r.done && !r.off && !r.past);
+  return left.length ? `Next today: ${left[0].label} at ${fmtHm(left[0].time)}` : "On · nothing more today";
+}
+
 function renderMe() {
   const p = S.profile;
   const ph = PHASES[S.phase - 1];
@@ -3322,8 +3637,9 @@ function renderMe() {
 
     <h2 class="section-title">Reminders</h2>
     <div class="list">
+      ${isNative() ? rowBtn("bell", 'data-tone="brand"', "Alerts", S.reminders.on ? alertsSummary() : "Off — turn on reminders and timer alerts", "sheet", "reminders") : `
       ${rowBtn("bell", 'data-tone="brand"', "Add training days to Calendar", `Real iPhone alerts ${S.settings.alertMin ? S.settings.alertMin + " min before" : "on time"}`, "ics-schedule")}
-      ${rowBtn("spine", 'data-st="floor"', "Daily Spine Reset reminder", "One calendar alert a day", "ics-spine")}
+      ${rowBtn("spine", 'data-st="floor"', "Daily Spine Reset reminder", "One calendar alert a day", "ics-spine")}`}
       ${rowBtn("phone", 'data-tone="brand"', "iPhone setup guide", "Home screen, alarms, keeping data safe", "sheet", "guide")}
     </div>
 
@@ -3345,12 +3661,12 @@ function renderMe() {
 }
 
 /* ============================================================
-   ONBOARDING — four short steps, then straight to Today
+   ONBOARDING — three short steps, then straight to Today
    ============================================================ */
 
 function renderOnboard() {
   const o = UI.ob;
-  const steps = [obWelcome, obBack, obStart, obWeek];
+  const steps = [obWelcome, obStart, obWeek];
   document.getElementById("nav")?.remove();
   $app().innerHTML = `<div class="ob screen">
     <div class="row between">
@@ -3381,26 +3697,6 @@ function obWelcome() {
     </div>`;
 }
 
-function obBack() {
-  const o = UI.ob;
-  const opt = (v, tone, title, sub) => `<button class="option ${o.back === v ? "sel" : ""}" data-a="ob-set" data-k="back" data-v="${v}" data-tone="${tone}">
-    <span class="radio"></span><span class="col"><span class="t-strong">${title}</span><span class="t-small">${sub}</span></span></button>`;
-  return `
-    <h1 class="t-title">How's your back lately?</h1>
-    <div class="stack">
-      ${opt("1", "bad", "Flared up right now", "We'll start with calming it down")}
-      ${opt("2", "warn", "Niggly, but manageable", "We'll train, conservatively")}
-      ${opt("3", "good", "Mostly fine", "Occasional twinges at most")}
-    </div>
-    <h2 class="t-head">Any pain, tingling or numbness down a leg?</h2>
-    <div class="grid-2">
-      <button class="choice compact ${o.legs === true ? "sel" : ""}" data-tone="warn" data-a="ob-set" data-k="legs" data-v="yes">Yes / sometimes</button>
-      <button class="choice compact ${o.legs === false ? "sel" : ""}" data-tone="good" data-a="ob-set" data-k="legs" data-v="no">No</button>
-    </div>
-    ${o.legs ? notice("warn", "info", "<b>One golden rule for you:</b> symptoms moving down the leg mean stop that move, even if your back feels fine. Symptoms shrinking toward the spine as you move are usually a good sign.") : ""}
-    <div class="foot"><button class="btn btn-primary block" data-a="ob-next" ${o.back && o.legs !== undefined ? "" : "disabled"}>Next</button></div>`;
-}
-
 function obStart() {
   const o = UI.ob;
   const seg = (k, opts) => `<div class="seg">${opts.map((t, i) => `<button data-a="ob-set" data-k="${k}" data-v="${i}" class="${(o[k] ?? 0) == i ? "on" : ""}">${t}</button>`).join("")}</div>`;
@@ -3425,6 +3721,7 @@ function obWeek() {
       <label class="field"><span class="t-cap">Usual wake time</span><input type="time" id="ob-wake" value="${o.wake || "07:00"}"></label>
     </div>
     ${notice("brand", "today", "FORGE keeps strength work out of the first hour after you wake — discs are most vulnerable then.")}
+    <p class="t-cap">Nothing here is fixed — change days and times whenever you like${isNative() ? ", and set repeat nudges under Alerts" : " in Me"}.</p>
     <label class="field"><span class="t-cap">Your name (optional)</span><input type="text" id="ob-name" maxlength="30" placeholder="So Today can say hi" value="${esc(o.name || "")}"></label>
     <div class="foot"><button class="btn btn-primary block" data-a="ob-finish">${I("check")}Start training</button></div>`;
 }
@@ -3692,6 +3989,64 @@ const SHEETS = {
       </div>
       <button class="btn btn-primary block" data-a="whatsnew-done">Let's go</button>`;
   },
+  /* ---- alerts: today's reminders first, the everyday ones below (iPhone app) ---- */
+  reminders() {
+    if (!isNative()) return `${sheetTop("Alerts")}
+      ${notice("brand", "phone", "<b>Real alerts need the FORGE iPhone app.</b> A web page can't ring a timer or send a reminder once the screen is off. Until then, the Calendar reminders in Me do the job.")}
+      <button class="btn btn-primary block" data-a="sheet-close">OK</button>`;
+    const R = S.reminders;
+    if (!R.on) return `${sheetTop("Alerts", "Reminders and timers that reach you when FORGE is closed")}
+      <div class="list">
+        <div class="list-row" data-tone="brand"><span class="tile">${I("bell")}</span><div class="col"><span class="t-strong">Reminders you control</span><span class="t-small">Move, skip or add alerts for today without touching the rest of the week.</span></div></div>
+        <div class="list-row" data-tone="good"><span class="tile">${I("timer")}</span><div class="col"><span class="t-strong">Timers that still ring</span><span class="t-small">Rest over or hold done, even with the phone locked — with Continue and Stop buttons.</span></div></div>
+      </div>
+      <button class="btn btn-primary block" data-a="alerts-on">${I("bell")}Turn on alerts</button>
+      <p class="t-cap" style="text-align:center">iPhone will ask once. You can change it later in Settings.</p>`;
+    const day = reminderDay(), rows = todaysReminders();
+    const live = { workout: "Workout", part2: "Second half", spine: "Daily", extra: "Just today" };
+    const state = (r) => r.done ? "Done — no alert" : r.off ? "Off for today" : r.past ? "Time passed" : r.repeats ? (r.next === r.time ? `Then every ${S.reminders.repeat[r.kind] / 60} h until done` : `Next nudge ${fmtHm(r.next)}`) : live[r.kind];
+    const rowHtml = (r) => { const k = REMIND_KINDS[r.kind]; const live = !r.done && !r.off && !day.quiet;
+      return `<div class="list-row rem-row ${live ? "" : "muted"}" ${k.tone}><span class="tile">${I(k.icon)}</span>
+        <div class="col grow"><span class="t-strong">${esc(r.label)}</span><span class="t-small">${day.quiet && !r.done ? "Quiet today" : state(r)}</span></div>
+        ${r.done ? "" : `<input type="time" class="rem-time" data-rem="${esc(r.key)}" value="${r.time}" aria-label="Time for ${esc(r.label)}" ${r.off ? "disabled" : ""}>
+        <button class="btn-icon sm" data-a="${r.kind === "extra" ? "rem-del" : "rem-skip"}" data-v="${esc(r.key)}" aria-label="${r.kind === "extra" ? "Remove" : r.off ? "Turn back on for today" : "Skip for today"}">${I(r.kind === "extra" ? "close" : r.off ? "undo" : "skip", "sm")}</button>`}</div>`; };
+    const seg = (action, vals, cur, label, k = "") => `<div class="seg">${vals.map((v) => `<button data-a="${action}" data-v="${v}" data-k="${k}" class="${cur === v ? "on" : ""}">${label(v)}</button>`).join("")}</div>`;
+    const repLabel = (v) => (v ? `${v / 60} h` : "Once");
+    const soon = new Date(Date.now() + 3600e3);
+    const newTime = UI.remNew?.time || minToHm(Math.min(23 * 60 + 55, soon.getHours() * 60 + Math.ceil(soon.getMinutes() / 15) * 15));
+    return `${sheetTop("Alerts")}
+      <div class="row"><div class="col grow"><h3 class="t-head">Today</h3><span class="t-small">Changes last until midnight</span></div>
+        <span class="t-small">Quiet</span><label class="toggle"><input type="checkbox" id="rem-quiet" ${day.quiet ? "checked" : ""} aria-label="Quiet today"><span class="tr"></span><span class="th"></span></label></div>
+      <div class="list">${rows.map(rowHtml).join("") || `<div class="list-row"><span class="tile">${I("moon-z")}</span><div class="col"><span class="t-strong">Nothing planned today</span><span class="t-small">Add one below if you want a nudge.</span></div></div>`}</div>
+      <div class="card"><div class="stack"><span class="t-strong">Add a reminder for today</span>
+        <div class="rem-add"><input type="time" id="rem-new-time" value="${newTime}" aria-label="Time">
+          <input type="text" id="rem-new-label" maxlength="60" placeholder="Evening walk" value="${esc(UI.remNew?.label || "")}" aria-label="What to remind you about"></div>
+        <button class="btn btn-tinted block" data-tone="good" data-a="rem-add">${I("plus")}Add reminder</button></div></div>
+
+      <h3 class="t-head">Every day</h3>
+      <div class="list">
+        <div class="list-row" data-tone="brand"><span class="tile">${I("flame")}</span><div class="col grow"><span class="t-strong">Workout reminders</span>
+          <span class="t-small">On your training days</span></div>
+          <label class="toggle"><input type="checkbox" id="rem-workout" ${R.workout ? "checked" : ""} aria-label="Workout reminders"><span class="tr"></span><span class="th"></span></label></div>
+        ${R.workout ? `<div class="rem-sub stack">
+          <div class="days">${[1, 2, 3, 4, 5, 6, 0].map((i) => `<button data-a="set-day" data-v="${i}" class="${S.profile.trainDays.includes(i) ? "on" : ""}" aria-pressed="${S.profile.trainDays.includes(i)}">${DAYS[i]}</button>`).join("")}</div>
+          <div class="row"><span class="t-small grow">Training time</span><input type="time" class="rem-time" id="set-time" value="${S.profile.time}" aria-label="Training time"></div>
+          <div class="field"><span class="t-cap">First alert, before training time</span>${seg("rem-lead", [0, 15, 30, 60], S.settings.alertMin, (v) => v ? v + " min" : "On time")}</div>
+          <div class="field"><span class="t-cap">Keep nudging until it's done</span>${seg("rem-repeat", NOTIFY.REPEATS, R.repeat.workout, repLabel, "workout")}</div></div>` : ""}
+        <div class="list-row" data-st="floor"><span class="tile">${I("spine")}</span><div class="col grow"><span class="t-strong">Spine Reset</span><span class="t-small">Every day</span></div>
+          <label class="toggle"><input type="checkbox" id="rem-spine" ${R.spine ? "checked" : ""} aria-label="Spine Reset reminder"><span class="tr"></span><span class="th"></span></label></div>
+        ${R.spine ? `<div class="rem-sub stack">
+          <div class="row"><span class="t-small grow">First alert</span><input type="time" class="rem-time" id="rem-spine-time" value="${spineAlertTime()}" aria-label="Spine Reset time"></div>
+          <div class="field"><span class="t-cap">Keep nudging until it's done</span>${seg("rem-repeat", NOTIFY.REPEATS, R.repeat.spine, repLabel, "spine")}</div></div>` : ""}
+        ${R.repeat.workout || R.repeat.spine ? `<div class="list-row"><span class="tile">${I("moon-z")}</span><div class="col grow"><span class="t-strong">Stop nudging after</span><span class="t-small">Nothing repeats later than this</span></div>
+          <input type="time" class="rem-time" id="rem-until" value="${R.until}" aria-label="Stop nudging after"></div>` : ""}
+        <div class="list-row" data-tone="good"><span class="tile">${I("timer")}</span><div class="col grow"><span class="t-strong">Timer alerts</span><span class="t-small">Rest over and hold done, when FORGE is off screen</span></div>
+          <label class="toggle"><input type="checkbox" id="rem-timers" ${R.timers ? "checked" : ""} aria-label="Timer alerts"><span class="tr"></span><span class="th"></span></label></div>
+      </div>
+      <p class="t-cap">Nudges stop by themselves once the session is logged. FORGE plans two weeks of alerts each time you open it. Buttons on an alert: Start now, Snooze ${NOTIFY.SNOOZE_MIN} min, Not today.</p>
+      <button class="btn btn-primary block" data-a="sheet-close">Done</button>
+      <button class="btn btn-text" data-a="alerts-off" style="color:var(--bad-ink)">Turn off all alerts</button>`;
+  },
   import() {
     return `${sheetTop("Restore a backup", "This replaces what's on this device.")}
       <textarea id="import-text" rows="6" placeholder="Paste the contents of a forge-backup file"></textarea>
@@ -3736,12 +4091,9 @@ function render() {
 }
 const rerenderSheet = () => renderSheet();
 
-/* Start a strength-type session after the back check and guardrails. */
-function requireCheckin(then) {
-  if (painToday()) return then();
-  UI.afterCheckin = then;
-  openSheet("paincheck");
-}
+/* Start a strength-type session. There is no daily back question any more: the day counts as
+   "green" unless "Back hurts" was tapped in a session (or yesterday's session was marked worse). */
+function requireCheckin(then) { return then(); }
 function startMain() {
   const st = todayState();
   const { part, check } = mainPlan(st);
@@ -3758,7 +4110,7 @@ function startQuick() {
 }
 
 const ACTIONS = {
-  nav: (el) => { UI.screen = el.dataset.v; UI.trainAnyway = false; closeSheet(); render(); window.scrollTo(0, 0); },
+  nav: (el) => { UI.screen = el.dataset.v; UI.remNew = null; UI.trainAnyway = false; closeSheet(); render(); window.scrollTo(0, 0); },
   sheet: (el) => { UI.planPick = null; UI.countVal = null; openSheet(el.dataset.v); },
   "sheet-close": () => closeSheet(),
   "confirm-yes": () => { const fn = UI.pendingConfirm; closeSheet(); fn && fn(); },
@@ -3807,7 +4159,7 @@ const ACTIONS = {
   "hold-start": () => startHold(),
   "hold-stop": () => stopHoldEarly(),
   "time-adj": (el) => { const it = curItem(); it._adj = Math.max(5, (it._adj ?? setTarget(it, UI.session.setIdx)) + Number(el.dataset.v)); renderPlayer(); },
-  "rest-add": () => { if (UI.rest) UI.rest.endTs += 15000; },
+  "rest-add": () => { if (UI.rest) { UI.rest.endTs += 15000; restAlert(); } },
   "rest-skip": () => endRest(),
   "skip-ex": () => skipExercise(),
   "swap-easier": () => swapEasier(),
@@ -3889,6 +4241,7 @@ const ACTIONS = {
     else if (r === "shared") showToast("Open it in Calendar → Add All");
   },
   "guide-done": () => { S.seenGuide = true; save(); closeSheet(); },
+  "install-hide": () => { try { localStorage.setItem("forge.installHint", "hidden"); } catch (_) {} render(); },
   "export-data": async () => {
     const r = await exportData();
     if (r === "downloaded") showToast("Backup saved");
@@ -3913,6 +4266,29 @@ const ACTIONS = {
       onYes: () => { localStorage.removeItem(STORE_KEY); S = defaultState(); UI.screen = "today"; UI.ob = { step: 0 }; render(); } }) }),
   "whatsnew-done": () => { S.seenV2 = true; save(); closeSheet(); render(); },
 
+  /* alerts (iPhone app) */
+  "alerts-on": async () => {
+    const ok = await enableAlerts();
+    if (UI.sheet === "reminders") rerenderSheet();
+    showToast(ok ? "Alerts on" : "iPhone hasn't allowed alerts — Settings → Notifications → FORGE");
+    if (!UI.session) render();
+  },
+  "alerts-off": () => askConfirm({ title: "Turn off all alerts?", body: "No reminders and no timer alerts until you turn them back on.", danger: true, yes: "Turn off",
+    onYes: () => { disableAlerts(); render(); showToast("Alerts off"); } }),
+  "rem-skip": (el) => { const d = reminderDay(), k = el.dataset.v; if (d.off[k]) delete d.off[k]; else d.off[k] = true; save(); rerenderSheet(); },
+  "rem-del": (el) => { const d = reminderDay(); d.extra = d.extra.filter((x) => x.id !== el.dataset.v); save(); rerenderSheet(); },
+  "rem-add": () => {
+    const d = reminderDay();
+    const time = document.getElementById("rem-new-time")?.value, label = (document.getElementById("rem-new-label")?.value || "").trim().slice(0, 60) || "Reminder";
+    if (!/^\d{2}:\d{2}$/.test(time || "")) { showToast("Pick a time"); return; }
+    if (atOn(todayKey(), time) <= new Date()) { showToast("That time has already passed today"); return; }
+    if (d.extra.length >= 8) { showToast("Eight extra reminders is the limit for one day"); return; }
+    d.extra.push({ id: uid(), time, label });
+    UI.remNew = null; save(); rerenderSheet(); showToast(`Reminder set for ${fmtHm(time)}`);
+  },
+  "rem-repeat": (el) => { S.reminders.repeat[el.dataset.k] = Number(el.dataset.v); save(); rerenderSheet(); },
+  "rem-lead": (el) => { S.settings.alertMin = Number(el.dataset.v); delete reminderDay().at.workout; save(); rerenderSheet(); },
+
   /* onboarding */
   "ob-next": () => { UI.ob.step++; renderOnboard(); window.scrollTo(0, 0); },
   "ob-prev": () => { UI.ob.step = Math.max(0, UI.ob.step - 1); renderOnboard(); },
@@ -3935,10 +4311,9 @@ const ACTIONS = {
     if (!days.length) { showToast("Pick at least one training day"); return; }
     const map = { vpull: [0, 3, 5, 6], dip: [0, 2, 3, 4], push: [0, 1, 2, 3] };
     S.levels.vpull = map.vpull[o.vpull || 0]; S.levels.dip = map.dip[o.dip || 0]; S.levels.push = map.push[o.push || 0];
-    S.phase = o.back === "1" ? 1 : 2;
-    if (S.phase === 1) { S.levels.vpull = 0; S.levels.dip = 0; }
+    S.phase = 2; // setup no longer asks about the back; Me → Phase can drop to Phase 1 during a flare
     S.profile = { trainDays: days, time: document.getElementById("ob-time")?.value || "18:00", wake: document.getElementById("ob-wake")?.value || "07:00",
-      anchor: "", legs: !!o.legs, created: todayKey(), weeklyTarget: Math.min(5, days.length), barSetting: null,
+      anchor: "", legs: false, created: todayKey(), weeklyTarget: Math.min(5, days.length), barSetting: null,
       name: (document.getElementById("ob-name")?.value || "").trim().slice(0, 30) };
     S.seenV2 = true;
     save(); UI.screen = "today"; render(); window.scrollTo(0, 0);
@@ -3958,12 +4333,21 @@ document.addEventListener("input", (e) => {
   const id = e.target.id, v = e.target.value;
   if (id === "lib-q") { UI.libQ = v; const l = document.getElementById("lib-list"); if (l) l.innerHTML = movesList(); }
   if (!S.profile) return;
-  if (id === "set-time" && /^\d{2}:\d{2}$/.test(v)) { S.profile.time = v; save(); }
+  // alerts sheet: time fields save as they change (no re-render, so the iPhone time wheel stays open)
+  const hm = /^\d{2}:\d{2}$/.test(v);
+  if (e.target.dataset.rem && hm) { const d = reminderDay(), k = e.target.dataset.rem, x = d.extra.find((y) => y.id === k); if (x) x.time = v; else d.at[k] = v; save(); }
+  if (id === "rem-until" && hm) { S.reminders.until = v; save(); }
+  if (id === "rem-spine-time" && hm) { S.reminders.spineTime = v; delete reminderDay().at.spine; save(); }
+  if (id === "rem-new-time" || id === "rem-new-label") UI.remNew = { time: document.getElementById("rem-new-time")?.value, label: document.getElementById("rem-new-label")?.value };
+  if (id === "set-time" && /^\d{2}:\d{2}$/.test(v)) { S.profile.time = v; delete reminderDay().at.workout; save(); }
   if (id === "set-wake" && /^\d{2}:\d{2}$/.test(v)) { S.profile.wake = v; save(); }
   if (id === "set-anchor") { S.profile.anchor = v.slice(0, 60); save(); }
   if (id === "set-name") { S.profile.name = v.trim().slice(0, 30); save(); }
 });
 document.addEventListener("change", (e) => {
+  const remToggle = { "rem-quiet": () => { reminderDay().quiet = e.target.checked; }, "rem-workout": () => { S.reminders.workout = e.target.checked; },
+    "rem-spine": () => { S.reminders.spine = e.target.checked; }, "rem-timers": () => { S.reminders.timers = e.target.checked; if (!e.target.checked) cancelTimerAlerts(); } }[e.target.id];
+  if (remToggle) { remToggle(); save(); rerenderSheet(); }
   if (e.target.id === "set-sound") { S.settings.sound = e.target.checked; save(); if (S.settings.sound) { unlockAudio(); sfx("set-done"); } render(); }
   if (e.target.id === "import-file" && e.target.files?.[0]) {
     e.target.files[0].text().then((t) => { const ta = document.getElementById("import-text"); if (ta) ta.value = t; });
@@ -3971,6 +4355,7 @@ document.addEventListener("change", (e) => {
 });
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible" && !UI.session && !UI.done && !UI.sheet && S.profile) render();
+  if (document.visibilityState === "visible") { LN("removeAllDeliveredNotifications"); syncReminders(); }
 });
 matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", applyTheme);
 
@@ -3980,6 +4365,7 @@ try {
   if (S.active && S.active.date !== todayKey()) { S.active = null; save(); }
   render();
   if (S.profile && !S.seenV2) openSheet("whatsnew");
+  initAlerts();
 } catch (e) {
   console.error(e);
   const app = document.getElementById("app");

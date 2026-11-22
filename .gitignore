@@ -2,3 +2,7 @@
 media/
 .DS_Store
 __pycache__/
+
+# native shell (Capacitor): dependencies and the generated web bundle
+node_modules/
+www/
