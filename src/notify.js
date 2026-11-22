@@ -28,13 +28,48 @@ const REMIND_KINDS = {
 
 const capBridge = () => (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() ? window.Capacitor : null);
 const isNative = () => !!capBridge();
+
+/* ---------- web push (the Home Screen web app, iOS 16.4+) ----------
+   The same two-week plan, posted to a tiny Cloudflare Worker (push/) that sends each alert at its time.
+   The device key is random and stays in this browser only (not in backups). */
+const PUSH = { api: "https://forge-push.harismohammad.workers.dev", vapid: "BM0x4hJMDL4a40eWQJWY6uPeP-3cZezxZEKcahjecyeMzV-FjjPkZqs_dQNd739J72oL459DjoECU2FZQcAg0xo" }; // push/ (Cloudflare Worker); the key is public
+const webPushReady = () => !isNative() && !!PUSH.api && "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+const alertsAvailable = () => isNative() || webPushReady();
+function pushKey() {
+  try {
+    let k = localStorage.getItem("forge.pushKey");
+    if (!/^[a-f0-9]{32}$/.test(k || "")) {
+      k = Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("");
+      localStorage.setItem("forge.pushKey", k);
+    }
+    return k;
+  } catch (_) { return null; }
+}
+const b64uBytes = (s) => { const t = s.replace(/-/g, "+").replace(/_/g, "/"); return Uint8Array.from(atob(t + "=".repeat((4 - (t.length % 4)) % 4)), (c) => c.charCodeAt(0)); };
+// text/plain keeps these "simple" requests (no CORS preflight); beacon survives the page going to the background
+function pushPost(path, data, beacon = false) {
+  const key = pushKey();
+  if (!key || !PUSH.api) return Promise.resolve(null);
+  const body = JSON.stringify({ key, ...data });
+  if (beacon && navigator.sendBeacon) {
+    try { if (navigator.sendBeacon(PUSH.api + path, new Blob([body], { type: "text/plain" }))) return Promise.resolve({ ok: true }); } catch (_) {}
+  }
+  return fetch(PUSH.api + path, { method: "POST", body, headers: { "Content-Type": "text/plain" }, keepalive: body.length < 60000 })
+    .then((r) => r.json()).catch((e) => { console.warn("push", path, e); return null; });
+}
+async function pushSub(create) {
+  const reg = await navigator.serviceWorker.ready;
+  let sub = await reg.pushManager.getSubscription();
+  if (!sub && create) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uBytes(PUSH.vapid) });
+  return sub;
+}
 function nativeCall(plugin, method, opts = {}) {
   const cap = capBridge();
   if (!cap) return Promise.resolve(null);
   return cap.nativePromise(plugin, method, opts).catch((e) => { console.warn(`${plugin}.${method}`, e); return null; });
 }
 const LN = (method, opts) => nativeCall("LocalNotifications", method, opts);
-const alertsOn = () => isNative() && !!S.reminders.on;
+const alertsOn = () => alertsAvailable() && !!S.reminders.on;
 
 /* ---------- times ---------- */
 const hmToMin = (hm) => { const [h, m] = hm.split(":").map(Number); return h * 60 + m; };
@@ -136,9 +171,22 @@ function todaysReminders(now = new Date()) {
 
 /* ---------- putting the plan on the phone ---------- */
 const toNote = (p) => ({ id: p.id, title: p.title, body: p.body, schedule: { at: p.at, allowWhileIdle: true }, actionTypeId: NOTIFY.CAT.remind, extra: p.extra });
-let syncChain = Promise.resolve(), syncTimer = null;
+let syncChain = Promise.resolve(), syncTimer = null, pushSig = null;
+function syncWebPush() {
+  syncChain = syncChain.then(async () => {
+    if (!S.reminders.on || !S.profile) return;
+    const sub = await pushSub(false);
+    if (!sub) return;
+    const plan = planReminders().slice(0, 120).map((p) => ({ id: String(p.id), at: p.at.getTime(), title: p.title, body: p.body, kind: p.kind }));
+    const sig = JSON.stringify([sub.endpoint, plan]);
+    if (sig === pushSig) return; // nothing changed (most saves during a workout)
+    const r = await pushPost("/plan", { sub: sub.toJSON(), plan });
+    if (r?.ok) pushSig = sig;
+  }).catch((e) => console.warn("syncWebPush", e));
+  return syncChain;
+}
 function syncReminders() {
-  if (!isNative()) return Promise.resolve();
+  if (!isNative()) return webPushReady() ? syncWebPush() : Promise.resolve();
   syncChain = syncChain.then(async () => {
     const pending = (await LN("getPending"))?.notifications || [];
     const old = pending.filter((n) => n.id < NOTIFY.ID.rest && n.id !== NOTIFY.ID.snooze).map((n) => ({ id: n.id }));
@@ -151,14 +199,30 @@ function syncReminders() {
 }
 // called from save(): anything that changes the day (a logged session, new times) re-plans shortly after
 function queueReminderSync() {
-  if (!isNative()) return;
+  if (!alertsAvailable()) return;
   clearTimeout(syncTimer);
-  syncTimer = setTimeout(syncReminders, 600);
+  syncTimer = setTimeout(syncReminders, isNative() ? 600 : 2500);
 }
 
 /* ---------- permission ---------- */
 async function enableAlerts() {
-  if (!isNative()) return false;
+  if (!isNative()) {
+    // Safari only allows the permission prompt straight from a tap: ask before anything else is awaited
+    if (!webPushReady()) return false;
+    const perm = Notification.permission === "granted" ? "granted" : await Notification.requestPermission();
+    S.reminders.on = perm === "granted";
+    if (S.reminders.on) {
+      try {
+        const sub = await pushSub(true);
+        const r = await pushPost("/test", { sub: sub.toJSON() }); // a first alert, so you see it works
+        if (!r?.ok) throw new Error("push test failed");
+      } catch (e) { console.warn("enableAlerts", e); S.reminders.on = false; }
+    }
+    pushSig = null;
+    save();
+    await syncReminders();
+    return S.reminders.on;
+  }
   let p = await LN("checkPermissions");
   if (p?.display !== "granted") p = await LN("requestPermissions");
   S.reminders.on = p?.display === "granted";
@@ -166,15 +230,41 @@ async function enableAlerts() {
   await syncReminders();
   return S.reminders.on;
 }
-function disableAlerts() { S.reminders.on = false; cancelTimerAlerts(); save(); return syncReminders(); }
+function disableAlerts() { S.reminders.on = false; cancelTimerAlerts(); save(); if (!isNative()) { pushSig = null; return pushPost("/off", {}); } return syncReminders(); }
 
-/* ---------- timer alerts: only shown when FORGE is not on screen (silent in the app) ---------- */
+/* ---------- timer alerts: only shown when FORGE is not on screen (silent in the app) ----------
+   Web: kept here and sent to the worker only when FORGE goes off screen (locked or switched away),
+   then called back when it's back on screen, so an alert never lands on top of the open app. */
+const webTimers = {};
+function flushWebTimers() {
+  for (const t of Object.values(webTimers)) if (!t.sent && t.at > Date.now() + 3000) { t.sent = true; pushPost("/timer", { item: t.item }, true); }
+}
+function recallWebTimers() {
+  for (const t of Object.values(webTimers)) if (t.sent) { t.sent = false; pushPost("/cancel", { id: t.item.id }, true); }
+}
+document.addEventListener("visibilitychange", () => {
+  if (isNative() || !webPushReady()) return;
+  if (document.visibilityState === "hidden") flushWebTimers(); else recallWebTimers();
+});
 function timerAlert(id, endTs, title, body, extra, withActions) {
   if (!alertsOn() || !S.reminders.timers || endTs <= Date.now() + 1500) return;
+  if (!isNative()) {
+    const prev = webTimers[id];
+    if (prev?.sent) pushPost("/cancel", { id: prev.item.id }, true);
+    webTimers[id] = { at: endTs, sent: false, item: { id: extra.kind, at: endTs, title, body, kind: extra.kind } };
+    if (document.visibilityState === "hidden") flushWebTimers();
+    return;
+  }
   LN("schedule", { notifications: [{ id, title, body, schedule: { at: new Date(endTs), allowWhileIdle: true }, silent: true,
     actionTypeId: withActions ? NOTIFY.CAT.rest : undefined, extra }] });
 }
-function cancelAlert(id) { if (isNative()) LN("cancel", { notifications: [{ id }] }); }
+function cancelAlert(id) {
+  if (isNative()) { LN("cancel", { notifications: [{ id }] }); return; }
+  const t = webTimers[id];
+  if (!t) return;
+  delete webTimers[id];
+  if (t.sent) pushPost("/cancel", { id: t.item.id }, true);
+}
 function cancelTimerAlerts() { cancelAlert(NOTIFY.ID.rest); cancelAlert(NOTIFY.ID.hold); }
 const alertRest = (endTs, body) => timerAlert(NOTIFY.ID.rest, endTs, "Rest over — back to it", body, { kind: "rest" }, true);
 const alertHold = (endTs, body) => timerAlert(NOTIFY.ID.hold, endTs, "Hold done", body, { kind: "hold" }, false);
@@ -222,7 +312,13 @@ function onAlertAction(ev) {
 }
 
 async function initAlerts() {
-  if (!isNative()) return;
+  if (!isNative()) {
+    if (!webPushReady()) return;
+    // permission can be withdrawn in iOS Settings → Notifications → FORGE
+    if (S.reminders.on && Notification.permission !== "granted") { S.reminders.on = false; save(); }
+    syncReminders();
+    return;
+  }
   document.documentElement.classList.add("native");
   await LN("registerActionTypes", { types: [
     { id: NOTIFY.CAT.remind, actions: [{ id: "start", title: "Start now", foreground: true }, { id: "snooze", title: `Snooze ${NOTIFY.SNOOZE_MIN} min` }, { id: "skip", title: "Not today", destructive: true }] },

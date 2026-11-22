@@ -209,6 +209,24 @@ self.addEventListener("fetch", (e) => {{
     return r;
   }})));
 }});
+// Web Push (Home Screen app): alerts planned by the app, sent by push/ (Cloudflare Worker)
+self.addEventListener("push", (e) => {{
+  let d = {{}};
+  try {{ d = e.data ? e.data.json() : {{}}; }} catch (_) {{ d = {{ body: e.data ? e.data.text() : "" }}; }}
+  const timer = d.kind === "rest" || d.kind === "hold";
+  e.waitUntil(self.registration.showNotification(d.title || "FORGE", {{
+    body: d.body || "", icon: "assets/icons/icon-192.png", badge: "assets/icons/icon-192.png",
+    tag: d.kind || "forge", renotify: true, data: {{ url: "./?from=" + encodeURIComponent(d.kind || "alert"), timer }},
+  }}));
+}});
+self.addEventListener("notificationclick", (e) => {{
+  e.notification.close();
+  const url = new URL((e.notification.data && e.notification.data.url) || "./", self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({{ type: "window", includeUncontrolled: true }}).then((cs) => {{
+    for (const c of cs) if ("focus" in c) return c.focus();
+    return self.clients.openWindow(url);
+  }}));
+}});
 """
     open("sw.js", "w").write(sw)
     print(f"built index.html ({len(html):,} B, {n_icons} icons, version {version}); manifest ({len(icons)} icons); sw.js ({len(set(cache))} precached)")

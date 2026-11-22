@@ -6,3 +6,7 @@ __pycache__/
 # native shell (Capacitor): dependencies and the generated web bundle
 node_modules/
 www/
+
+# push sender: local secrets and build output
+push/.dev.vars
+push/.wrangler/

@@ -1,0 +1,13 @@
+{
+  "name": "forge-push",
+  "private": true,
+  "type": "module",
+  "description": "Sends FORGE's Home Screen web app its reminders and timer alerts (Cloudflare Worker + Durable Object)",
+  "scripts": {
+    "test": "node test/webpush.test.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.166.0"
+  }
+}

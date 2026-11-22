@@ -263,14 +263,14 @@ const SHEETS = {
   },
   /* ---- alerts: today's reminders first, the everyday ones below (iPhone app) ---- */
   reminders() {
-    if (!isNative()) return `${sheetTop("Alerts")}
-      ${notice("brand", "phone", "<b>Real alerts need the FORGE iPhone app.</b> A web page can't ring a timer or send a reminder once the screen is off. Until then, the Calendar reminders in Me do the job.")}
+    if (!alertsAvailable()) return `${sheetTop("Alerts")}
+      ${notice("brand", "phone", "<b>Alerts work once FORGE is on your Home Screen.</b> In Safari tap Share → Add to Home Screen, open FORGE from its new icon, then turn alerts on here. Until then, the Calendar reminders in Me do the job.")}
       <button class="btn btn-primary block" data-a="sheet-close">OK</button>`;
     const R = S.reminders;
     if (!R.on) return `${sheetTop("Alerts", "Reminders and timers that reach you when FORGE is closed")}
       <div class="list">
         <div class="list-row" data-tone="brand"><span class="tile">${I("bell")}</span><div class="col"><span class="t-strong">Reminders you control</span><span class="t-small">Move, skip or add alerts for today without touching the rest of the week.</span></div></div>
-        <div class="list-row" data-tone="good"><span class="tile">${I("timer")}</span><div class="col"><span class="t-strong">Timers that still ring</span><span class="t-small">Rest over or hold done, even with the phone locked — with Continue and Stop buttons.</span></div></div>
+        <div class="list-row" data-tone="good"><span class="tile">${I("timer")}</span><div class="col"><span class="t-strong">Timers that still ring</span><span class="t-small">Rest over or hold done, even with the phone locked${isNative() ? " — with Continue and Stop buttons" : ""}.</span></div></div>
       </div>
       <button class="btn btn-primary block" data-a="alerts-on">${I("bell")}Turn on alerts</button>
       <p class="t-cap" style="text-align:center">iPhone will ask once. You can change it later in Settings.</p>`;
@@ -315,7 +315,7 @@ const SHEETS = {
         <div class="list-row" data-tone="good"><span class="tile">${I("timer")}</span><div class="col grow"><span class="t-strong">Timer alerts</span><span class="t-small">Rest over and hold done, when FORGE is off screen</span></div>
           <label class="toggle"><input type="checkbox" id="rem-timers" ${R.timers ? "checked" : ""} aria-label="Timer alerts"><span class="tr"></span><span class="th"></span></label></div>
       </div>
-      <p class="t-cap">Nudges stop by themselves once the session is logged. FORGE plans two weeks of alerts each time you open it. Buttons on an alert: Start now, Snooze ${NOTIFY.SNOOZE_MIN} min, Not today.</p>
+      <p class="t-cap">Nudges stop by themselves once the session is logged. FORGE plans two weeks of alerts each time you open it. ${isNative() ? `Buttons on an alert: Start now, Snooze ${NOTIFY.SNOOZE_MIN} min, Not today.` : "Tap an alert to open FORGE."}</p>
       <button class="btn btn-primary block" data-a="sheet-close">Done</button>
       <button class="btn btn-text" data-a="alerts-off" style="color:var(--bad-ink)">Turn off all alerts</button>`;
   },

@@ -1,0 +1,19 @@
+# FORGE push sender. Deploy: cd push && npm install && npx wrangler deploy
+# Secret (never in git): npx wrangler secret put VAPID_PRIVATE   (the "d" of the VAPID key below)
+name = "forge-push"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://afridiharis.github.io,http://localhost:8741,http://localhost:8742"
+VAPID_SUBJECT = "https://afridiharis.github.io/home-gym/"
+VAPID_PUBLIC = "BM0x4hJMDL4a40eWQJWY6uPeP-3cZezxZEKcahjecyeMzV-FjjPkZqs_dQNd739J72oL459DjoECU2FZQcAg0xo"
+
+[[durable_objects.bindings]]
+name = "INBOX"
+class_name = "Inbox"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Inbox"]

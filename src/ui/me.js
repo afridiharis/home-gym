@@ -11,7 +11,7 @@ function alertsSummary() {
   const day = reminderDay();
   if (day.quiet) return "Quiet today · back on tomorrow";
   const left = todaysReminders().filter((r) => !r.done && !r.off && !r.past);
-  return left.length ? `Next today: ${left[0].label} at ${fmtHm(left[0].time)}` : "On · nothing more today";
+  return left.length ? `Next today: ${esc(left[0].label)} at ${fmtHm(left[0].time)}` : "On · nothing more today";
 }
 
 function renderMe() {
@@ -49,7 +49,7 @@ function renderMe() {
 
     <h2 class="section-title">Reminders</h2>
     <div class="list">
-      ${isNative() ? rowBtn("bell", 'data-tone="brand"', "Alerts", S.reminders.on ? alertsSummary() : "Off — turn on reminders and timer alerts", "sheet", "reminders") : `
+      ${alertsAvailable() ? rowBtn("bell", 'data-tone="brand"', "Alerts", S.reminders.on ? alertsSummary() : "Off — turn on reminders and timer alerts", "sheet", "reminders") : `
       ${rowBtn("bell", 'data-tone="brand"', "Add training days to Calendar", `Real iPhone alerts ${S.settings.alertMin ? S.settings.alertMin + " min before" : "on time"}`, "ics-schedule")}
       ${rowBtn("spine", 'data-st="floor"', "Daily Spine Reset reminder", "One calendar alert a day", "ics-spine")}`}
       ${rowBtn("phone", 'data-tone="brand"', "iPhone setup guide", "Home screen, alarms, keeping data safe", "sheet", "guide")}

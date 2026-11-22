@@ -59,7 +59,7 @@ function obWeek() {
       <label class="field"><span class="t-cap">Usual wake time</span><input type="time" id="ob-wake" value="${o.wake || "07:00"}"></label>
     </div>
     ${notice("brand", "today", "FORGE keeps strength work out of the first hour after you wake — discs are most vulnerable then.")}
-    <p class="t-cap">Nothing here is fixed — change days and times whenever you like${isNative() ? ", and set repeat nudges under Alerts" : " in Me"}.</p>
+    <p class="t-cap">Nothing here is fixed — change days and times whenever you like${alertsAvailable() ? ", and set repeat nudges under Alerts" : " in Me"}.</p>
     <label class="field"><span class="t-cap">Your name (optional)</span><input type="text" id="ob-name" maxlength="30" placeholder="So Today can say hi" value="${esc(o.name || "")}"></label>
     <div class="foot"><button class="btn btn-primary block" data-a="ob-finish">${I("check")}Start training</button></div>`;
 }

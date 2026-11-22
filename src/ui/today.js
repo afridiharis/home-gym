@@ -38,7 +38,7 @@ function renderToday() {
   let html = `<div class="screen">
     <header class="today-head">
       <div class="col"><span class="t-cap">${date}</span><h1 class="t-title">${greeting()}${name}</h1></div>
-      ${isNative() ? `<button class="btn-icon bell-btn ${S.reminders.on && !reminderDay().quiet ? "on" : ""}" data-a="sheet" data-v="reminders" aria-label="Alerts">${I("bell")}</button>` : ""}
+      ${alertsAvailable() ? `<button class="btn-icon bell-btn ${S.reminders.on && !reminderDay().quiet ? "on" : ""}" data-a="sheet" data-v="reminders" aria-label="Alerts">${I("bell")}</button>` : ""}
       <button class="ring-wrap" data-a="nav" data-v="progress" aria-label="${wk.done} of ${wk.target} workouts this week. Open progress.">
         ${ringSVG(wk.done, wk.target)}
         <span class="col" style="gap:0;white-space:nowrap"><span class="t-strong">${wk.done} of ${wk.target}</span><span class="t-cap">this week</span></span>
